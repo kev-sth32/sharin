@@ -1,7 +1,8 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 
-export function proxy(req: NextRequest) {
+// CHANGE: RENAME FUNCTION NAME FROM proxy TO middleware
+export function middleware(req: NextRequest) {
   const { pathname } = req.nextUrl;
 
   // Protect /admin and /api/admin (except /admin/login and /api/admin/login)
