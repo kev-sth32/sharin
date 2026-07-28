@@ -4,6 +4,7 @@ import "./globals.css";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
 import StickyCTA from "@/components/layout/StickyCTA";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 
 const jakarta = Plus_Jakarta_Sans({
   variable: "--font-jakarta",
@@ -67,6 +68,7 @@ export default function RootLayout({
         <main className="flex-1">{children}</main>
         <Footer />
         <StickyCTA />
+        <SpeedInsights />
       </body>
     </html>
   );
