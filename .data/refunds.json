@@ -1,0 +1,11 @@
+[
+  {
+    "id": 1785240495015,
+    "createdAt": "2026-07-28T12:08:15.015Z",
+    "bookingId": "",
+    "email": "refund@example.com",
+    "phone": "+919876543210",
+    "reason": "Change of mind",
+    "policyAcknowledged": true
+  }
+]

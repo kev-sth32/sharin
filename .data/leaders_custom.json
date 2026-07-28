@@ -1,0 +1,13 @@
+[
+  {
+    "slug": "test-leader",
+    "name": "Test Leader",
+    "bio": "Exp guide",
+    "specialties": [],
+    "languages": [],
+    "experienceYears": 3,
+    "tripsLed": 0,
+    "image": "",
+    "isVerified": true
+  }
+]

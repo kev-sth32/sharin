@@ -1,0 +1,12 @@
+[
+  {
+    "id": 1785240017510,
+    "isPublished": true,
+    "publishedAt": "2026-07-28T12:00:17.513Z",
+    "title": "Test Blog Post",
+    "slug": "test-blog-post",
+    "excerpt": "A simple test post",
+    "content": "This is a test blog post.",
+    "category": "Safety"
+  }
+]

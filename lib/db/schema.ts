@@ -1,0 +1,275 @@
+// TripNaari Drizzle ORM Schema - PostgreSQL
+import { pgTable, text, timestamp, integer, boolean, serial, jsonb, decimal, varchar, uuid } from "drizzle-orm/pg-core";
+
+// Enum types as text with check, for simplicity use text
+export const destinations = pgTable("destinations", {
+  id: serial("id").primaryKey(),
+  slug: varchar("slug", { length: 100 }).unique().notNull(),
+  name: varchar("name", { length: 150 }).notNull(),
+  tagline: varchar("tagline", { length: 255 }),
+  description: text("description"),
+  region: varchar("region", { length: 100 }), // Himalaya, South India, Northeast, International
+  heroImage: text("hero_image"),
+  gallery: jsonb("gallery").$type<string[]>().default([]),
+  bestSeason: varchar("best_season", { length: 100 }),
+  idealFor: jsonb("ideal_for").$type<string[]>().default([]), // solo, mothers, etc
+  safetyScore: integer("safety_score").default(5),
+  isInternational: boolean("is_international").default(false),
+  isPublished: boolean("is_published").default(true),
+  seoTitle: varchar("seo_title", { length: 255 }),
+  seoDescription: text("seo_description"),
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
+
+export const tripPackages = pgTable("trip_packages", {
+  id: serial("id").primaryKey(),
+  slug: varchar("slug", { length: 150 }).unique().notNull(),
+  destinationId: integer("destination_id").references(() => destinations.id),
+  title: varchar("title", { length: 255 }).notNull(),
+  shortDescription: varchar("short_description", { length: 500 }),
+  longDescription: text("long_description"),
+  durationDays: integer("duration_days").notNull(),
+  durationNights: integer("duration_nights").notNull(),
+  priceFrom: integer("price_from").notNull(), // in INR
+  priceOriginal: integer("price_original"),
+  groupSizeMin: integer("group_size_min").default(8),
+  groupSizeMax: integer("group_size_max").default(16),
+  difficulty: varchar("difficulty", { length: 50 }), // easy, moderate, challenging
+  comfortLevel: varchar("comfort_level", { length: 50 }), // backpacker, comfort, premium
+  isWomenOnly: boolean("is_women_only").default(true),
+  isFamilyFriendly: boolean("is_family_friendly").default(false),
+  isFeatured: boolean("is_featured").default(false),
+  heroImage: text("hero_image"),
+  gallery: jsonb("gallery").$type<string[]>().default([]),
+  highlights: jsonb("highlights").$type<string[]>().default([]),
+  ratingAvg: decimal("rating_avg", { precision: 3, scale: 2 }).default("4.9"),
+  ratingCount: integer("rating_count").default(127),
+  seoTitle: varchar("seo_title", { length: 255 }),
+  seoDescription: text("seo_description"),
+  itineraryChangePolicy: text("itinerary_change_policy"),
+  isPublished: boolean("is_published").default(true),
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
+
+export const departureDates = pgTable("departure_dates", {
+  id: serial("id").primaryKey(),
+  tripPackageId: integer("trip_package_id").references(() => tripPackages.id).notNull(),
+  startDate: timestamp("start_date").notNull(),
+  endDate: timestamp("end_date").notNull(),
+  seatsTotal: integer("seats_total").default(16),
+  seatsBooked: integer("seats_booked").default(0),
+  price: integer("price"),
+  status: varchar("status", { length: 30 }).default("open"), // open, filling_fast, sold_out, cancelled
+  isGuaranteed: boolean("is_guaranteed").default(false),
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
+export const dayItineraries = pgTable("day_itineraries", {
+  id: serial("id").primaryKey(),
+  tripPackageId: integer("trip_package_id").references(() => tripPackages.id).notNull(),
+  dayNumber: integer("day_number").notNull(),
+  title: varchar("title", { length: 255 }).notNull(),
+  description: text("description").notNull(),
+  location: varchar("location", { length: 150 }),
+  mealsIncluded: jsonb("meals_included").$type<string[]>().default([]),
+  activities: jsonb("activities").$type<string[]>().default([]),
+  accommodation: varchar("accommodation", { length: 255 }),
+  travelNotes: text("travel_notes"),
+  image: text("image"),
+});
+
+export const inclusions = pgTable("inclusions", {
+  id: serial("id").primaryKey(),
+  tripPackageId: integer("trip_package_id").references(() => tripPackages.id).notNull(),
+  text: varchar("text", { length: 255 }).notNull(),
+  category: varchar("category", { length: 100 }), // stay, meal, transport, activity, guide
+  icon: varchar("icon", { length: 50 }),
+});
+
+export const exclusions = pgTable("exclusions", {
+  id: serial("id").primaryKey(),
+  tripPackageId: integer("trip_package_id").references(() => tripPackages.id).notNull(),
+  text: varchar("text", { length: 255 }).notNull(),
+});
+
+export const addOns = pgTable("add_ons", {
+  id: serial("id").primaryKey(),
+  tripPackageId: integer("trip_package_id").references(() => tripPackages.id).notNull(),
+  name: varchar("name", { length: 150 }).notNull(),
+  description: text("description"),
+  price: integer("price").notNull(),
+  isOptional: boolean("is_optional").default(true),
+});
+
+export const hotelPreviews = pgTable("hotel_previews", {
+  id: serial("id").primaryKey(),
+  tripPackageId: integer("trip_package_id").references(() => tripPackages.id).notNull(),
+  name: varchar("name", { length: 150 }).notNull(),
+  category: varchar("category", { length: 50 }), // 3star, 4star, homestay, houseboat
+  location: varchar("location", { length: 150 }),
+  image: text("image"),
+  amenities: jsonb("amenities").$type<string[]>().default([]),
+  confirmationTimeline: varchar("confirmation_timeline", { length: 255 }).default("Hotel name shared 7 days before departure"),
+  isTbc: boolean("is_tbc").default(false),
+});
+
+export const tripLeaders = pgTable("trip_leaders", {
+  id: serial("id").primaryKey(),
+  slug: varchar("slug", { length: 100 }).unique().notNull(),
+  name: varchar("name", { length: 150 }).notNull(),
+  bio: text("bio"),
+  specialties: jsonb("specialties").$type<string[]>().default([]),
+  languages: jsonb("languages").$type<string[]>().default([]),
+  experienceYears: integer("experience_years").default(3),
+  tripsLed: integer("trips_led").default(50),
+  image: text("image"),
+  instagram: varchar("instagram", { length: 100 }),
+  isVerified: boolean("is_verified").default(true),
+  safetyTraining: boolean("safety_training").default(true),
+  isPublished: boolean("is_published").default(true),
+});
+
+export const testimonials = pgTable("testimonials", {
+  id: serial("id").primaryKey(),
+  name: varchar("name", { length: 150 }).notNull(),
+  location: varchar("location", { length: 100 }),
+  tripSlug: varchar("trip_slug", { length: 150 }),
+  rating: integer("rating").default(5),
+  content: text("content").notNull(),
+  image: text("image"),
+  isFeatured: boolean("is_featured").default(false),
+  isApproved: boolean("is_approved").default(true),
+  travelDate: timestamp("travel_date"),
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
+export const faqs = pgTable("faqs", {
+  id: serial("id").primaryKey(),
+  question: varchar("question", { length: 500 }).notNull(),
+  answer: text("answer").notNull(),
+  category: varchar("category", { length: 100 }), // booking, safety, cancellation, general
+  tripPackageId: integer("trip_package_id").references(() => tripPackages.id),
+  order: integer("order").default(0),
+  isPublished: boolean("is_published").default(true),
+});
+
+export const policyPages = pgTable("policy_pages", {
+  id: serial("id").primaryKey(),
+  slug: varchar("slug", { length: 100 }).unique().notNull(),
+  title: varchar("title", { length: 255 }).notNull(),
+  content: text("content").notNull(),
+  version: integer("version").default(1),
+  lastUpdated: timestamp("last_updated").defaultNow(),
+  isPublished: boolean("is_published").default(true),
+});
+
+export const galleryAssets = pgTable("gallery_assets", {
+  id: serial("id").primaryKey(),
+  url: text("url").notNull(),
+  alt: varchar("alt", { length: 255 }),
+  caption: varchar("caption", { length: 255 }),
+  destinationId: integer("destination_id").references(() => destinations.id),
+  tripPackageId: integer("trip_package_id").references(() => tripPackages.id),
+  tags: jsonb("tags").$type<string[]>().default([]),
+  uploadedAt: timestamp("uploaded_at").defaultNow(),
+});
+
+export const blogPosts = pgTable("blog_posts", {
+  id: serial("id").primaryKey(),
+  slug: varchar("slug", { length: 150 }).unique().notNull(),
+  title: varchar("title", { length: 255 }).notNull(),
+  excerpt: varchar("excerpt", { length: 500 }),
+  content: text("content").notNull(),
+  heroImage: text("hero_image"),
+  author: varchar("author", { length: 100 }).default("TripNaari Team"),
+  category: varchar("category", { length: 100 }),
+  tags: jsonb("tags").$type<string[]>().default([]),
+  isPublished: boolean("is_published").default(true),
+  seoTitle: varchar("seo_title", { length: 255 }),
+  seoDescription: text("seo_description"),
+  publishedAt: timestamp("published_at").defaultNow(),
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
+export const leads = pgTable("leads", {
+  id: serial("id").primaryKey(),
+  name: varchar("name", { length: 150 }).notNull(),
+  email: varchar("email", { length: 255 }).notNull(),
+  phone: varchar("phone", { length: 20 }).notNull(),
+  destination: varchar("destination", { length: 150 }),
+  travelMonth: varchar("travel_month", { length: 50 }),
+  travelers: integer("travelers").default(1),
+  travelStyle: varchar("travel_style", { length: 100 }),
+  budget: varchar("budget", { length: 50 }),
+  message: text("message"),
+  consent: boolean("consent").default(true),
+  source: varchar("source", { length: 100 }).default("website"),
+  status: varchar("status", { length: 50 }).default("new"), // new, contacted, itinerary_shared, payment_pending, booked, lost, support_needed
+  notes: text("notes"),
+  followUpAt: timestamp("follow_up_at"),
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
+
+export const bookingRequests = pgTable("booking_requests", {
+  id: serial("id").primaryKey(),
+  leadId: integer("lead_id").references(() => leads.id),
+  tripPackageId: integer("trip_package_id").references(() => tripPackages.id),
+  departureId: integer("departure_id").references(() => departureDates.id),
+  travelers: integer("travelers").notNull(),
+  totalAmount: integer("total_amount"),
+  status: varchar("status", { length: 50 }).default("pending"),
+  specialRequests: text("special_requests"),
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
+export const newsletterSubscribers = pgTable("newsletter_subscribers", {
+  id: serial("id").primaryKey(),
+  email: varchar("email", { length: 255 }).unique().notNull(),
+  name: varchar("name", { length: 150 }),
+  source: varchar("source", { length: 50 }).default("footer"),
+  isActive: boolean("is_active").default(true),
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
+export const contactMessages = pgTable("contact_messages", {
+  id: serial("id").primaryKey(),
+  name: varchar("name", { length: 150 }).notNull(),
+  email: varchar("email", { length: 255 }).notNull(),
+  phone: varchar("phone", { length: 20 }),
+  category: varchar("category", { length: 50 }).notNull(), // general, booking, safety, refund, feedback
+  priority: varchar("priority", { length: 20 }).default("normal"),
+  subject: varchar("subject", { length: 255 }),
+  message: text("message").notNull(),
+  status: varchar("status", { length: 50 }).default("new"),
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
+export const refundRequests = pgTable("refund_requests", {
+  id: serial("id").primaryKey(),
+  bookingRequestId: integer("booking_request_id").references(() => bookingRequests.id),
+  leadId: integer("lead_id").references(() => leads.id),
+  reason: text("reason").notNull(),
+  amountRequested: integer("amount_requested"),
+  policyAcknowledged: boolean("policy_acknowledged").default(false),
+  status: varchar("status", { length: 50 }).default("pending"), // pending, approved, rejected, processed
+  adminNotes: text("admin_notes"),
+  createdAt: timestamp("created_at").defaultNow(),
+  resolvedAt: timestamp("resolved_at"),
+});
+
+export const siteSettings = pgTable("site_settings", {
+  id: serial("id").primaryKey(),
+  key: varchar("key", { length: 100 }).unique().notNull(),
+  value: jsonb("value"),
+  description: text("description"),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
+
+// Types export
+export type Destination = typeof destinations.$inferSelect;
+export type TripPackage = typeof tripPackages.$inferSelect;
+export type DepartureDate = typeof departureDates.$inferSelect;
+export type Lead = typeof leads.$inferSelect;

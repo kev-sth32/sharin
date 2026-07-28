@@ -1,0 +1,28 @@
+[
+  {
+    "slug": "meghalaya-living-roots",
+    "title": "Meghalaya - Living Roots & Waterfalls",
+    "shortDescription": "5D/4N Dawki, Cherrapunji & Mawkdok. Homestays run by women, trek graded.",
+    "longDescription": "Meghalaya is matrilineal - women own land, and now they lead your trek. Double decker root bridge with safety rope team.",
+    "destinationSlug": "meghalaya",
+    "durationDays": 5,
+    "durationNights": 4,
+    "priceFrom": 18500,
+    "priceOriginal": 23999,
+    "groupSizeMin": 10,
+    "groupSizeMax": 15,
+    "difficulty": "moderate",
+    "comfortLevel": "comfort",
+    "heroImage": "https://images.unsplash.com/photo-1533105079780-92b9be482077?w=1200&q=80",
+    "highlights": [
+      "Dawki Crystal Boat",
+      "Double Decker Trek with Local Women",
+      "Homestay Experience"
+    ],
+    "isFeatured": true,
+    "isPublished": true,
+    "itineraryChangePolicy": "Rain may delay treks. Alternative waterfall visits. Safety over itinerary.",
+    "ratingAvg": "4.9",
+    "ratingCount": 0
+  }
+]

@@ -1,0 +1,22 @@
+[
+  {
+    "id": 1785247303128,
+    "type": "revenue",
+    "amount": 50000,
+    "category": "Trip Bookings",
+    "tripSlug": "kashmir-blossom-sisterhood",
+    "description": "",
+    "date": "2026-07-28",
+    "createdAt": "2026-07-28T14:01:43.128Z"
+  },
+  {
+    "id": 1785247497899,
+    "type": "expense",
+    "amount": 5000,
+    "category": "Hotel Bookings",
+    "tripSlug": "kashmir-blossom-sisterhood",
+    "description": "",
+    "date": "2026-07-28",
+    "createdAt": "2026-07-28T14:04:57.899Z"
+  }
+]

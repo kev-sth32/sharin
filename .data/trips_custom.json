@@ -1,0 +1,25 @@
+[
+  {
+    "slug": "test-crud-trip",
+    "title": "Test CRUD Trip",
+    "shortDescription": "",
+    "longDescription": "",
+    "destinationSlug": "kashmir",
+    "durationDays": 4,
+    "durationNights": 3,
+    "priceFrom": 15000,
+    "groupSizeMin": 6,
+    "groupSizeMax": 16,
+    "difficulty": "easy",
+    "comfortLevel": "comfort",
+    "heroImage": "",
+    "highlights": [],
+    "isFeatured": false,
+    "isPublished": true,
+    "itineraryChangePolicy": "",
+    "ratingAvg": "4.9",
+    "ratingCount": 0,
+    "createdAt": "2026-07-28T14:20:25.204Z",
+    "updatedAt": "2026-07-28T14:22:04.940Z"
+  }
+]

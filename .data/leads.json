@@ -1,0 +1,18 @@
+[
+  {
+    "id": 1785238886118,
+    "createdAt": "2026-07-28T11:41:26.121Z",
+    "name": "Test User",
+    "email": "testuser@example.com",
+    "phone": "+919999999999",
+    "destination": "kashmir",
+    "travelMonth": "Oct 2026",
+    "travelers": 1,
+    "travelStyle": "solo",
+    "budget": "<10k",
+    "message": "Looking for a safe solo trip",
+    "consent": true,
+    "source": "trip_enquiry",
+    "status": "new"
+  }
+]
