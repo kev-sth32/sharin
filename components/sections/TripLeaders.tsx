@@ -14,7 +14,13 @@ export default function TripLeaders() {
         {leaders.map((l:any)=>(
           <div key={l.slug} className="rounded-[24px] bg-white border border-[#F1D9D0] p-6 card-shadow">
             <div className="flex gap-4">
-              <img src={l.image} alt={l.name} className="w-16 h-16 rounded-2xl object-cover" />
+              {l.image ? (
+                <img src={l.image} alt={l.name} className="w-16 h-16 rounded-2xl object-cover" />
+              ) : (
+                <div className="w-16 h-16 rounded-2xl bg-[#FF4A7D]/10 text-[#FF4A7D] flex items-center justify-center font-bold text-lg shrink-0">
+                  {l.name.charAt(0)}
+                </div>
+              )}
               <div>
                 <div className="font-semibold text-[#13253D] leading-tight">{l.name}</div>
                 <div className="text-[12px] text-[#3D4A5E] mt-1">{l.experienceYears} years • {l.tripsLed}+ trips led</div>

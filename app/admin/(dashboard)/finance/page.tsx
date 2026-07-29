@@ -2,6 +2,8 @@ import { getAdminData, getTransactions, saveTransaction, deleteTransaction } fro
 import { formatINR } from "@/lib/utils";
 import Link from "next/link";
 import { redirect } from "next/navigation";
+import ConfirmButton from "@/components/admin/ConfirmButton";
+import ConfirmForm from "@/components/admin/ConfirmForm";
 
 export const dynamic = "force-dynamic";
 
@@ -177,9 +179,13 @@ export default async function FinancePage({ searchParams }: { searchParams: Prom
                         {tx.type === "revenue" ? "+" : "-"}{formatINR(tx.amount)}
                       </td>
                       <td className="p-3 text-center">
-                        <form action={async () => { "use server"; await deleteTransaction(tx.id); redirect("/admin/finance"); }}>
-                          <button className="rounded-full bg-red-50 hover:bg-red-100 border border-red-200 text-red-600 px-2.5 py-1 text-[10px] font-bold transition">Delete</button>
-                        </form>
+                        <ConfirmButton
+                          action={async () => { "use server"; await deleteTransaction(tx.id); redirect("/admin/finance"); }}
+                          confirmText={`Are you sure you want to delete the transaction "${tx.description}" of ${formatINR(tx.amount)}?`}
+                          className="rounded-full bg-red-50 hover:bg-red-100 border border-red-200 text-red-600 px-2.5 py-1 text-[10px] font-bold transition"
+                        >
+                          Delete
+                        </ConfirmButton>
                       </td>
                     </tr>
                   ))}
@@ -202,11 +208,17 @@ export default async function FinancePage({ searchParams }: { searchParams: Prom
           <div className="rounded-2xl bg-white border border-[#F1D9D0] p-6 shadow-sm sticky top-6 space-y-4">
             <h3 className="font-semibold text-[#13253D] border-b border-[#F1D9D0] pb-3">Log Transaction</h3>
             
-            <form action={async (fd: FormData) => {
-              "use server";
-              await saveTransaction(fd);
-              redirect("/admin/finance");
-            }} className="space-y-4">
+            <ConfirmForm
+              action={async (fd: FormData) => {
+                "use server";
+                await saveTransaction(fd);
+                redirect("/admin/finance");
+              }}
+              confirmText="Are you sure you want to log this transaction?"
+              buttonText="Log Transaction →"
+              buttonClassName="w-full rounded-full bg-[#13253D] hover:bg-[#1f3756] text-white py-3 text-xs font-bold transition"
+              className="space-y-4"
+            >
               <div>
                 <label className="text-[10px] font-bold uppercase tracking-wider text-[#3D4A5E]/70 block">Transaction Type</label>
                 <select name="type" required className="w-full mt-1.5 rounded-xl border border-[#F1D9D0] px-3 py-2.5 text-xs bg-[#FFF8F0]">
@@ -251,9 +263,7 @@ export default async function FinancePage({ searchParams }: { searchParams: Prom
                 <label className="text-[10px] font-bold uppercase tracking-wider text-[#3D4A5E]/70 block">Description / Notes</label>
                 <textarea name="description" placeholder="e.g. Kashmir tour deposit from Ananya" className="w-full mt-1.5 rounded-xl border border-[#F1D9D0] p-3 text-xs outline-none" rows={3} />
               </div>
-
-              <button type="submit" className="w-full rounded-full bg-[#13253D] hover:bg-[#1f3756] text-white py-3 text-xs font-bold transition">Log Transaction →</button>
-            </form>
+            </ConfirmForm>
           </div>
         </div>
       </div>

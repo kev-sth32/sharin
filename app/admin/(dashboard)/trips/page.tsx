@@ -1,6 +1,8 @@
 import { getAdminData, toggleTripFeatured, toggleTripPublished, updateTripPrice, deleteTrip } from "@/lib/admin-store";
 import { formatINR } from "@/lib/utils";
 import Link from "next/link";
+import ConfirmButton from "@/components/admin/ConfirmButton";
+import ConfirmForm from "@/components/admin/ConfirmForm";
 
 export default async function TripsAdmin() {
   const { trips } = await getAdminData();
@@ -38,21 +40,38 @@ export default async function TripsAdmin() {
             </div>
 
             <div className="mt-3 grid grid-cols-3 gap-2">
-              <form action={async()=>{ "use server"; await toggleTripFeatured(t.slug); }}>
-                <button className="w-full rounded-full bg-[#FFF0F4] border border-[#FF4A7D]/20 text-[#FF4A7D] text-[11px] font-bold py-1.5">Toggle ★ Featured</button>
-              </form>
-              <form action={async()=>{ "use server"; await toggleTripPublished(t.slug); }}>
-                <button className="w-full rounded-full border border-[#F1D9D0] bg-white text-[11px] font-bold py-1.5">{t.isPublished!==false?'Draft it':'Publish'}</button>
-              </form>
-              <form action={async()=>{ "use server"; await deleteTrip(t.slug); }}>
-                <button className="w-full rounded-full bg-red-50 border border-red-200 text-red-600 text-[11px] font-bold py-1.5">Delete</button>
-              </form>
+              <ConfirmButton
+                action={toggleTripFeatured.bind(null, t.slug)}
+                confirmText={`Are you sure you want to toggle the featured status for "${t.title}"?`}
+                className="w-full rounded-full bg-[#FFF0F4] border border-[#FF4A7D]/20 text-[#FF4A7D] text-[11px] font-bold py-1.5"
+              >
+                Toggle ★ Featured
+              </ConfirmButton>
+              <ConfirmButton
+                action={toggleTripPublished.bind(null, t.slug)}
+                confirmText={`Are you sure you want to ${t.isPublished!==false?'draft':'publish'} "${t.title}"?`}
+                className="w-full rounded-full border border-[#F1D9D0] bg-white text-[11px] font-bold py-1.5"
+              >
+                {t.isPublished!==false?'Draft it':'Publish'}
+              </ConfirmButton>
+              <ConfirmButton
+                action={deleteTrip.bind(null, t.slug)}
+                confirmText={`Are you sure you want to DELETE "${t.title}"? This cannot be undone.`}
+                className="w-full rounded-full bg-red-50 border border-red-200 text-red-600 text-[11px] font-bold py-1.5"
+              >
+                Delete
+              </ConfirmButton>
             </div>
 
-            <form action={async(formData: FormData)=>{ "use server"; const price = Number(formData.get("price")); await updateTripPrice(t.slug, price); }} className="mt-3 flex gap-2">
+            <ConfirmForm
+              action={async(formData: FormData)=>{ "use server"; const price = Number(formData.get("price")); await updateTripPrice(t.slug, price); }}
+              confirmText={`Are you sure you want to update the price for "${t.title}"?`}
+              buttonText="Update price"
+              buttonClassName="rounded-full bg-[#FF4A7D] text-white px-4 py-1.5 text-xs font-bold"
+              className="mt-3 flex gap-2"
+            >
               <input name="price" type="number" defaultValue={t.priceFrom} className="flex-1 rounded-full border border-[#F1D9D0] px-3 py-1.5 text-xs" />
-              <button className="rounded-full bg-[#FF4A7D] text-white px-4 py-1.5 text-xs font-bold">Update price</button>
-            </form>
+            </ConfirmForm>
           </div>
         ))}
       </div>

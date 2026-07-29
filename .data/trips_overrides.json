@@ -24,5 +24,32 @@
     "itineraryChangePolicy": "Rain may delay treks. Alternative waterfall visits. Safety over itinerary.",
     "ratingAvg": "4.9",
     "ratingCount": 0
+  },
+  {
+    "slug": "kashmir-blossom-sisterhood",
+    "title": "Kashmir Blossom - Houseboat Sisterhood",
+    "shortDescription": "5D/4N Srinagar-Gulmarg-Pahalgam women-only spring special. Tulip garden included.",
+    "longDescription": "Imagine shikara rides at sunrise with only your girl gang, kahwa with stories, and a tulip garden that looks like heaven spilled. Every stay is verified, every driver is background-checked, trip leader is with you from arrival till drop. We share hotel names 7 days prior and keep a WhatsApp group active 48 hours before departure.",
+    "destinationSlug": "kashmir",
+    "durationDays": 5,
+    "durationNights": 4,
+    "priceFrom": 22999,
+    "priceOriginal": 25999,
+    "groupSizeMin": 8,
+    "groupSizeMax": 16,
+    "difficulty": "easy",
+    "comfortLevel": "comfort",
+    "heroImage": "/uploads/1785286824794-d9w034.jpeg",
+    "highlights": [
+      "Tulip Garden VIP Entry",
+      "1N Houseboat Stay",
+      "Women Trip Leader 24x7",
+      "Kahwa & Wazwan Experience"
+    ],
+    "isFeatured": true,
+    "isPublished": true,
+    "itineraryChangePolicy": "In case of weather, curfew, or safety advisory, itinerary may change. You will be informed 12 hours prior with alternatives. No cost cutting.",
+    "ratingAvg": "4.9",
+    "ratingCount": 0
   }
 ]

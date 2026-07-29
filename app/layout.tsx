@@ -1,9 +1,7 @@
 import type { Metadata } from "next";
 import { Plus_Jakarta_Sans, Fraunces } from "next/font/google";
 import "./globals.css";
-import Header from "@/components/layout/Header";
-import Footer from "@/components/layout/Footer";
-import StickyCTA from "@/components/layout/StickyCTA";
+import SiteLayoutWrapper from "@/components/layout/SiteLayoutWrapper";
 
 const jakarta = Plus_Jakarta_Sans({
   variable: "--font-jakarta",
@@ -63,10 +61,7 @@ export default function RootLayout({
         })}} />
       </head>
       <body className="min-h-full flex flex-col bg-[#FFF8F0] text-[#13253D]">
-        <Header />
-        <main className="flex-1">{children}</main>
-        <Footer />
-        <StickyCTA />
+        <SiteLayoutWrapper>{children}</SiteLayoutWrapper>
       </body>
     </html>
   );

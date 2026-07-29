@@ -1,5 +1,6 @@
 import { getAdminData, toggleDestinationPublished, deleteDestination } from "@/lib/admin-store";
 import Link from "next/link";
+import ConfirmButton from "@/components/admin/ConfirmButton";
 
 export default async function DestinationsAdmin() {
   const { destinations } = await getAdminData();
@@ -24,8 +25,20 @@ export default async function DestinationsAdmin() {
               <div className="mt-3 flex gap-2">
                 <Link href={`/admin/destinations/${d.slug}/edit`} className="rounded-full bg-[#13253D] text-white px-3 py-1 text-[11px] font-bold">✏️ Edit + Change Photo</Link>
                 <a href={`/destinations/${d.slug}`} target="_blank" className="rounded-full border px-3 py-1 text-[11px]">View</a>
-                <form action={async()=>{ "use server"; await toggleDestinationPublished(d.slug); }}><button className="rounded-full border px-3 py-1 text-[11px]">{d.isPublished!==false?'Draft':'Publish'}</button></form>
-                <form action={async()=>{ "use server"; await deleteDestination(d.slug); }}><button className="rounded-full bg-red-50 border border-red-200 text-red-600 px-3 py-1 text-[11px]">Delete</button></form>
+                <ConfirmButton
+                  action={toggleDestinationPublished.bind(null, d.slug)}
+                  confirmText={`Are you sure you want to ${d.isPublished!==false?'draft':'publish'} "${d.name}"?`}
+                  className="rounded-full border px-3 py-1 text-[11px]"
+                >
+                  {d.isPublished!==false?'Draft':'Publish'}
+                </ConfirmButton>
+                <ConfirmButton
+                  action={deleteDestination.bind(null, d.slug)}
+                  confirmText={`Are you sure you want to DELETE "${d.name}"? This cannot be undone.`}
+                  className="rounded-full bg-red-50 border border-red-200 text-red-600 px-3 py-1 text-[11px]"
+                >
+                  Delete
+                </ConfirmButton>
               </div>
             </div>
           </div>

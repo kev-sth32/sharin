@@ -12,7 +12,13 @@ export default async function LeadersAdmin() {
       <div className="mt-6 grid md:grid-cols-3 gap-4">
         {tripLeaders.map((l: any)=>(
           <div key={l.slug} className="rounded-2xl bg-white border border-[#F1D9D0] p-5 hover:border-[#FF4A7D]/30 transition">
-            <img src={l.image} alt={l.name} className="w-20 h-20 rounded-2xl object-cover border" />
+            {l.image ? (
+              <img src={l.image} alt={l.name} className="w-20 h-20 rounded-2xl object-cover border" />
+            ) : (
+              <div className="w-20 h-20 rounded-2xl bg-[#FF4A7D]/10 text-[#FF4A7D] flex items-center justify-center font-bold text-xl border shrink-0">
+                {l.name.charAt(0)}
+              </div>
+            )}
             <div className="font-semibold mt-3 text-sm">{l.name}</div>
             <div className="text-xs text-[#3D4A5E] mt-1 line-clamp-3">{l.bio}</div>
             <div className="text-[10px] mt-2">✔ Verified • {l.experienceYears}y • {l.tripsLed}+ trips</div>

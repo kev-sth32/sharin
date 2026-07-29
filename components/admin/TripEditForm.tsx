@@ -1,13 +1,29 @@
 "use client";
-import { useState } from "react";
+import { useState, useTransition } from "react";
 import ImageUpload from "./ImageUpload";
+import { Loader2 } from "lucide-react";
 
 export default function TripEditForm({ initial, action }: { initial?: any; action: (fd: FormData)=>Promise<any> }) {
   const [heroImage, setHeroImage] = useState(initial?.heroImage || "");
   const [gallery, setGallery] = useState<string[]>(initial?.gallery || []);
+  const [isPending, startTransition] = useTransition();
+
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    if (!window.confirm("Are you sure you want to save this trip package?")) return;
+    const formData = new FormData(e.currentTarget);
+    startTransition(async () => {
+      try {
+        await action(formData);
+      } catch (err) {
+        console.error("Save trip failed:", err);
+        alert("An error occurred. Please try again.");
+      }
+    });
+  };
 
   return (
-    <form action={action} className="space-y-6 rounded-2xl bg-white border border-[#F1D9D0] p-6">
+    <form onSubmit={handleSubmit} className="space-y-6 rounded-2xl bg-white border border-[#F1D9D0] p-6">
       <div className="grid md:grid-cols-2 gap-4">
         <div>
           <label className="text-xs font-bold uppercase">Slug (URL)</label>
@@ -65,7 +81,20 @@ export default function TripEditForm({ initial, action }: { initial?: any; actio
         </div>
       </div>
 
-      <button type="submit" className="w-full rounded-full bg-[#FF4A7D] text-white py-3 text-sm font-bold">Save Trip → Live Instantly</button>
+      <button 
+        type="submit" 
+        disabled={isPending} 
+        className={`w-full rounded-full bg-[#FF4A7D] text-white py-3 text-sm font-bold flex items-center justify-center gap-2 ${isPending ? "opacity-50 cursor-not-allowed" : ""}`}
+      >
+        {isPending ? (
+          <>
+            <Loader2 className="w-4 h-4 animate-spin" />
+            <span>Saving Trip Data...</span>
+          </>
+        ) : (
+          "Save Trip → Live Instantly"
+        )}
+      </button>
     </form>
   );
 }

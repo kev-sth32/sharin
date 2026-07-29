@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
+import LogoutButton from "@/components/admin/LogoutButton";
 
 const nav = [
   { href: "/admin", label: "Dashboard", icon: "📊" },
@@ -52,7 +53,7 @@ export default async function AdminLayout({ children }: { children: React.ReactN
           </div>
           <div className="flex gap-2">
             <Link href="/" className="flex-1 rounded-full bg-white/10 text-center py-2 text-xs">View Site</Link>
-            <a href="/api/admin/logout" className="flex-1 rounded-full bg-[#FF4A7D] text-center py-2 text-xs font-bold">Logout</a>
+            <LogoutButton className="flex-1 rounded-full bg-[#FF4A7D] text-center py-2 text-xs font-bold">Logout</LogoutButton>
           </div>
         </div>
       </aside>
@@ -62,7 +63,7 @@ export default async function AdminLayout({ children }: { children: React.ReactN
           <Link href="/admin" className="font-bold">TripNaari Admin • Secure</Link>
           <div className="flex gap-2">
             <Link href="/" className="text-xs bg-white/10 rounded-full px-3 py-1.5">Site</Link>
-            <a href="/api/admin/logout" className="text-xs bg-[#FF4A7D] rounded-full px-3 py-1.5">Logout</a>
+            <LogoutButton className="text-xs bg-[#FF4A7D] rounded-full px-3 py-1.5">Logout</LogoutButton>
           </div>
         </div>
         <div className="md:hidden border-b border-[#F1D9D0] bg-white px-2 py-2 flex gap-2 overflow-x-auto">

@@ -1,4 +1,5 @@
 import { getAdminData, updateLeadFull } from "@/lib/admin-store";
+import ConfirmForm from "@/components/admin/ConfirmForm";
 
 const statuses = ["new","contacted","itinerary_shared","payment_pending","booked","lost","support_needed"] as const;
 
@@ -34,14 +35,19 @@ export default async function LeadsAdmin() {
                   <div className="mt-1 max-w-[200px] truncate text-[#3D4A5E]">{l.message}</div>
                 </td>
                 <td className="p-3">
-                  <form action={async(formData: FormData)=>{ "use server"; const status = formData.get("status") as string; const notes = formData.get("notes") as string; const follow = formData.get("followUpAt") as string; await updateLeadFull(l.id, status, notes, follow); }} className="space-y-2">
+                  <ConfirmForm
+                    action={async(formData: FormData)=>{ "use server"; const status = formData.get("status") as string; const notes = formData.get("notes") as string; const follow = formData.get("followUpAt") as string; await updateLeadFull(l.id, status, notes, follow); }}
+                    confirmText={`Are you sure you want to update status/notes for lead "${l.name}"?`}
+                    buttonText="Save lead →"
+                    buttonClassName="w-full rounded-full bg-[#FF4A7D] text-white py-1.5 text-xs font-bold"
+                    className="space-y-2"
+                  >
                     <select name="status" defaultValue={l.status} className="w-full rounded-full border border-[#F1D9D0] px-2 py-1.5 text-xs">
                       {statuses.map(s=><option key={s} value={s}>{s}</option>)}
                     </select>
                     <textarea name="notes" defaultValue={l.notes||""} placeholder="Add notes / WhatsApp log" className="w-full rounded-xl border border-[#F1D9D0] p-2 text-xs" rows={2} />
                     <input name="followUpAt" type="datetime-local" defaultValue={l.followUpAt||""} className="w-full rounded-full border border-[#F1D9D0] px-2 py-1 text-xs" />
-                    <button className="w-full rounded-full bg-[#FF4A7D] text-white py-1.5 text-xs font-bold">Save lead →</button>
-                  </form>
+                  </ConfirmForm>
                 </td>
                 <td className="p-3 text-xs">
                   <div>Notes: {l.notes || "—"}</div>

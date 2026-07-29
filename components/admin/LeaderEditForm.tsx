@@ -1,11 +1,28 @@
 "use client";
-import { useState } from "react";
+import { useState, useTransition } from "react";
 import ImageUpload from "./ImageUpload";
+import { Loader2 } from "lucide-react";
 
 export default function LeaderEditForm({ initial, action }: { initial?: any; action: (fd: FormData)=>Promise<any> }) {
   const [image, setImage] = useState(initial?.image||"");
+  const [isPending, startTransition] = useTransition();
+
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    if (!window.confirm("Are you sure you want to save this trip leader profile?")) return;
+    const formData = new FormData(e.currentTarget);
+    startTransition(async () => {
+      try {
+        await action(formData);
+      } catch (err) {
+        console.error("Save leader failed:", err);
+        alert("An error occurred. Please try again.");
+      }
+    });
+  };
+
   return (
-    <form action={action} className="space-y-4 rounded-2xl bg-white border border-[#F1D9D0] p-6">
+    <form onSubmit={handleSubmit} className="space-y-4 rounded-2xl bg-white border border-[#F1D9D0] p-6">
       <div className="grid md:grid-cols-2 gap-4">
         <div><label className="text-xs font-bold uppercase">Slug</label><input name="slug" defaultValue={initial?.slug||""} required className="w-full mt-1 rounded-xl border px-3 py-2 text-sm" /></div>
         <div><label className="text-xs font-bold uppercase">Name</label><input name="name" defaultValue={initial?.name||""} required className="w-full mt-1 rounded-xl border px-3 py-2 text-sm font-bold" /></div>
@@ -21,7 +38,20 @@ export default function LeaderEditForm({ initial, action }: { initial?: any; act
           <div className="mt-2"><ImageUpload label="Upload Leader Photo" onUploaded={setImage} /></div>
         </div>
       </div>
-      <button type="submit" className="w-full rounded-full bg-[#5B2063] text-white py-3 text-sm font-bold">Save Leader →</button>
+      <button 
+        type="submit" 
+        disabled={isPending} 
+        className={`w-full rounded-full bg-[#5B2063] text-white py-3 text-sm font-bold flex items-center justify-center gap-2 ${isPending ? "opacity-50 cursor-not-allowed" : ""}`}
+      >
+        {isPending ? (
+          <>
+            <Loader2 className="w-4 h-4 animate-spin" />
+            <span>Saving Leader...</span>
+          </>
+        ) : (
+          "Save Leader →"
+        )}
+      </button>
     </form>
   );
 }

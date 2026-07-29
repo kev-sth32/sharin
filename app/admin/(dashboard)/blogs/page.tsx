@@ -1,6 +1,7 @@
 import { getAdminData, createBlogPost } from "@/lib/admin-store";
 import fs from "fs";
 import path from "path";
+import ConfirmForm from "@/components/admin/ConfirmForm";
 
 function getCustomBlogs() {
   try {
@@ -28,15 +29,20 @@ export default async function BlogsAdmin() {
           ))}
         </div>
         <div className="lg:col-span-5">
-          <form action={async(formData: FormData)=>{ "use server"; await createBlogPost({ title: formData.get("title") as string, slug: formData.get("slug") as string, excerpt: formData.get("excerpt") as string, content: formData.get("content") as string, category: formData.get("category") as string }); }} className="rounded-2xl bg-white border border-[#F1D9D0] p-6 sticky top-6 space-y-3">
+          <ConfirmForm
+            action={async(formData: FormData)=>{ "use server"; await createBlogPost({ title: formData.get("title") as string, slug: formData.get("slug") as string, excerpt: formData.get("excerpt") as string, content: formData.get("content") as string, category: formData.get("category") as string }); }}
+            confirmText="Are you sure you want to create this blog post?"
+            buttonText="Create →"
+            buttonClassName="w-full rounded-full bg-[#13253D] text-white py-2 text-sm font-bold"
+            className="rounded-2xl bg-white border border-[#F1D9D0] p-6 sticky top-6 space-y-3"
+          >
             <h3 className="font-semibold">New Blog Post</h3>
             <input name="title" required placeholder="Title" className="w-full rounded-xl border px-3 py-2 text-sm" />
             <input name="slug" required placeholder="slug e.g. my-first-solo" className="w-full rounded-xl border px-3 py-2 text-sm" />
             <input name="category" placeholder="Category Safety/Destinations" className="w-full rounded-xl border px-3 py-2 text-sm" />
             <input name="excerpt" placeholder="Excerpt" className="w-full rounded-xl border px-3 py-2 text-sm" />
             <textarea name="content" placeholder="Full content" rows={6} className="w-full rounded-xl border px-3 py-2 text-sm" />
-            <button className="w-full rounded-full bg-[#13253D] text-white py-2 text-sm font-bold">Create →</button>
-          </form>
+          </ConfirmForm>
         </div>
       </div>
     </div>

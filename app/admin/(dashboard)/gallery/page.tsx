@@ -5,6 +5,8 @@ import ImageUpload from "@/components/admin/ImageUpload";
 export default function GalleryAdmin() {
   const [images, setImages] = useState<any[]>([]);
   const [refresh, setRefresh] = useState(0);
+  const [deletingUrl, setDeletingUrl] = useState<string | null>(null);
+  const [copiedIndex, setCopiedIndex] = useState<number | null>(null);
 
   useEffect(()=>{
     fetch("/api/admin/gallery").then(r=>r.json()).then(d=>{ if(d.images) setImages(d.images); }).catch(()=>{});
@@ -12,9 +14,16 @@ export default function GalleryAdmin() {
   }, [refresh]);
 
   async function deleteImage(url: string) {
-    if (!confirm("Delete this photo?")) return;
-    await fetch("/api/admin/gallery", { method: "DELETE", headers: { "Content-Type":"application/json" }, body: JSON.stringify({ url }) });
-    setRefresh(x=>x+1);
+    if (!confirm("Are you sure you want to delete this photo?")) return;
+    setDeletingUrl(url);
+    try {
+      await fetch("/api/admin/gallery", { method: "DELETE", headers: { "Content-Type":"application/json" }, body: JSON.stringify({ url }) });
+      setRefresh(x=>x+1);
+    } catch (e) {
+      console.error(e);
+    } finally {
+      setDeletingUrl(null);
+    }
   }
 
   return (
@@ -52,8 +61,26 @@ export default function GalleryAdmin() {
                   <div className="p-2">
                     <div className="text-[10px] truncate text-[#3D4A5E]">{img.url}</div>
                     <div className="mt-2 flex gap-2">
-                      <button onClick={()=>{ navigator.clipboard.writeText(img.url); alert("Copied URL: "+img.url); }} className="flex-1 rounded-full bg-[#13253D] text-white text-[10px] py-1">Copy URL</button>
-                      <button onClick={()=>deleteImage(img.url)} className="flex-1 rounded-full bg-red-50 border border-red-200 text-red-600 text-[10px] py-1">Delete</button>
+                      <button 
+                        onClick={() => { 
+                          navigator.clipboard.writeText(img.url); 
+                          setCopiedIndex(i); 
+                          setTimeout(() => setCopiedIndex(null), 1500); 
+                        }} 
+                        disabled={copiedIndex === i}
+                        className="flex-1 rounded-full bg-[#13253D] text-white text-[10px] py-1"
+                      >
+                        {copiedIndex === i ? "Copied!" : "Copy URL"}
+                      </button>
+                      <button 
+                        onClick={() => deleteImage(img.url)} 
+                        disabled={deletingUrl === img.url}
+                        className="flex-1 rounded-full bg-red-50 border border-red-200 text-red-600 text-[10px] py-1 flex items-center justify-center gap-1"
+                      >
+                        {deletingUrl === img.url ? (
+                          <span className="w-2.5 h-2.5 border-2 border-red-600 border-t-transparent rounded-full animate-spin"></span>
+                        ) : "Delete"}
+                      </button>
                     </div>
                   </div>
                 </div>
