@@ -149,7 +149,7 @@ export default function Hero() {
       </div>
 
       {/* Floating Stats Bar Container (Centered overlap) */}
-      <div className="relative -mt-16 z-20 max-w-[1100px] mx-auto px-4 md:px-8">
+      <div className="relative -mt-8 md:-mt-12 lg:-mt-16 z-20 max-w-[1100px] mx-auto px-4 md:px-8">
         <div className="bg-white rounded-3xl shadow-[0_20px_50px_-12px_rgba(19,37,61,0.12)] border border-[#F1D9D0] p-6 md:p-8">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-0 md:gap-4 md:divide-x md:divide-[#F1D9D0]/80">
             {/* Stat 1 */}
