@@ -151,9 +151,9 @@ export default function Hero() {
       {/* Floating Stats Bar Container (Centered overlap) */}
       <div className="relative -mt-16 z-20 max-w-[1100px] mx-auto px-4 md:px-8">
         <div className="bg-white rounded-3xl shadow-[0_20px_50px_-12px_rgba(19,37,61,0.12)] border border-[#F1D9D0] p-6 md:p-8">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-6 md:gap-4 divide-y divide-x-0 md:divide-y-0 md:divide-x divide-[#F1D9D0]/80">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-0 md:gap-4 md:divide-x md:divide-[#F1D9D0]/80">
             {/* Stat 1 */}
-            <div className="flex flex-col items-center text-center p-2 md:p-4">
+            <div className="flex flex-col items-center text-center p-4 pb-6 border-r border-b border-[#F1D9D0]/80 md:border-0 md:p-4">
               <div className="w-12 h-12 rounded-full bg-[#FFF0F4] border border-[#FF4A7D]/20 flex items-center justify-center text-[#FF4A7D] mb-3">
                 <Calendar className="w-5 h-5" />
               </div>
@@ -166,7 +166,7 @@ export default function Hero() {
             </div>
 
             {/* Stat 2 */}
-            <div className="flex flex-col items-center text-center p-2 md:p-4 pt-6 md:pt-4">
+            <div className="flex flex-col items-center text-center p-4 pb-6 border-b border-[#F1D9D0]/80 md:border-0 md:p-4">
               <div className="w-12 h-12 rounded-full bg-[#FFF0F4] border border-[#FF4A7D]/20 flex items-center justify-center text-[#FF4A7D] mb-3">
                 <Briefcase className="w-5 h-5" />
               </div>
@@ -179,7 +179,7 @@ export default function Hero() {
             </div>
 
             {/* Stat 3 */}
-            <div className="flex flex-col items-center text-center p-2 md:p-4 pt-6 md:pt-4">
+            <div className="flex flex-col items-center text-center p-4 pt-6 border-r border-[#F1D9D0]/80 md:border-0 md:p-4">
               <div className="w-12 h-12 rounded-full bg-[#FFF0F4] border border-[#FF4A7D]/20 flex items-center justify-center text-[#FF4A7D] mb-3">
                 <ShieldCheck className="w-5 h-5" />
               </div>
@@ -192,7 +192,7 @@ export default function Hero() {
             </div>
 
             {/* Stat 4 */}
-            <div className="flex flex-col items-center text-center p-2 md:p-4 pt-6 md:pt-4">
+            <div className="flex flex-col items-center text-center p-4 pt-6 md:border-0 md:p-4">
               <div className="w-12 h-12 rounded-full bg-[#FFF0F4] border border-[#FF4A7D]/20 flex items-center justify-center text-[#FF4A7D] mb-3">
                 <Star className="w-5 h-5 fill-[#FF4A7D]" />
               </div>
