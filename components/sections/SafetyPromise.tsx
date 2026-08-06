@@ -1,47 +1,61 @@
-import { AlertTriangle, BadgeCheck, PhoneCall, FileCheck } from "lucide-react";
-import Link from "next/link";
-import { Button } from "@/components/ui/button";
+import { Check } from "lucide-react";
 
 export default function SafetyPromise() {
+  const points = [
+    { title: "100% Female Tour Leaders", desc: "Every trip is led by an experienced, certified female leader who ensures safety and coordinates everything." },
+    { title: "Handpicked Safe Accommodation", desc: "Stays are audited for security, locks, location, and verified by solo-traveler reviews beforehand." },
+    { title: "Solo-Traveler Friendly Environment", desc: "No single supplements or awkwardness; we pair you with co-travelers or offer private options seamlessly." },
+    { title: "Curated Immersive Experiences", desc: "Skip generic sight-seeing and dive deep into local food, craft workshops, and authentic sisterhood connections." },
+  ];
+
   return (
-    <section className="max-w-[1280px] mx-auto px-4 md:px-8 py-16 md:py-24">
-      <div className="rounded-[32px] bg-[#13253D] text-white overflow-hidden border border-white/10">
-        <div className="grid md:grid-cols-12">
-          <div className="md:col-span-7 p-8 md:p-12">
-            <div className="inline-flex items-center gap-2 rounded-full bg-[#FF4A7D]/20 border border-[#FF4A7D]/30 px-4 py-1.5 text-[11px] font-bold tracking-widest uppercase text-[#FF8A9D]"><BadgeCheck className="w-4 h-4" /> Safety Promise — Women-led, written, accountable</div>
-            <h2 className="mt-6 font-display font-bold text-[32px] md:text-[44px] leading-[0.9]">Travel fearless means<br/>knowing exactly who<br/>has your back.</h2>
-            <div className="mt-8 grid sm:grid-cols-2 gap-6 text-[14px] leading-relaxed">
-              <div className="flex gap-3"><div className="w-8 h-8 rounded-full bg-white/10 grid place-items-center shrink-0"><PhoneCall className="w-4 h-4 text-[#FF8A2B]" /></div><div><div className="font-semibold text-white">Emergency card in your pocket</div><div className="text-white/60 mt-1">Trip leader, local police, hospital, TripNaari founder Anjali escalation. Printed + WhatsApp.</div></div></div>
-              <div className="flex gap-3"><div className="w-8 h-8 rounded-full bg-white/10 grid place-items-center shrink-0"><AlertTriangle className="w-4 h-4 text-[#FF8A2B]" /></div><div><div className="font-semibold text-white">Live location on travel days</div><div className="text-white/60 mt-1">Driver & trip leader share live location in group. No one gets dropped alone after dark.</div></div></div>
-              <div className="flex gap-3"><div className="w-8 h-8 rounded-full bg-white/10 grid place-items-center shrink-0"><BadgeCheck className="w-4 h-4 text-[#FF8A2B]" /></div><div><div className="font-semibold text-white">Verified stays & drivers</div><div className="text-white/60 mt-1">Background check, hotel safety audit (lock, location, solo women reviews), same gender floor where possible.</div></div></div>
-              <div className="flex gap-3"><div className="w-8 h-8 rounded-full bg-white/10 grid place-items-center shrink-0"><FileCheck className="w-4 h-4 text-[#FF8A2B]" /></div><div><div className="font-semibold text-white">Refund & hotel timeline in writing</div><div className="text-white/60 mt-1">We message you: hotel name 7 days before, cancellation slabs, refund in 7-10 days. No verbal promises.</div></div></div>
-            </div>
-            <div className="mt-8 flex flex-wrap gap-3">
-              <Link href="/safety"><Button size="md" className="bg-white text-[#13253D] hover:bg-[#FFF8F0]">Read safety SOP →</Button></Link>
-              <Link href="/policies/cancellation-refund"><Button variant="outline" size="md" className="bg-transparent border-white/20 text-white hover:bg-white/10">Cancellation policy</Button></Link>
+    <section className="bg-[#FFF8F0] py-16 md:py-24">
+      <div className="max-w-[1280px] mx-auto px-4 md:px-8">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+          {/* Left: Road Image */}
+          <div className="lg:col-span-5 flex justify-center">
+            <div className="relative w-full max-w-[400px] aspect-[3/4] overflow-hidden rounded-[32px] shadow-xl">
+              <img 
+                src="https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?w=800&q=80" 
+                alt="Road to mountains" 
+                className="w-full h-full object-cover"
+              />
             </div>
           </div>
-          <div className="md:col-span-5 bg-[#FFF8F0] text-[#13253D] p-8 md:p-10 flex flex-col">
-            <div className="text-[12px] font-bold tracking-widest uppercase text-[#FF4A7D]">Feedback escalation - We listen, we act</div>
-            <h3 className="mt-3 font-display font-bold text-2xl leading-tight">If anything feels off, here is your power:</h3>
-            <div className="mt-6 space-y-4">
-              <div className="rounded-2xl bg-white border border-[#F1D9D0] p-4">
-                <div className="text-[13px] font-bold">Level 1: Trip Leader (Instant)</div>
-                <div className="text-[13px] text-[#3D4A5E] mt-1">Raise on group or privately. She is empowered to change stay/vehicle if safety concern.</div>
-              </div>
-              <div className="rounded-2xl bg-white border border-[#F1D9D0] p-4">
-                <div className="text-[13px] font-bold">Level 2: Operations 24x7</div>
-                <div className="text-[13px] text-[#3D4A5E] mt-1">WhatsApp +91 9XXXX 9XXXX (2 min response for ongoing trips). Manager callback in 30 min.</div>
-              </div>
-              <div className="rounded-2xl bg-[#FFE7EE] border border-[#FF4A7D]/20 p-4">
-                <div className="text-[13px] font-bold text-[#FF4A7D]">Level 3: Founder Escalation</div>
-                <div className="text-[13px] text-[#3D4A5E] mt-1">Email founder@tripnaari.com. You get response in 24 hours + correct action log.</div>
-              </div>
+
+          {/* Right: Content */}
+          <div className="lg:col-span-7 space-y-6">
+            <div className="text-[12px] font-bold tracking-[0.2em] uppercase text-[#FF4A7D]">
+              Our Mission
             </div>
-            <div className="mt-6 text-[11px] text-[#3D4A5E]/70 leading-relaxed">We publish monthly safety report in our Instagram story highlights: issues raised, actions taken. Because trust is built, not claimed.</div>
+            <h2 className="font-display font-[800] text-[36px] md:text-[48px] leading-[1.05] text-[#13253D]">
+              The Ultimate Sisterhood of Exploration
+            </h2>
+            <p className="text-[16px] md:text-[17px] leading-relaxed text-[#3D4A5E]">
+              We believe travel should be empowering, safe, and deeply connection-driven. That's why every detail of our itineraries is hand-curated.
+            </p>
+
+            <div className="space-y-4 pt-4">
+              {points.map((p, i) => (
+                <div key={i} className="flex gap-4 p-4 rounded-2xl bg-[#FFF0F4] border border-[#FF4A7D]/10">
+                  <div className="w-8 h-8 rounded-lg bg-[#FF4A7D] text-white flex items-center justify-center shrink-0">
+                    <Check className="w-5 h-5 stroke-[3]" />
+                  </div>
+                  <div>
+                    <h3 className="font-bold text-[16px] text-[#13253D]">
+                      {p.title}
+                    </h3>
+                    <p className="text-[13px] text-[#3D4A5E] mt-1">
+                      {p.desc}
+                    </p>
+                  </div>
+                </div>
+              ))}
+            </div>
           </div>
         </div>
       </div>
     </section>
   );
 }
+

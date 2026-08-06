@@ -2,30 +2,11 @@
 import { pgTable, text, timestamp, integer, boolean, serial, jsonb, decimal, varchar, uuid } from "drizzle-orm/pg-core";
 
 // Enum types as text with check, for simplicity use text
-export const destinations = pgTable("destinations", {
-  id: serial("id").primaryKey(),
-  slug: varchar("slug", { length: 100 }).unique().notNull(),
-  name: varchar("name", { length: 150 }).notNull(),
-  tagline: varchar("tagline", { length: 255 }),
-  description: text("description"),
-  region: varchar("region", { length: 100 }), // Himalaya, South India, Northeast, International
-  heroImage: text("hero_image"),
-  gallery: jsonb("gallery").$type<string[]>().default([]),
-  bestSeason: varchar("best_season", { length: 100 }),
-  idealFor: jsonb("ideal_for").$type<string[]>().default([]), // solo, mothers, etc
-  safetyScore: integer("safety_score").default(5),
-  isInternational: boolean("is_international").default(false),
-  isPublished: boolean("is_published").default(true),
-  seoTitle: varchar("seo_title", { length: 255 }),
-  seoDescription: text("seo_description"),
-  createdAt: timestamp("created_at").defaultNow(),
-  updatedAt: timestamp("updated_at").defaultNow(),
-});
 
 export const tripPackages = pgTable("trip_packages", {
   id: serial("id").primaryKey(),
   slug: varchar("slug", { length: 150 }).unique().notNull(),
-  destinationId: integer("destination_id").references(() => destinations.id),
+  destinationSlug: varchar("destination_slug", { length: 100 }),
   title: varchar("title", { length: 255 }).notNull(),
   shortDescription: varchar("short_description", { length: 500 }),
   longDescription: text("long_description"),
@@ -170,7 +151,7 @@ export const galleryAssets = pgTable("gallery_assets", {
   url: text("url").notNull(),
   alt: varchar("alt", { length: 255 }),
   caption: varchar("caption", { length: 255 }),
-  destinationId: integer("destination_id").references(() => destinations.id),
+
   tripPackageId: integer("trip_package_id").references(() => tripPackages.id),
   tags: jsonb("tags").$type<string[]>().default([]),
   uploadedAt: timestamp("uploaded_at").defaultNow(),
@@ -269,7 +250,6 @@ export const siteSettings = pgTable("site_settings", {
 });
 
 // Types export
-export type Destination = typeof destinations.$inferSelect;
 export type TripPackage = typeof tripPackages.$inferSelect;
 export type DepartureDate = typeof departureDates.$inferSelect;
 export type Lead = typeof leads.$inferSelect;

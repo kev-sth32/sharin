@@ -52,7 +52,15 @@ export default function CustomTripBuilder() {
         <form action={onSubmit} className="md:col-span-7 p-8 md:p-10">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <Input name="name" label="Name" required placeholder="Your name" />
-            <Input name="phone" label="WhatsApp" required placeholder="+91..." />
+            <Input 
+              name="phone" 
+              label="WhatsApp" 
+              required 
+              placeholder="e.g. 9999999999" 
+              onInput={(e: React.FormEvent<HTMLInputElement>) => {
+                e.currentTarget.value = e.currentTarget.value.replace(/[^0-9]/g, "");
+              }}
+            />
             <Input name="email" label="Email" required type="email" placeholder="you@email.com" />
             <Input name="dates" label="Tentative dates" required placeholder="e.g. 12-18 Dec or flexible" />
             <Select name="groupType" label="Group type" required options={[{value:"solo-joined", label:"Solo → join women group"}, {value:"friends-private", label:"Friends private (6+)"}, {value:"mother-daughter", label:"Mother-daughter"}, {value:"family-women-led", label:"Family women-led"}, {value:"corporate", label:"Corporate women offsite"}]} />

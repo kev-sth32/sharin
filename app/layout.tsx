@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Plus_Jakarta_Sans, Fraunces } from "next/font/google";
 import "./globals.css";
 import SiteLayoutWrapper from "@/components/layout/SiteLayoutWrapper";
+import CustomerChatbot from "@/components/chat/CustomerChatbot";
 
 const jakarta = Plus_Jakarta_Sans({
   variable: "--font-jakarta",
@@ -62,6 +63,7 @@ export default function RootLayout({
       </head>
       <body className="min-h-full flex flex-col bg-[#FFF8F0] text-[#13253D]">
         <SiteLayoutWrapper>{children}</SiteLayoutWrapper>
+        <CustomerChatbot />
       </body>
     </html>
   );

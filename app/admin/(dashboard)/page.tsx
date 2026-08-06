@@ -1,9 +1,17 @@
-import { getAdminData } from "@/lib/admin-store";
+import { getAdminData, getSettings, saveSettings, getTransactions } from "@/lib/admin-store";
 import { formatINR } from "@/lib/utils";
 import Link from "next/link";
+import AnalyticsCharts from "@/components/admin/AnalyticsCharts";
 
 export default async function AdminPage() {
   const data = await getAdminData();
+  const settings = await getSettings();
+  const allTransactions = await getTransactions();
+
+  async function handleUpdateMarquee(formData: FormData) {
+    "use server";
+    await saveSettings(formData);
+  }
 
   return (
     <div>
@@ -14,7 +22,7 @@ export default async function AdminPage() {
         </div>
       </div>
 
-      <div className="mt-8 grid md:grid-cols-3 lg:grid-cols-7 gap-4">
+      <div className="mt-8 grid md:grid-cols-3 lg:grid-cols-6 gap-4">
         <Link href="/admin/leads" className="rounded-2xl bg-white border border-[#F1D9D0] p-5 hover:border-[#FF4A7D]/30 transition">
           <div className="text-[11px] uppercase font-bold text-[#13253D]/50">Leads</div>
           <div className="text-3xl font-bold mt-1">{data.stats.leads}</div>
@@ -24,11 +32,6 @@ export default async function AdminPage() {
           <div className="text-[11px] uppercase font-bold text-[#13253D]/50">Trips</div>
           <div className="text-3xl font-bold mt-1">{data.stats.trips}</div>
           <div className="text-[11px] text-[#3D4A5E] mt-2">Featured toggle, publish</div>
-        </Link>
-        <Link href="/admin/destinations" className="rounded-2xl bg-white border border-[#F1D9D0] p-5">
-          <div className="text-[11px] uppercase font-bold text-[#13253D]/50">Destinations</div>
-          <div className="text-3xl font-bold mt-1">{data.stats.destinations}</div>
-          <div className="text-[11px] text-[#3D4A5E] mt-2">SEO edit, publish</div>
         </Link>
         <Link href="/admin/testimonials" className="rounded-2xl bg-white border border-[#F1D9D0] p-5">
           <div className="text-[11px] uppercase font-bold text-[#13253D]/50">Testimonials</div>
@@ -52,20 +55,46 @@ export default async function AdminPage() {
         </Link>
       </div>
 
+      <AnalyticsCharts transactions={allTransactions} leads={data.leads} />
+
       <div className="mt-8 grid lg:grid-cols-12 gap-6">
-        <div className="lg:col-span-7 rounded-[20px] bg-white border border-[#F1D9D0] p-6">
-          <h3 className="font-semibold text-[#13253D]">Recent Leads — Quick Actions</h3>
-          <div className="mt-4 space-y-3 max-h-[380px] overflow-y-auto">
-            {data.leads.slice(0,6).map((l: any)=>(
-              <div key={l.id} className="flex items-center justify-between gap-4 rounded-xl border border-[#F1D9D0] p-3">
-                <div>
-                  <div className="font-semibold text-sm">{l.name} — {l.destination}</div>
-                  <div className="text-xs text-[#3D4A5E]">{l.email} • {l.travelMonth} • {l.status}</div>
+        <div className="lg:col-span-7 space-y-6">
+          <div className="rounded-[20px] bg-white border border-[#F1D9D0] p-6">
+            <h3 className="font-semibold text-[#13253D]">Recent Leads — Quick Actions</h3>
+            <div className="mt-4 space-y-3 max-h-[380px] overflow-y-auto">
+              {data.leads.slice(0,6).map((l: any)=>(
+                <div key={l.id} className="flex items-center justify-between gap-4 rounded-xl border border-[#F1D9D0] p-3">
+                  <div>
+                    <div className="font-semibold text-sm">{l.name} — {l.destination}</div>
+                    <div className="text-xs text-[#3D4A5E]">{l.email} • {l.travelMonth} • {l.status}</div>
+                  </div>
+                  <Link href="/admin/leads" className="rounded-full bg-[#13253D] text-white px-3 py-1.5 text-[11px]">Open CRM</Link>
                 </div>
-                <Link href="/admin/leads" className="rounded-full bg-[#13253D] text-white px-3 py-1.5 text-[11px]">Open CRM</Link>
+              ))}
+              {data.leads.length===0 && <div className="text-sm text-[#3D4A5E]">No leads yet. Submit enquiry on homepage to test.</div>}
+            </div>
+          </div>
+
+          <div className="rounded-[20px] bg-white border border-[#F1D9D0] p-6">
+            <h3 className="font-semibold text-[#13253D] mb-3">Announcements & Offers Strip</h3>
+            <form action={handleUpdateMarquee} className="space-y-4">
+              <div>
+                <label className="text-xs font-bold uppercase text-[#13253D]">Offers & Announcements Scrolling Text (Separated by •)</label>
+                <textarea 
+                  name="marqueeText" 
+                  defaultValue={settings.marqueeText} 
+                  rows={2} 
+                  className="w-full mt-1.5 rounded-xl border px-3 py-2 text-sm text-[#13253D] font-medium" 
+                  placeholder="e.g. 🎉 Get ₹2,000 Off on your first booking! Code: SISTERHOOD2000 • Group Discount: Book for 4 or more girls..."
+                />
               </div>
-            ))}
-            {data.leads.length===0 && <div className="text-sm text-[#3D4A5E]">No leads yet. Submit enquiry on homepage to test.</div>}
+              <button 
+                type="submit" 
+                className="rounded-full bg-[#13253D] hover:bg-[#FF4A7D] text-white px-4 py-2 text-xs font-bold transition-all shadow-sm"
+              >
+                Update Offers Text
+              </button>
+            </form>
           </div>
         </div>
 
@@ -75,7 +104,7 @@ export default async function AdminPage() {
             <ul className="mt-4 space-y-2 text-xs text-white/80 leading-relaxed">
               <li>✅ <Link href="/admin/trips" className="underline text-[#FF8A2B]">Trip Packages</Link> — Toggle Featured, Publish/Draft, Edit price, SEO</li>
               <li>✅ <Link href="/admin/leads" className="underline text-[#FF8A2B]">Leads CRM</Link> — Change status (New→Booked), add notes, follow-up date, WhatsApp log</li>
-              <li>✅ <Link href="/admin/destinations" className="underline text-[#FF8A2B]">Destinations</Link> — Publish/unpublish, edit tagline, best season</li>
+
               <li>✅ <Link href="/admin/testimonials" className="underline text-[#FF8A2B]">Testimonials</Link> — Approve/reject, feature, add new</li>
               <li>✅ <Link href="/admin/blogs" className="underline text-[#FF8A2B]">Blogs</Link> — Create new resource posts</li>
               <li>✅ <Link href="/admin/policies" className="underline text-[#FF8A2B]">Policies</Link> — Version history, last updated</li>
@@ -88,9 +117,8 @@ export default async function AdminPage() {
             <h3 className="font-semibold text-[#13253D]">Quick Create</h3>
             <div className="mt-3 grid grid-cols-2 gap-2">
               <Link href="/admin/trips" className="rounded-xl bg-[#FFF8F0] border border-[#F1D9D0] p-3 text-xs font-semibold hover:bg-[#FFF0F4]">+ New Trip</Link>
-              <Link href="/admin/blogs" className="rounded-xl bg-[#FFF8F0] border border-[#F1D9D0] p-3 text-xs font-semibold">+ Blog Post</Link>
-              <Link href="/admin/testimonials" className="rounded-xl bg-[#FFF8F0] border border-[#F1D9D0] p-3 text-xs font-semibold">+ Testimonial</Link>
-              <Link href="/admin/destinations" className="rounded-xl bg-[#FFF8F0] border border-[#F1D9D0] p-3 text-xs font-semibold">+ Destination</Link>
+              <Link href="/admin/blogs" className="rounded-xl bg-[#FFF8F0] border border-[#F1D9D0] p-3 text-xs font-semibold hover:bg-[#FFF0F4]">+ Blog Post</Link>
+              <Link href="/admin/testimonials" className="rounded-xl bg-[#FFF8F0] border border-[#F1D9D0] p-3 text-xs font-semibold hover:bg-[#FFF0F4]">+ Testimonial</Link>
             </div>
           </div>
         </div>

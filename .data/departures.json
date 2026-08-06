@@ -1,0 +1,189 @@
+[
+  {
+    "id": 1,
+    "tripSlug": "kashmir-blossom-sisterhood",
+    "startDate": "2026-08-10",
+    "endDate": "2026-08-15",
+    "seatsTotal": 14,
+    "seatsBooked": 8,
+    "price": 21999,
+    "status": "open",
+    "isGuaranteed": false
+  },
+  {
+    "id": 2,
+    "tripSlug": "kashmir-blossom-sisterhood",
+    "startDate": "2026-08-23",
+    "endDate": "2026-08-28",
+    "seatsTotal": 16,
+    "seatsBooked": 14,
+    "price": 21999,
+    "status": "filling_fast",
+    "isGuaranteed": true
+  },
+  {
+    "id": 3,
+    "tripSlug": "kerala-backwater-healing",
+    "startDate": "2026-08-10",
+    "endDate": "2026-08-16",
+    "seatsTotal": 14,
+    "seatsBooked": 8,
+    "price": 24999,
+    "status": "open",
+    "isGuaranteed": false
+  },
+  {
+    "id": 4,
+    "tripSlug": "kerala-backwater-healing",
+    "startDate": "2026-08-23",
+    "endDate": "2026-08-29",
+    "seatsTotal": 16,
+    "seatsBooked": 14,
+    "price": 24999,
+    "status": "filling_fast",
+    "isGuaranteed": true
+  },
+  {
+    "id": 5,
+    "tripSlug": "meghalaya-living-roots",
+    "startDate": "2026-08-10",
+    "endDate": "2026-08-15",
+    "seatsTotal": 14,
+    "seatsBooked": 8,
+    "price": 19999,
+    "status": "open",
+    "isGuaranteed": false
+  },
+  {
+    "id": 6,
+    "tripSlug": "meghalaya-living-roots",
+    "startDate": "2026-08-23",
+    "endDate": "2026-08-28",
+    "seatsTotal": 16,
+    "seatsBooked": 14,
+    "price": 19999,
+    "status": "filling_fast",
+    "isGuaranteed": true
+  },
+  {
+    "id": 7,
+    "tripSlug": "rajasthan-queens-trail",
+    "startDate": "2026-08-10",
+    "endDate": "2026-08-17",
+    "seatsTotal": 14,
+    "seatsBooked": 8,
+    "price": 28999,
+    "status": "open",
+    "isGuaranteed": false
+  },
+  {
+    "id": 8,
+    "tripSlug": "rajasthan-queens-trail",
+    "startDate": "2026-08-23",
+    "endDate": "2026-08-30",
+    "seatsTotal": 16,
+    "seatsBooked": 14,
+    "price": 28999,
+    "status": "filling_fast",
+    "isGuaranteed": true
+  },
+  {
+    "id": 9,
+    "tripSlug": "spiti-winter-whites",
+    "startDate": "2026-08-10",
+    "endDate": "2026-08-18",
+    "seatsTotal": 14,
+    "seatsBooked": 8,
+    "price": 34999,
+    "status": "open",
+    "isGuaranteed": false
+  },
+  {
+    "id": 10,
+    "tripSlug": "spiti-winter-whites",
+    "startDate": "2026-08-23",
+    "endDate": "2026-08-31",
+    "seatsTotal": 16,
+    "seatsBooked": 14,
+    "price": 34999,
+    "status": "filling_fast",
+    "isGuaranteed": true
+  },
+  {
+    "id": 11,
+    "tripSlug": "goa-gokarna-surf-sisters",
+    "startDate": "2026-08-10",
+    "endDate": "2026-08-14",
+    "seatsTotal": 14,
+    "seatsBooked": 8,
+    "price": 14999,
+    "status": "open",
+    "isGuaranteed": false
+  },
+  {
+    "id": 12,
+    "tripSlug": "goa-gokarna-surf-sisters",
+    "startDate": "2026-08-23",
+    "endDate": "2026-08-27",
+    "seatsTotal": 16,
+    "seatsBooked": 14,
+    "price": 14999,
+    "status": "filling_fast",
+    "isGuaranteed": true
+  },
+  {
+    "id": 13,
+    "tripSlug": "tirthan-whispers",
+    "startDate": "2026-08-10",
+    "endDate": "2026-08-13",
+    "seatsTotal": 14,
+    "seatsBooked": 8,
+    "price": 9999,
+    "status": "open",
+    "isGuaranteed": false
+  },
+  {
+    "id": 14,
+    "tripSlug": "tirthan-whispers",
+    "startDate": "2026-08-23",
+    "endDate": "2026-08-26",
+    "seatsTotal": 16,
+    "seatsBooked": 14,
+    "price": 9999,
+    "status": "filling_fast",
+    "isGuaranteed": true
+  },
+  {
+    "id": 15,
+    "tripSlug": "bali-divine-feminine",
+    "startDate": "2026-08-10",
+    "endDate": "2026-08-16",
+    "seatsTotal": 14,
+    "seatsBooked": 8,
+    "price": 54999,
+    "status": "open",
+    "isGuaranteed": false
+  },
+  {
+    "id": 16,
+    "tripSlug": "bali-divine-feminine",
+    "startDate": "2026-08-23",
+    "endDate": "2026-08-29",
+    "seatsTotal": 16,
+    "seatsBooked": 14,
+    "price": 54999,
+    "status": "filling_fast",
+    "isGuaranteed": true
+  },
+  {
+    "id": 1785807009208,
+    "tripSlug": "kerala",
+    "startDate": "2026-08-22",
+    "endDate": "2026-08-28",
+    "seatsTotal": 16,
+    "seatsBooked": 5,
+    "price": 0,
+    "status": "open",
+    "isGuaranteed": false
+  }
+]

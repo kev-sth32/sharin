@@ -30,6 +30,12 @@ async function sendNotificationEmail(type: string, data: any) {
 }
 
 export async function submitEnquiry(formData: FormData) {
+  const date = formData.get("date") as string;
+  let message = formData.get("message") as string || "";
+  if (date) {
+    message = `[Requested departure: ${date}] ${message}`.trim();
+  }
+
   const raw = {
     name: formData.get("name") as string,
     email: formData.get("email") as string,
@@ -39,7 +45,7 @@ export async function submitEnquiry(formData: FormData) {
     travelers: formData.get("travelers") as string,
     travelStyle: formData.get("travelStyle") as string,
     budget: formData.get("budget") as string,
-    message: formData.get("message") as string,
+    message,
     consent: formData.get("consent") === "on" || formData.get("consent") === "true",
   };
 
@@ -145,3 +151,35 @@ export async function updateLeadStatus(id: number, status: string, notes?: strin
   fs.writeFileSync(fp, JSON.stringify(arr, null, 2));
   return { success: true };
 }
+
+export async function unlockTripDetails(formData: FormData) {
+  const name = formData.get("name") as string;
+  const email = formData.get("email") as string;
+  const phone = formData.get("phone") as string;
+  const destination = formData.get("destination") as string || "General Trip View";
+
+  if (!name || !email || !phone) {
+    return { success: false, error: "All fields are required." };
+  }
+
+  const leadEntry = {
+    name,
+    email,
+    phone,
+    destination,
+    travelMonth: "immediate",
+    travelers: "1",
+    travelStyle: "group",
+    budget: "standard",
+    message: "[Gated unlock: Checked trip details & hotels]",
+    consent: true,
+    source: "trip_details_gate",
+    status: "new"
+  };
+
+  appendJson("leads.json", leadEntry);
+  await sendNotificationEmail("Trip Details Unlock", leadEntry);
+
+  return { success: true };
+}
+

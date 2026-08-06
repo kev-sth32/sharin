@@ -2,7 +2,7 @@
 import fs from "fs";
 import path from "path";
 import { revalidatePath } from "next/cache";
-import { tripPackagesSeed, destinationsSeed, testimonialsSeed, tripLeadersSeed, faqsSeed, blogSeed } from "./data";
+import { tripPackagesSeed, testimonialsSeed, tripLeadersSeed, faqsSeed, blogSeed } from "./data";
 
 const dataDir = path.join(process.cwd(), ".data");
 
@@ -23,19 +23,157 @@ function writeFile(name: string, data: any) {
 // ===== Core Data Merge =====
 export async function getAdminData() {
   const leads = readFile("leads.json", []);
+  if (leads.length === 0) {
+    const seedLeads = [
+      {
+        id: 1,
+        name: "Ananya Sharma",
+        email: "ananya.sharma@example.com",
+        phone: "+91 98765 43210",
+        destination: "Kashmir",
+        travelMonth: "October 2026",
+        travelers: 3,
+        budget: "₹30,000 - ₹50,000",
+        message: "Looking for a luxury women-only getaway to Srinagar, Gulmarg, and Pahalgam. Prefer premium hotel stays and verified drivers.",
+        status: "new",
+        notes: "Interested in premium packages. Indicated she has a group of 3 sisters.",
+        followUpAt: "",
+        source: "homepage",
+        createdAt: new Date(Date.now() - 2 * 3600000).toISOString() // 2 hours ago
+      },
+      {
+        id: 2,
+        name: "Priya Nair",
+        email: "priya.nair@example.com",
+        phone: "+91 99998 88877",
+        destination: "Meghalaya",
+        travelMonth: "September 2026",
+        travelers: 1,
+        budget: "₹20,000 - ₹30,000",
+        message: "Solo traveler wanting to join the Meghalaya sisterhood group departure. Very excited about the double-decker root bridge trek!",
+        status: "itinerary_shared",
+        notes: "Shared Meghalaya itinerary PDF and hotel details via WhatsApp. She wants to check flight options before confirming.",
+        followUpAt: new Date(Date.now() + 2 * 24 * 3600000).toISOString().slice(0, 16), // 2 days from now
+        source: "enquiry",
+        createdAt: new Date(Date.now() - 24 * 3600000).toISOString() // 1 day ago
+      },
+      {
+        id: 3,
+        name: "Sneha Patil",
+        email: "sneha.patil@example.com",
+        phone: "+91 91234 56789",
+        destination: "Spiti Valley",
+        travelMonth: "September 2026",
+        travelers: 2,
+        budget: "₹30,000 - ₹50,000",
+        message: "Me and my sister want to book the Spiti road trip. Can we confirm if the trip leader is female and if hotels have heaters?",
+        status: "booked",
+        notes: "Confirmed women-only group leaders and hotel heating. Booking token received. Paid 10k.",
+        followUpAt: "",
+        source: "custom",
+        createdAt: new Date(Date.now() - 3 * 24 * 3600000).toISOString() // 3 days ago
+      },
+      {
+        id: 4,
+        name: "Aditi Rao",
+        email: "aditi.rao@example.com",
+        phone: "+91 98111 22233",
+        destination: "Kerala",
+        travelMonth: "November 2026",
+        travelers: 4,
+        budget: "Above ₹50,000",
+        message: "Custom private houseboat tour and tea plantation walk in Munnar for a group of 4 close girlfriends.",
+        status: "payment_pending",
+        notes: "Sent proposal deck for Munnar + Alleppey. Waiting for payment verification of token transfer.",
+        followUpAt: new Date(Date.now() + 4 * 3600000).toISOString().slice(0, 16), // 4 hours from now
+        source: "homepage",
+        createdAt: new Date(Date.now() - 4 * 24 * 3600000).toISOString() // 4 days ago
+      },
+      {
+        id: 5,
+        name: "Ritu Verma",
+        email: "ritu.verma@example.com",
+        phone: "+91 90000 11111",
+        destination: "Ladakh",
+        travelMonth: "September 2026",
+        travelers: 1,
+        budget: "₹30,000 - ₹50,000",
+        message: "Is high altitude medical support provided? I am traveling solo for the first time and want to ensure safety.",
+        status: "contacted",
+        notes: "Explained oxygen cylinder backup and 24/7 support line. Ritu seemed reassured, will verify budget and confirm.",
+        followUpAt: new Date(Date.now() + 24 * 3600000).toISOString().slice(0, 16), // tomorrow
+        source: "newsletter",
+        createdAt: new Date(Date.now() - 6 * 24 * 3600000).toISOString() // 6 days ago
+      }
+    ];
+    leads.push(...seedLeads);
+    writeFile("leads.json", leads);
+  }
+
   const custom = readFile("custom_trips.json", []);
   const newsletter = readFile("newsletter.json", []);
   const contacts = readFile("contacts.json", []);
   const refunds = readFile("refunds.json", []);
   const tripsOverrides = readFile("trips_overrides.json", []);
   const tripsCustom = readFile("trips_custom.json", []);
-  const destOverrides = readFile("destinations_overrides.json", []);
-  const destCustom = readFile("destinations_custom.json", []);
+
   const testimonialsOverrides = readFile("testimonials_overrides.json", []);
   const leadersOverrides = readFile("leaders_overrides.json", []);
   const leadersCustom = readFile("leaders_custom.json", []);
 
+  const departures = readFile("departures.json", []);
+  // If departures is empty, populate it on first load
+  if (departures.length === 0 && tripPackagesSeed.length > 0) {
+    const today = new Date();
+    let idCounter = 1;
+    tripPackagesSeed.forEach((t: any) => {
+      const start1 = new Date(today.getTime() + 7 * 24 * 60 * 60 * 1000);
+      const end1 = new Date(start1.getTime() + t.durationDays * 24 * 60 * 60 * 1000);
+      const start2 = new Date(today.getTime() + 20 * 24 * 60 * 60 * 1000);
+      const end2 = new Date(start2.getTime() + t.durationDays * 24 * 60 * 60 * 1000);
+      
+      departures.push({
+        id: idCounter++,
+        tripSlug: t.slug,
+        startDate: start1.toISOString().slice(0, 10),
+        endDate: end1.toISOString().slice(0, 10),
+        seatsTotal: 14,
+        seatsBooked: 8,
+        price: t.priceFrom,
+        status: "open",
+        isGuaranteed: false
+      });
+      departures.push({
+        id: idCounter++,
+        tripSlug: t.slug,
+        startDate: start2.toISOString().slice(0, 10),
+        endDate: end2.toISOString().slice(0, 10),
+        seatsTotal: 16,
+        seatsBooked: 14,
+        price: t.priceFrom,
+        status: "filling_fast",
+        isGuaranteed: true
+      });
+    });
+    writeFile("departures.json", departures);
+  }
+
   const transactions = readFile("transactions.json", []);
+  if (transactions.length === 0) {
+    const seedTx = [
+      { id: 1, type: "revenue", amount: 145000, category: "Trip Bookings", tripSlug: "kashmir-girls-gateway", description: "Batch 1 bookings (5 slots)", date: "2026-07-15", createdAt: new Date().toISOString() },
+      { id: 2, type: "revenue", amount: 110000, category: "Trip Bookings", tripSlug: "meghalaya-monsoon-magic", description: "Batch 2 bookings (4 slots)", date: "2026-07-20", createdAt: new Date().toISOString() },
+      { id: 3, type: "expense", amount: 45000, category: "Hotel Bookings", tripSlug: "kashmir-girls-gateway", description: "Hotel advance - Srinagar Residency", date: "2026-07-22", createdAt: new Date().toISOString() },
+      { id: 4, type: "expense", amount: 35000, category: "Transport Cost", tripSlug: "kashmir-girls-gateway", description: "Tempo Traveller booking 6 days", date: "2026-07-23", createdAt: new Date().toISOString() },
+      { id: 5, type: "revenue", amount: 65000, category: "Custom Private Trips", tripSlug: "kerala-backwater-escape", description: "Private family trip advance", date: "2026-07-28", createdAt: new Date().toISOString() },
+      { id: 6, type: "expense", amount: 18000, category: "Trip Leader Payout", tripSlug: "kashmir-girls-gateway", description: "Leader pay - batch 1 guide", date: "2026-07-30", createdAt: new Date().toISOString() },
+      { id: 7, type: "expense", amount: 12000, category: "Marketing / Ads", description: "Instagram ads for Spiti Valley trip", date: "2026-08-01", createdAt: new Date().toISOString() },
+      { id: 8, type: "revenue", amount: 95000, category: "Trip Bookings", tripSlug: "spiti-valley-road-trip", description: "Bookings inflow Spiti", date: "2026-08-03", createdAt: new Date().toISOString() }
+    ];
+    transactions.push(...seedTx);
+    writeFile("transactions.json", transactions);
+  }
+
   let totalRevenue = 0;
   let totalExpenses = 0;
   transactions.forEach((tx: any) => {
@@ -53,14 +191,6 @@ export async function getAdminData() {
     ...tripsCustom
   ];
 
-  const destinations = [
-    ...destinationsSeed.map((d: any) => {
-      const over = destOverrides.find((o: any) => o.slug === d.slug);
-      if (over?.isDeleted) return null as any;
-      return over ? { ...d, ...over } : d;
-    }).filter(Boolean),
-    ...destCustom
-  ];
 
   const testimonials = [...testimonialsSeed.map((t: any, i: number)=>({ id: 1000+i, isApproved: true, ...t })), ...testimonialsOverrides];
   const tripLeaders = [
@@ -79,17 +209,18 @@ export async function getAdminData() {
       contacts: contacts.length,
       refunds: refunds.length,
       trips: trips.length,
-      destinations: destinations.length,
       testimonials: testimonials.length,
+      departures: departures.length,
       totalRevenue,
       totalExpenses,
       netProfit,
     },
     leads: leads.reverse(),
     trips,
-    destinations,
+
     testimonials,
     tripLeaders,
+    departures,
     faqs: faqsSeed,
     blogs: blogSeed,
     tripsOverrides,
@@ -100,10 +231,6 @@ export async function getAdminData() {
 export async function getTripBySlug(slug: string) {
   const data = await getAdminData();
   return data.trips.find((t: any)=>t.slug===slug) || null;
-}
-export async function getDestinationBySlug(slug: string) {
-  const data = await getAdminData();
-  return data.destinations.find((d: any)=>d.slug===slug) || null;
 }
 
 // ===== Trip CRUD =====
@@ -157,6 +284,11 @@ export async function saveTrip(formData: FormData) {
   const existingCustom = readFile("trips_custom.json", []);
   const existingOverrides = readFile("trips_overrides.json", []);
   
+  const inclusionsVal = formData.get("inclusions") as string;
+  const exclusionsVal = formData.get("exclusions") as string;
+  const itineraryVal = formData.get("itinerary") as string;
+  const hotelsVal = formData.get("hotels") as string;
+
   const tripData: any = {
     slug,
     title: formData.get("title") as string,
@@ -176,9 +308,14 @@ export async function saveTrip(formData: FormData) {
     isFeatured: formData.get("isFeatured")==="on",
     isPublished: formData.get("isPublished")!=="off" && formData.get("isPublished")!=="false",
     itineraryChangePolicy: formData.get("itineraryChangePolicy") as string,
+    inclusions: inclusionsVal ? JSON.parse(inclusionsVal) : undefined,
+    exclusions: exclusionsVal ? JSON.parse(exclusionsVal) : undefined,
+    itinerary: itineraryVal ? JSON.parse(itineraryVal) : undefined,
+    hotels: hotelsVal ? JSON.parse(hotelsVal) : undefined,
     ratingAvg: "4.9",
     ratingCount: 0,
   };
+
 
   // Check if it's seed trip to update via overrides
   const isSeed = tripPackagesSeed.some(t=>t.slug===slug);
@@ -196,59 +333,6 @@ export async function saveTrip(formData: FormData) {
   return { success: true, slug };
 }
 
-// ===== Destination CRUD =====
-export async function toggleDestinationPublished(slug: string) {
-  const overrides = readFile("destinations_overrides.json", []);
-  const idx = overrides.findIndex((o: any) => o.slug === slug);
-  if (idx >= 0) overrides[idx].isPublished = !overrides[idx].isPublished;
-  else overrides.push({ slug, isPublished: false });
-  writeFile("destinations_overrides.json", overrides);
-  return { success: true };
-}
-export async function saveDestination(formData: FormData) {
-  const slug = (formData.get("slug") as string).toLowerCase().replace(/[^a-z0-9]+/g,"-");
-  const custom = readFile("destinations_custom.json", []);
-  const overrides = readFile("destinations_overrides.json", []);
-  const data: any = {
-    slug,
-    name: formData.get("name") as string,
-    tagline: formData.get("tagline") as string,
-    description: formData.get("description") as string,
-    region: formData.get("region") as string,
-    heroImage: formData.get("heroImage") as string,
-    bestSeason: formData.get("bestSeason") as string,
-    idealFor: (formData.get("idealFor") as string)?.split(",").map(s=>s.trim()).filter(Boolean) || [],
-    isInternational: formData.get("isInternational")==="on",
-    isPublished: formData.get("isPublished")!=="off",
-  };
-  const isSeed = destinationsSeed.some(d=>d.slug===slug);
-  if (isSeed) {
-    const idx = overrides.findIndex((o:any)=>o.slug===slug);
-    if (idx>=0) overrides[idx] = { ...overrides[idx], ...data };
-    else overrides.push(data);
-    writeFile("destinations_overrides.json", overrides);
-  } else {
-    const idx = custom.findIndex((d:any)=>d.slug===slug);
-    if (idx>=0) custom[idx] = { ...custom[idx], ...data };
-    else custom.push({ ...data, createdAt: new Date().toISOString() });
-    writeFile("destinations_custom.json", custom);
-  }
-  return { success: true, slug };
-}
-export async function deleteDestination(slug: string) {
-  const custom = readFile("destinations_custom.json", []);
-  const filtered = custom.filter((d:any)=>d.slug!==slug);
-  if (filtered.length!==custom.length) { writeFile("destinations_custom.json", filtered); return {success:true}; }
-  const overrides = readFile("destinations_overrides.json", []);
-  const idx = overrides.findIndex((o: any) => o.slug === slug);
-  if (idx >= 0) {
-    overrides[idx] = { ...overrides[idx], isDeleted: true, isPublished: false };
-  } else {
-    overrides.push({ slug, isDeleted: true, isPublished: false });
-  }
-  writeFile("destinations_overrides.json", overrides);
-  return { success: true };
-}
 
 // ===== Testimonials =====
 export async function addTestimonial(data: any) {
@@ -376,5 +460,109 @@ export async function deleteTransaction(id: number) {
   writeFile("transactions.json", filtered);
   return { success: true };
 }
+
+// ===== Departures CRUD =====
+export async function getDepartureById(id: number) {
+  const data = await getAdminData();
+  return data.departures.find((d: any) => d.id === id) || null;
+}
+
+export async function deleteDeparture(id: number) {
+  const departures = readFile("departures.json", []);
+  const filtered = departures.filter((d: any) => d.id !== id);
+  writeFile("departures.json", filtered);
+  return { success: true };
+}
+
+export async function saveDeparture(formData: FormData) {
+  const idStr = formData.get("id") as string;
+  const id = idStr ? Number(idStr) : Date.now();
+  const tripSlug = formData.get("tripSlug") as string;
+  const startDate = formData.get("startDate") as string;
+  const endDate = formData.get("endDate") as string;
+  const seatsTotal = Number(formData.get("seatsTotal") || 16);
+  const seatsBooked = Number(formData.get("seatsBooked") || 0);
+  const price = Number(formData.get("price") || 0);
+  const status = formData.get("status") as string;
+  const isGuaranteed = formData.get("isGuaranteed") === "on";
+
+  const departureData = {
+    id,
+    tripSlug,
+    startDate,
+    endDate,
+    seatsTotal,
+    seatsBooked,
+    price,
+    status,
+    isGuaranteed
+  };
+
+  const departures = readFile("departures.json", []);
+  const idx = departures.findIndex((d: any) => d.id === id);
+  if (idx >= 0) {
+    departures[idx] = { ...departures[idx], ...departureData };
+  } else {
+    departures.push(departureData);
+  }
+  writeFile("departures.json", departures);
+  return { success: true };
+}
+
+export async function getSettings() {
+  const settings = readFile("settings.json", []);
+  if (!settings || Array.isArray(settings) || typeof settings !== "object") {
+    return {
+      marqueeText: "🎉 Limited Offer: Get ₹2,000 Off on your first booking! Code: SISTERHOOD2000 • Group Discount: Book for 4 or more girls and get extra ₹1,500 off per person! • Book early and secure your slot with just ₹5,000 token amount!"
+    };
+  }
+  return settings;
+}
+
+export async function saveSettings(formData: FormData) {
+  const marqueeText = formData.get("marqueeText") as string;
+  writeFile("settings.json", { marqueeText });
+  return { success: true };
+}
+
+export async function getHomepageGalleryAdmin() {
+  const custom = readFile("homepage_gallery.json", []);
+  if (!custom || custom.length === 0) {
+    return [
+      {
+        src: "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=600&q=80",
+        alt: "Ocean beach waves"
+      },
+      {
+        src: "https://images.unsplash.com/photo-1488646953014-85cb44e25828?w=600&q=80",
+        alt: "Travel camera map"
+      },
+      {
+        src: "https://images.unsplash.com/photo-1506929562872-bb421503ef21?w=600&q=80",
+        alt: "Palm tree beach"
+      },
+      {
+        src: "https://images.unsplash.com/photo-1527631746610-bca00a040d60?w=600&q=80",
+        alt: "Alleyway walking"
+      },
+      {
+        src: "https://images.unsplash.com/photo-1533105079780-92b9be482077?w=600&q=80",
+        alt: "Waterfalls and mountains"
+      },
+      {
+        src: "https://images.unsplash.com/photo-1524504388940-b1c1722653e1?w=600&q=80",
+        alt: "Lake and boats"
+      }
+    ];
+  }
+  return custom;
+}
+
+export async function saveHomepageGallery(images: any[]) {
+  writeFile("homepage_gallery.json", images);
+  return { success: true };
+}
+
+
 
 

@@ -20,56 +20,122 @@ export default function ContactPage() {
   }
 
   return (
-    <div className="max-w-[1280px] mx-auto px-4 md:px-8 py-12 grid lg:grid-cols-12 gap-10">
-      <div className="lg:col-span-7">
-        <h1 className="font-display font-bold text-[32px] leading-tight">Need help? We reply in 2 hours (10AM-8PM). Emergency 24x7.</h1>
-        <div className="mt-8 grid md:grid-cols-2 gap-6">
-          <form action={onContact} className="rounded-2xl bg-white border border-[#F1D9D0] p-6">
-            <h3 className="font-semibold">Contact / Support form</h3>
-            <div className="mt-4 space-y-3">
-              <Input name="name" label="Name" required placeholder="Your name" />
-              <Input name="email" label="Email" required placeholder="you@email.com" />
-              <Input name="phone" label="Phone" placeholder="+91..." />
-              <Select name="category" label="Category" required options={[{value:"general", label:"General"}, {value:"booking", label:"Booking help"}, {value:"safety", label:"Safety concern"}, {value:"refund", label:"Refund / Cancellation"}, {value:"feedback", label:"Feedback / Escalation"}]} />
-              <Input name="subject" label="Subject" required placeholder="e.g. Need hotel name for Kashmir 12 Dec" />
-              <Textarea name="message" label="Message" required placeholder="Tell us..." />
-              <Button type="submit" isLoading={status==="loading"}>Submit →</Button>
-              {status==="success" && <div className="text-sm text-green-600">Received! We’ll WhatsApp in 2 hours.</div>}
+    <div className="bg-[#FFF8F0] py-16 md:py-24 min-h-screen">
+      <div className="max-w-[1280px] mx-auto px-4 md:px-8 grid lg:grid-cols-12 gap-12 items-start">
+        {/* Left Column - Forms */}
+        <div className="lg:col-span-7 space-y-10">
+          <div>
+            <div className="text-[12px] font-bold tracking-[0.2em] uppercase text-[#FF4A7D] mb-3">
+              Get in Touch
             </div>
-          </form>
-
-          <form action={onRefund} className="rounded-2xl bg-[#FFF0F4] border border-[#FF4A7D]/20 p-6">
-            <h3 className="font-semibold text-[#FF4A7D]">Refund / Cancellation request</h3>
-            <div className="mt-4 space-y-3">
-              <Input name="bookingId" label="Booking ID (if any)" placeholder="TN-XXXXX" />
-              <Input name="email" label="Email booked with" required placeholder="you@email.com" />
-              <Input name="phone" label="Phone" required placeholder="+91..." />
-              <Textarea name="reason" label="Reason" required placeholder="Emergency / Change plan — be honest, we care" />
-              <label className="flex gap-2 text-xs items-start"><input type="checkbox" name="policyAcknowledged" required className="mt-1" /> I read <a href="/policies/cancellation-refund" className="underline">cancellation policy</a> and understand timeline 7-10 days</label>
-              <Button type="submit" size="md" variant="secondary" isLoading={refundStatus==="loading"}>Request refund →</Button>
-              {refundStatus==="success" && <div className="text-sm text-green-700">Refund request logged. Ack in 24h, resolve in 5 days.</div>}
-            </div>
-          </form>
-        </div>
-      </div>
-
-      <div className="lg:col-span-5">
-        <div className="sticky top-28 space-y-6">
-          <div className="rounded-2xl bg-[#13253D] text-white p-6">
-            <div className="font-bold">Emergency — ongoing trips only</div>
-            <div className="mt-3 text-sm text-white/80">WhatsApp/call +91 9XXXX 9XXXX (2 min response). Operations manager callback in 30 min. Keep emergency card from trip leader handy.</div>
+            <h1 className="font-display font-[800] text-[32px] md:text-[44px] leading-[1.1] text-[#13253D]">
+              Need help? We reply in 2 hours.
+            </h1>
+            <p className="mt-4 text-[#3D4A5E] text-[15px] leading-relaxed">
+              Active support from 10 AM to 8 PM. Emergency response is active 24x7 for all ongoing trip departures.
+            </p>
           </div>
-          <div className="rounded-2xl bg-white border border-[#F1D9D0] p-6 text-sm text-[#3D4A5E] leading-relaxed">
-            <div className="font-bold text-[#13253D]">Escalation matrix</div>
-            <ul className="mt-3 space-y-2 list-disc pl-5">
-              <li>Level 1: Trip Leader — instant on trip</li>
-              <li>Level 2: Operations 24x7 — 2 min pickup</li>
-              <li>Level 3: Founder — founder@tripnaari.com (24h response)</li>
-            </ul>
-            <div className="mt-4">Bangalore HQ: 10AM-8PM. We respond faster on Instagram DM @tripnaari during peak.</div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+            {/* Contact Form */}
+            <form action={onContact} className="rounded-3xl bg-white border border-[#F1D9D0] p-6 md:p-8 space-y-4 shadow-[0_10px_35px_-8px_rgba(19,37,61,0.05)]">
+              <h3 className="font-display font-bold text-lg text-[#13253D]">Contact & Support</h3>
+              <div className="space-y-4">
+                <Input name="name" label="Name" required placeholder="Your name" />
+                <Input name="email" label="Email" required placeholder="you@email.com" />
+                <Input 
+                  name="phone" 
+                  label="Phone" 
+                  placeholder="e.g. 9999999999" 
+                  onInput={(e: React.FormEvent<HTMLInputElement>) => {
+                    e.currentTarget.value = e.currentTarget.value.replace(/[^0-9]/g, "");
+                  }}
+                />
+                <Select name="category" label="Category" required options={[{value:"general", label:"General Inquiry"}, {value:"booking", label:"Booking Help"}, {value:"safety", label:"Safety Concern"}, {value:"refund", label:"Refund / Cancellation"}, {value:"feedback", label:"Escalation"}]} />
+                <Input name="subject" label="Subject" required placeholder="e.g. Need details for Kashmir trip" />
+                <Textarea name="message" label="Message" required placeholder="Tell us how we can help..." />
+                <Button type="submit" isLoading={status==="loading"} className="w-full bg-[#FF4A7D] hover:bg-[#E63E6E] text-white rounded-full font-bold shadow-md">
+                  Submit Form
+                </Button>
+                {status==="success" && (
+                  <div className="text-sm text-green-600 font-bold bg-green-50 border border-green-200 rounded-xl p-3 text-center">
+                    Received! We will WhatsApp you within 2 hours.
+                  </div>
+                )}
+              </div>
+            </form>
+
+            {/* Refund Form */}
+            <form action={onRefund} className="rounded-3xl bg-white border-2 border-[#FF4A7D]/30 p-6 md:p-8 space-y-4 shadow-[0_10px_35px_-8px_rgba(255,74,125,0.08)]">
+              <h3 className="font-display font-bold text-lg text-[#FF4A7D]">Refund / Cancellation</h3>
+              <div className="space-y-4">
+                <Input name="bookingId" label="Booking ID" placeholder="TN-XXXXX" />
+                <Input name="email" label="Email booked with" required placeholder="you@email.com" />
+                <Input 
+                  name="phone" 
+                  label="Phone" 
+                  required 
+                  placeholder="e.g. 9999999999" 
+                  onInput={(e: React.FormEvent<HTMLInputElement>) => {
+                    e.currentTarget.value = e.currentTarget.value.replace(/[^0-9]/g, "");
+                  }}
+                />
+                <Textarea name="reason" label="Reason for Cancellation" required placeholder="Please share details..." />
+                <label className="flex gap-2 text-[11px] leading-relaxed text-[#3D4A5E] items-start cursor-pointer font-medium">
+                  <input type="checkbox" name="policyAcknowledged" required className="mt-1 shrink-0" />
+                  <span>I have read the <a href="/policies/cancellation-refund" className="underline font-bold text-[#FF4A7D]">cancellation policy</a> and understand refund timeline is 7-10 days.</span>
+                </label>
+                <Button type="submit" size="md" variant="secondary" isLoading={refundStatus==="loading"} className="w-full bg-[#800F2D] hover:bg-[#660C24] text-white rounded-full font-bold shadow-md">
+                  Request Refund
+                </Button>
+                {refundStatus==="success" && (
+                  <div className="text-sm text-green-700 font-bold bg-green-50 border border-green-200 rounded-xl p-3 text-center">
+                    Logged! Acknowledged in 24 hours, resolved in 5 days.
+                  </div>
+                )}
+              </div>
+            </form>
+          </div>
+        </div>
+
+        {/* Right Column - Sidebar */}
+        <div className="lg:col-span-5">
+          <div className="sticky top-28 space-y-6">
+            {/* Emergency Box */}
+            <div className="rounded-3xl bg-gradient-to-br from-[#800F2D] to-[#4A0516] text-white p-6 md:p-8 shadow-xl border border-white/5 space-y-4">
+              <div className="font-display font-bold text-xl">Emergency — ongoing trips only</div>
+              <p className="text-[14px] text-white/80 leading-relaxed">
+                WhatsApp or call <strong className="text-white font-bold">+91 9XXXX XXXXX</strong>. Pick up within 2 minutes. Operations callback within 30 minutes. Keep the emergency card from your Trip Leader handy.
+              </p>
+            </div>
+
+            {/* Escalation Matrix Box */}
+            <div className="rounded-3xl bg-white border border-[#F1D9D0] p-6 md:p-8 shadow-[0_10px_35px_-8px_rgba(19,37,61,0.05)] space-y-4">
+              <h3 className="font-display font-bold text-lg text-[#13253D] border-b border-[#F1D9D0]/50 pb-3">
+                Escalation Matrix
+              </h3>
+              <ul className="space-y-3 text-[14px] text-[#3D4A5E] font-medium">
+                <li className="flex gap-2">
+                  <span className="text-[#FF4A7D] font-bold">1.</span>
+                  <span><strong>Trip Leader:</strong> Instant assistance while on trip.</span>
+                </li>
+                <li className="flex gap-2">
+                  <span className="text-[#FF4A7D] font-bold">2.</span>
+                  <span><strong>Operations Support:</strong> 24x7 escalation via WhatsApp.</span>
+                </li>
+                <li className="flex gap-2">
+                  <span className="text-[#FF4A7D] font-bold">3.</span>
+                  <span><strong>Founder Email:</strong> founder@tripnaari.com (24h response).</span>
+                </li>
+              </ul>
+              <p className="text-[12px] leading-relaxed text-[#3D4A5E]/70 pt-2">
+                TripNaari HQ is based in Bangalore, India. We respond quickly on Instagram DMs during peak season hours.
+              </p>
+            </div>
           </div>
         </div>
       </div>
     </div>
+
   );
 }

@@ -39,7 +39,7 @@ export default async function BlogsAdmin() {
             <h3 className="font-semibold">New Blog Post</h3>
             <input name="title" required placeholder="Title" className="w-full rounded-xl border px-3 py-2 text-sm" />
             <input name="slug" required placeholder="slug e.g. my-first-solo" className="w-full rounded-xl border px-3 py-2 text-sm" />
-            <input name="category" placeholder="Category Safety/Destinations" className="w-full rounded-xl border px-3 py-2 text-sm" />
+            <input name="category" placeholder="Category Safety/Tips" className="w-full rounded-xl border px-3 py-2 text-sm" />
             <input name="excerpt" placeholder="Excerpt" className="w-full rounded-xl border px-3 py-2 text-sm" />
             <textarea name="content" placeholder="Full content" rows={6} className="w-full rounded-xl border px-3 py-2 text-sm" />
           </ConfirmForm>

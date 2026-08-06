@@ -1,13 +1,64 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect, Suspense } from "react";
+import { useSearchParams } from "next/navigation";
 import { Input, Textarea, Select } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { destinationsSeed } from "@/lib/data";
+import { tripPackagesSeed } from "@/lib/data";
 import { submitEnquiry } from "@/lib/actions";
 
-export default function EnquiryForm({ source = "homepage" }: { source?: string }) {
+function EnquiryFormInner({ source = "homepage", defaultDestination = "" }: { source?: string; defaultDestination?: string }) {
   const [status, setStatus] = useState<"idle"|"loading"|"success"|"error">("idle");
   const [errorMsg, setErrorMsg] = useState("");
+
+  const searchParams = useSearchParams();
+  const [selectedDate, setSelectedDate] = useState<string | null>(null);
+  const [travelMonth, setTravelMonth] = useState("");
+  const [destination, setDestination] = useState(defaultDestination || "");
+
+  // Update destination state when defaultDestination prop changes
+  useEffect(() => {
+    if (defaultDestination) {
+      setDestination(defaultDestination);
+    }
+  }, [defaultDestination]);
+
+  // Extract selected date from URL search parameters or the hash
+  useEffect(() => {
+    let date = searchParams.get("date");
+
+    // Fallback: parse hash in case the hash has parameter (e.g. #enquiry?date=2026-08-10)
+    if (!date && typeof window !== "undefined") {
+      const hash = window.location.hash;
+      if (hash.includes("date=")) {
+        const match = hash.match(/date=([^&?]+)/);
+        if (match) {
+          date = match[1];
+        }
+      }
+    }
+
+    if (date) {
+      setSelectedDate(date);
+
+      // Parse the month/year out of the date
+      try {
+        const dateObj = new Date(date);
+        if (!isNaN(dateObj.getTime())) {
+          const monthName = dateObj.toLocaleDateString("en-US", { month: 'short' });
+          const year = dateObj.getFullYear();
+          setTravelMonth(`${monthName} ${year}`);
+        }
+      } catch (e) {
+        console.error("Error parsing date from URL:", e);
+      }
+
+      // Smooth scroll to the enquiry form
+      const element = document.getElementById("enquiry");
+      if (element) {
+        element.scrollIntoView({ behavior: "smooth" });
+      }
+    }
+  }, [searchParams]);
 
   async function onSubmit(formData: FormData) {
     setStatus("loading");
@@ -48,6 +99,35 @@ export default function EnquiryForm({ source = "homepage" }: { source?: string }
     );
   }
 
+  // Setup travel month options, dynamically adding the selected date's month if it's missing
+  const defaultMonths = [
+    {value:"Oct 2026", label:"Oct 2026"}, {value:"Nov 2026", label:"Nov 2026"}, {value:"Dec 2026", label:"Dec 2026"}, {value:"Jan 2027", label:"Jan 2027"}, {value:"Flexible", label:"Flexible"},
+  ];
+  let monthsOptions = [...defaultMonths];
+  if (selectedDate) {
+    try {
+      const dateObj = new Date(selectedDate);
+      if (!isNaN(dateObj.getTime())) {
+        const monthName = dateObj.toLocaleDateString("en-US", { month: 'short' });
+        const year = dateObj.getFullYear();
+        const computedMonth = `${monthName} ${year}`;
+        if (!monthsOptions.some(m => m.value === computedMonth)) {
+          monthsOptions = [{ value: computedMonth, label: computedMonth }, ...monthsOptions];
+        }
+      }
+    } catch (e) {}
+  }
+
+  const formattedSelectedDate = selectedDate ? (() => {
+    try {
+      const dateObj = new Date(selectedDate);
+      if (!isNaN(dateObj.getTime())) {
+        return dateObj.toLocaleDateString("en-IN", { day: 'numeric', month: 'short', year: 'numeric' });
+      }
+    } catch (e) {}
+    return selectedDate;
+  })() : null;
+
   return (
     <form action={onSubmit} className="rounded-[24px] bg-white border border-[#F1D9D0] p-6 md:p-8 card-shadow">
       <div className="flex items-center justify-between mb-6">
@@ -55,14 +135,56 @@ export default function EnquiryForm({ source = "homepage" }: { source?: string }
         <div className="text-[11px] rounded-full bg-[#13253D] text-white px-3 py-1 font-bold tracking-widest uppercase">2 min form</div>
       </div>
 
+      {formattedSelectedDate && (
+        <div className="mb-5 rounded-2xl bg-[#FFF0F4] border border-[#FF4A7D]/15 p-4 flex items-center justify-between shadow-sm animate-in fade-in slide-in-from-top-2 duration-300">
+          <div className="text-xs text-[#5B2063]">
+            <span className="font-bold text-[#FF4A7D] block uppercase tracking-wider text-[10px] mb-0.5">Selected Departure Date</span>
+            <span className="font-semibold text-sm text-[#13253D]">{formattedSelectedDate}</span>
+          </div>
+          <button
+            type="button"
+            onClick={() => {
+              setSelectedDate(null);
+              setTravelMonth("");
+            }}
+            className="rounded-full bg-[#FF4A7D]/10 hover:bg-[#FF4A7D]/20 text-[#FF4A7D] px-3 py-1 text-xs font-bold transition-colors"
+          >
+            Clear
+          </button>
+        </div>
+      )}
+
+      {/* Hidden field to submit the exact date */}
+      <input type="hidden" name="date" value={selectedDate || ""} />
+
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <Input name="name" label="Your name" required placeholder="Ananya Sharma" />
-        <Input name="phone" label="Phone / WhatsApp" required placeholder="+91 98..." />
+        <Input 
+          name="phone" 
+          label="Phone / WhatsApp" 
+          required 
+          placeholder="e.g. 9999999999" 
+          onInput={(e: React.FormEvent<HTMLInputElement>) => {
+            e.currentTarget.value = e.currentTarget.value.replace(/[^0-9]/g, "");
+          }}
+        />
         <Input name="email" label="Email" required type="email" placeholder="you@email.com" className="md:col-span-2" />
-        <Select name="destination" label="Dream destination" required options={destinationsSeed.map(d=>({value:d.slug, label:d.name}))} />
-        <Select name="travelMonth" label="Travel month" required options={[
-          {value:"Oct 2026", label:"Oct 2026"}, {value:"Nov 2026", label:"Nov 2026"}, {value:"Dec 2026", label:"Dec 2026"}, {value:"Jan 2027", label:"Jan 2027"}, {value:"Flexible", label:"Flexible"},
-        ]} />
+        <Select
+          name="destination"
+          label="Dream destination"
+          required
+          value={destination}
+          onChange={(e) => setDestination(e.target.value)}
+          options={tripPackagesSeed.map(t=>({value:t.slug, label:t.title}))}
+        />
+        <Select
+          name="travelMonth"
+          label="Travel month"
+          required
+          value={travelMonth}
+          onChange={(e) => setTravelMonth(e.target.value)}
+          options={monthsOptions}
+        />
         <Select name="travelers" label="Travelers" options={[{value:"1", label:"1 - solo"}, {value:"2", label:"2 - friends"}, {value:"3", label:"3"}, {value:"4", label:"4+"}]} />
         <Select name="budget" label="Budget per person" options={[{value:"<10k", label:"< ₹10,000 weekend"}, {value:"10-20k", label:"₹10k-20k"}, {value:"20-35k", label:"₹20k-35k"}, {value:"35k+", label:"₹35k+ (premium/international)"}]} />
         <Select name="travelStyle" label="Who are you?" options={[{value:"solo", label:"Solo first timer"}, {value:"mother-daughter", label:"Mother-daughter"}, {value:"friends", label:"Friends group"}, {value:"housewife", label:"Housewife exploring"}, {value:"professional", label:"Professional / entrepreneur"}, {value:"grandmother", label:"Adventurous grandmother"}]} />
@@ -80,5 +202,17 @@ export default function EnquiryForm({ source = "homepage" }: { source?: string }
 
       <div className="mt-3 text-[11px] text-center text-[#3D4A5E]/60">🔒 Data encrypted. 2 hours response 10AM-8PM. Emergency 24x7 for ongoing trips. By MSME & Startup India recognised.</div>
     </form>
+  );
+}
+
+export default function EnquiryForm(props: { source?: string; defaultDestination?: string }) {
+  return (
+    <Suspense fallback={
+      <div className="p-8 text-center text-sm text-[#13253D]/60 bg-white rounded-[24px] border border-[#F1D9D0]">
+        Loading enquiry form...
+      </div>
+    }>
+      <EnquiryFormInner {...props} />
+    </Suspense>
   );
 }

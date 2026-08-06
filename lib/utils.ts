@@ -30,3 +30,22 @@ export function truncate(str: string, len: number) {
   if (str.length <= len) return str;
   return str.slice(0, len) + "...";
 }
+
+export function openEnquiryModal(destination?: string) {
+  if (typeof window !== "undefined") {
+    window.dispatchEvent(new CustomEvent("open-enquiry-modal", { detail: { destination } }));
+  }
+}
+
+export const locationMap: Record<string, string> = {
+  kashmir: "Kashmir, India",
+  kerala: "Kerala, India",
+  meghalaya: "Meghalaya, India",
+  rajasthan: "Rajasthan, India",
+  himachal: "Himachal, India",
+  goa: "Goa & Gokarna, India",
+  "northeast-india": "Northeast, India",
+  "varanasi-ayodhya-prayagraj": "Varanasi, India",
+  nepal: "Nepal",
+  international: "Bali, Indonesia"
+};

@@ -2,12 +2,12 @@ import Link from "next/link";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import LogoutButton from "@/components/admin/LogoutButton";
+import AIAssistant from "@/components/admin/AIAssistant";
 
 const nav = [
   { href: "/admin", label: "Dashboard", icon: "📊" },
   { href: "/admin/leads", label: "Leads & CRM", icon: "💬" },
   { href: "/admin/trips", label: "Trip Packages", icon: "🎒" },
-  { href: "/admin/destinations", label: "Destinations", icon: "🗺️" },
   { href: "/admin/departures", label: "Departures", icon: "📅" },
   { href: "/admin/testimonials", label: "Testimonials", icon: "⭐" },
   { href: "/admin/leaders", label: "Trip Leaders", icon: "👩‍✈️" },
@@ -72,6 +72,7 @@ export default async function AdminLayout({ children }: { children: React.ReactN
           ))}
         </div>
         <main className="p-4 md:p-8">{children}</main>
+        <AIAssistant />
       </div>
     </div>
   );
