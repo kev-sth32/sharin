@@ -16,10 +16,10 @@ const InstagramIcon = (props: any) => (
 
 export default function CommunityBanner() {
   return (
-    <section className="bg-[#FFF8F0] py-16 md:py-20 text-center">
+    <section className="bg-[#FFF8F0] py-12 md:py-14 lg:py-16 xl:py-20 text-center">
       <div className="max-w-[1280px] mx-auto px-4 md:px-8">
         <div className="max-w-2xl mx-auto space-y-6">
-          <h2 className="font-display font-[800] text-[32px] md:text-[44px] leading-[1.1] text-[#13253D]">
+          <h2 className="font-display font-[800] text-[26px] sm:text-[32px] lg:text-[38px] xl:text-[44px] leading-[1.1] text-[#13253D]">
             Ready to Connect With Women Travellers?
           </h2>
           <p className="text-[16px] md:text-[17px] text-[#3D4A5E] leading-relaxed">

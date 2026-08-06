@@ -7,13 +7,13 @@ export default function FeaturedDepartures() {
   const allTrips = getMergedTrips();
   const featured = allTrips.filter((t:any) => t.isFeatured);
   return (
-    <section className="bg-[#FFF8F0] py-16 md:py-24">
+    <section className="bg-[#FFF8F0] py-12 md:py-16 lg:py-20 xl:py-24">
       <div className="max-w-[1280px] mx-auto px-4 md:px-8">
         <div className="text-center max-w-3xl mx-auto mb-16">
           <div className="text-[12px] font-bold tracking-[0.2em] uppercase text-[#FF4A7D] mb-4">
             Upcoming Trips
           </div>
-          <h2 className="font-display font-[800] text-[36px] md:text-[48px] leading-[1.05] text-[#13253D]">
+          <h2 className="font-display font-[800] text-[28px] sm:text-[36px] lg:text-[42px] xl:text-[48px] leading-[1.05] text-[#13253D]">
             Your Next Adventure Starts Here.
           </h2>
           <p className="mt-4 text-[16px] md:text-[17px] leading-relaxed text-[#3D4A5E]">

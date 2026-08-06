@@ -9,7 +9,16 @@
 
 * { scrollbar-width: thin; scrollbar-color: #FF4A7D #FFF8F0; }
 
-html { scroll-behavior: smooth; }
+html {
+  scroll-behavior: smooth;
+}
+
+/* Scale down root font size slightly on laptop viewports to reduce overall spacing and font sizes */
+@media (min-width: 1024px) and (max-width: 1440px) {
+  html {
+    font-size: 15px;
+  }
+}
 
 body {
   background: var(--background);

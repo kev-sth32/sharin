@@ -4,12 +4,12 @@ import { Badge } from "@/components/ui/badge";
 export default function TripLeaders() {
   const leaders = getMergedLeaders();
   return (
-    <section className="max-w-[1280px] mx-auto px-4 md:px-8 py-16 md:py-24">
+    <section className="max-w-[1280px] mx-auto px-4 md:px-8 py-12 md:py-16 lg:py-20 xl:py-24">
       <div className="max-w-3xl mx-auto text-center mb-12">
         <div className="inline-flex items-center gap-1.5 rounded-full bg-[#FF4A7D]/10 px-3.5 py-1 text-[11px] font-bold uppercase tracking-wider text-[#FF4A7D] mb-3">
           👩‍✈️ Trip leaders • Accountability
         </div>
-        <h2 className="font-display font-[800] text-[36px] md:text-[48px] leading-[1.05] text-[#13253D] tracking-tight">
+        <h2 className="font-display font-[800] text-[28px] sm:text-[36px] lg:text-[42px] xl:text-[48px] leading-[1.05] text-[#13253D] tracking-tight">
           She is your sister, guide, and safety officer.
         </h2>
         <p className="mt-4 text-[15px] md:text-[16px] leading-relaxed text-[#3D4A5E] max-w-xl mx-auto">

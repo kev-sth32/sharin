@@ -32,7 +32,10 @@ export default function StickyCTA() {
           <div className="flex items-center gap-3">
             <div className="hidden md:flex w-10 h-10 rounded-full bg-[#FF4A7D] items-center justify-center font-bold shrink-0">TN</div>
             <div className="leading-tight">
-              <div className="font-semibold text-[14px] md:text-[15px]">Not sure which trip? Get free consult in 2 hours</div>
+              <div className="font-semibold text-[12px] sm:text-[13px] md:text-[15px]">
+                <span className="md:hidden">Need help? Get a free consult in 2h</span>
+                <span className="hidden md:inline">Not sure which trip? Get free consult in 2 hours</span>
+              </div>
               <div className="text-[12px] text-white/60 hidden md:block">33K+ women community • Verified stays • Women trip leader 24x7 • Transparent refunds</div>
             </div>
           </div>

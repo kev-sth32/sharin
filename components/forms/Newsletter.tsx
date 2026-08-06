@@ -31,19 +31,19 @@ export default function Newsletter() {
             Added! Check your email for WhatsApp community invite 💌
           </div>
         ) : (
-          <form action={action} className="w-full md:w-[400px] bg-white/10 border border-white/20 rounded-2xl p-2 flex gap-2 backdrop-blur-sm">
+          <form action={action} className="w-full md:w-[400px] flex flex-col sm:flex-row bg-transparent sm:bg-white/10 border-0 sm:border border-white/20 rounded-none sm:rounded-2xl p-0 sm:p-2 gap-3 sm:gap-2 backdrop-blur-sm">
             <input 
               name="email" 
               type="email" 
               required 
               placeholder="Enter your email" 
-              className="flex-1 bg-transparent px-4 py-3 rounded-xl outline-none text-white placeholder-white/60 text-sm" 
+              className="w-full sm:flex-1 bg-white/10 sm:bg-transparent border border-white/20 sm:border-0 px-4 py-3.5 sm:py-3 rounded-2xl sm:rounded-xl outline-none text-white placeholder-white/60 text-sm focus:border-white transition-all" 
             />
             <Button 
               type="submit" 
               size="md" 
               isLoading={status==="loading"}
-              className="bg-white hover:bg-[#FFF8F0] text-[#800F2D] font-bold rounded-xl shadow-none px-6"
+              className="w-full sm:w-auto bg-white hover:bg-[#FFF8F0] text-[#800F2D] font-bold rounded-2xl sm:rounded-xl shadow-none px-6 py-3.5 sm:py-2"
             >
               Subscribe Now
             </Button>

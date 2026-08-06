@@ -35,13 +35,13 @@ export default function HowItWorks() {
   ];
 
   return (
-    <section id="how-it-works" className="scroll-mt-24 bg-[#FFF8F0] py-16 md:py-24 border-y border-[#F1D9D0]/50">
+    <section id="how-it-works" className="scroll-mt-24 bg-[#FFF8F0] py-12 md:py-16 lg:py-20 xl:py-24 border-y border-[#F1D9D0]/50">
       <div className="max-w-[1280px] mx-auto px-4 md:px-8">
         <div className="text-center max-w-3xl mx-auto mb-16">
           <div className="text-[12px] font-bold tracking-[0.2em] uppercase text-[#FF4A7D] mb-4">
             How It Works
           </div>
-          <h2 className="font-display font-[800] text-[36px] md:text-[48px] leading-[1.05] text-[#13253D]">
+          <h2 className="font-display font-[800] text-[28px] sm:text-[36px] lg:text-[42px] xl:text-[48px] leading-[1.05] text-[#13253D]">
             Your Journey With TripNaari
           </h2>
         </div>

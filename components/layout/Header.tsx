@@ -24,7 +24,7 @@ export default function Header() {
   return (
     <>
       <div className="w-full bg-[#800F2D] text-white text-[12px] tracking-wide">
-        <div className="max-w-[1280px] mx-auto px-4 md:px-8 py-2 flex items-center justify-between">
+        <div className="max-w-[1280px] mx-auto px-4 md:px-8 py-1 lg:py-1.5 xl:py-2 flex items-center justify-between">
           <div className="flex items-center gap-3">
             <span className="inline-flex items-center gap-1.5 font-medium"><ShieldCheck className="w-4 h-4 text-[#FF4A7D]" /> Women-Crafted • MSME & Startup India Recognised</span>
             <span className="hidden md:inline-flex opacity-60">|</span>
@@ -37,7 +37,7 @@ export default function Header() {
       </div>
 
       <header className="sticky top-0 z-50 w-full border-b border-[#F1D9D0] bg-white/95 backdrop-blur-md">
-        <div className="max-w-[1280px] mx-auto px-4 md:px-8 h-[76px] flex items-center justify-between">
+        <div className="max-w-[1280px] mx-auto px-4 md:px-8 h-[64px] lg:h-[70px] xl:h-[76px] flex items-center justify-between">
           <Link href="/" className="flex items-center gap-2 group">
             <span className="font-display font-[800] text-[26px] tracking-tight text-[#800F2D] hover:opacity-90 transition-opacity">
               TripNaari

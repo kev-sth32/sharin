@@ -6,12 +6,12 @@ export default function Testimonials() {
   return (
     <section className="bg-[#13253D] text-white border-y border-white/10 relative overflow-hidden">
       <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-white/5 via-transparent to-transparent pointer-events-none" />
-      <div className="max-w-[1280px] mx-auto px-4 md:px-8 py-16 md:py-24 relative z-10">
+      <div className="max-w-[1280px] mx-auto px-4 md:px-8 py-12 md:py-16 lg:py-20 xl:py-24 relative z-10">
         <div className="max-w-3xl mx-auto text-center mb-12">
           <div className="inline-flex items-center gap-1.5 rounded-full bg-white/10 px-3.5 py-1 text-[11px] font-bold uppercase tracking-wider text-[#FF8A2B] mb-3">
             💬 Sisterhood Stories • Verified
           </div>
-          <h2 className="font-display font-[800] text-[36px] md:text-[48px] leading-[1.05] text-white tracking-tight">
+          <h2 className="font-display font-[800] text-[28px] sm:text-[36px] lg:text-[42px] xl:text-[48px] leading-[1.05] text-white tracking-tight">
             What happens when women travel fearless?
           </h2>
           <p className="mt-4 text-[15px] md:text-[16px] leading-relaxed text-white/70 max-w-xl mx-auto">
