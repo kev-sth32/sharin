@@ -165,23 +165,23 @@ export default function AIAssistant() {
       {/* Floating Toggle Button */}
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="fixed bottom-6 right-6 z-40 flex h-14 w-14 items-center justify-center rounded-full bg-[#13253D] text-white hover:bg-[#FF4A7D] transition-all duration-300 shadow-xl border border-white/20 animate-pulse hover:animate-none"
+        className="fixed bottom-6 right-6 z-50 flex h-14 w-14 items-center justify-center rounded-full bg-[#13253D] text-white hover:bg-[#FF4A7D] transition-all duration-300 shadow-xl border border-white/20 animate-pulse hover:animate-none"
         title="Open AI Assistant"
       >
         {isOpen ? <X className="h-6 w-6" /> : <Sparkles className="h-6 w-6 text-[#FF8A2B]" />}
       </button>
-
+ 
       {/* Backdrop */}
       {isOpen && (
         <div
           onClick={() => setIsOpen(false)}
-          className="fixed inset-0 z-40 bg-black/30 backdrop-blur-xs transition-opacity md:hidden"
+          className="fixed inset-0 z-50 bg-black/30 backdrop-blur-xs transition-opacity md:hidden"
         />
       )}
-
+ 
       {/* Drawer */}
       <div
-        className={`fixed top-0 right-0 z-40 h-screen w-full sm:w-[420px] bg-white border-l border-[#F1D9D0] shadow-2xl flex flex-col transition-transform duration-300 ease-in-out ${
+        className={`fixed top-0 right-0 z-50 h-screen w-full sm:w-[420px] bg-white border-l border-[#F1D9D0] shadow-2xl flex flex-col transition-transform duration-300 ease-in-out ${
           isOpen ? "translate-x-0" : "translate-x-full"
         }`}
       >
