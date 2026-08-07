@@ -47,8 +47,8 @@ export default function Hero() {
         </div>
 
         {/* Hero Content (Left text, Right quick enquiry form) */}
-        <div className="relative max-w-[1280px] mx-auto px-4 md:px-8 pt-8 pb-16 lg:pt-8 lg:pb-18 xl:pt-10 xl:pb-20 2xl:pt-16 2xl:pb-32">
-          <div className="grid lg:grid-cols-12 gap-10 lg:gap-12 items-start lg:pt-2">
+        <div className="relative max-w-[1280px] mx-auto px-4 md:px-8 pt-8 pb-16 lg:pt-6 lg:pb-16 xl:pt-10 xl:pb-20 2xl:pt-16 2xl:pb-32">
+          <div className="grid lg:grid-cols-12 gap-10 lg:gap-8 xl:gap-12 items-center lg:pt-2">
             {/* Left side text */}
             <div className="lg:col-span-7 text-center lg:text-left space-y-4 md:space-y-5 lg:space-y-6">
               <div className="inline-flex items-center rounded-full bg-white/10 border border-white/20 px-4 py-1.5 text-[11px] font-bold tracking-widest uppercase text-white/90">
@@ -149,7 +149,7 @@ export default function Hero() {
       </div>
 
       {/* Floating Stats Bar Container (Centered overlap) */}
-      <div className="relative -mt-8 md:-mt-12 lg:-mt-16 z-20 max-w-[1100px] mx-auto px-4 md:px-8">
+      <div className="relative -mt-8 md:-mt-12 lg:-mt-6 xl:-mt-16 z-20 max-w-[1100px] mx-auto px-4 md:px-8">
         <div className="bg-white rounded-3xl shadow-[0_20px_50px_-12px_rgba(19,37,61,0.12)] border border-[#F1D9D0] p-6 md:p-8">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-0 md:gap-4 md:divide-x md:divide-[#F1D9D0]/80">
             {/* Stat 1 */}
