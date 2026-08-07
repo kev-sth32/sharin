@@ -331,7 +331,7 @@ export default function FinanceManager({ initialTransactions, trips }: FinanceMa
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
         {/* Monthly Cash Flow Trend Graph */}
         <div className="bg-white border border-[#F1D9D0] rounded-2xl p-6 shadow-sm lg:col-span-8 space-y-4">
-          <div className="flex justify-between items-center">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-2 border-b border-gray-100 sm:border-0">
             <div>
               <h3 className="font-semibold text-[#13253D] flex items-center gap-2">
                 <BarChart2 className="w-4 h-4 text-[#FF4A7D]" />
@@ -339,7 +339,7 @@ export default function FinanceManager({ initialTransactions, trips }: FinanceMa
               </h3>
               <p className="text-[11px] text-[#3D4A5E] mt-0.5">Month-by-month cashflow distribution of filtered data</p>
             </div>
-            <div className="flex gap-3 text-[10px] font-bold uppercase tracking-wider">
+            <div className="flex gap-3 text-[10px] font-bold uppercase tracking-wider shrink-0">
               <span className="flex items-center gap-1 text-[#25D366]">
                 <span className="w-2.5 h-2.5 rounded-full bg-[#25D366]" /> Revenue
               </span>
@@ -459,7 +459,7 @@ export default function FinanceManager({ initialTransactions, trips }: FinanceMa
             <p className="text-[11px] text-[#3D4A5E] mt-0.5">Share ratios based on active filtered transactions</p>
           </div>
 
-          <div className="flex-1 space-y-4 overflow-y-auto max-h-[145px] pr-1 py-1">
+          <div className="flex-1 space-y-4 lg:overflow-y-auto lg:max-h-[145px] pr-1 py-1">
             {/* Outflows (Expenses) */}
             {categoryBreakdown.expenseList.length > 0 && (
               <div className="space-y-2">
@@ -567,31 +567,31 @@ export default function FinanceManager({ initialTransactions, trips }: FinanceMa
             </div>
 
             {/* Quick Filters Options row */}
-            <div className="flex flex-wrap gap-2 items-center">
+            <div className="grid grid-cols-2 sm:flex sm:flex-wrap gap-2 sm:gap-2.5 items-center">
               {/* Type Select */}
-              <div className="flex items-center gap-1 bg-[#FFF8F0] border border-[#F1D9D0] rounded-full px-3 py-1.5">
-                <span className="text-[9px] font-extrabold text-[#13253D]/50 uppercase">Type:</span>
+              <div className="flex items-center justify-between gap-1.5 bg-[#FFF8F0] border border-[#F1D9D0] rounded-xl sm:rounded-full px-3 py-2 sm:py-1.5">
+                <span className="text-[9px] font-black text-[#13253D]/50 uppercase shrink-0">Type:</span>
                 <select
                   value={typeFilter}
                   onChange={(e) => {
                     setTypeFilter(e.target.value as any);
                     setCategoryFilter("all"); // Reset category since categories change based on type
                   }}
-                  className="bg-transparent text-xs font-semibold outline-none text-[#13253D] cursor-pointer"
+                  className="bg-transparent text-xs font-semibold outline-none text-[#13253D] cursor-pointer flex-1 min-w-0 text-right sm:text-left"
                 >
                   <option value="all">All Flow</option>
-                  <option value="revenue">Inflow (Revenue)</option>
-                  <option value="expense">Outflow (Expense)</option>
+                  <option value="revenue">Inflow</option>
+                  <option value="expense">Outflow</option>
                 </select>
               </div>
 
               {/* Category Select */}
-              <div className="flex items-center gap-1 bg-[#FFF8F0] border border-[#F1D9D0] rounded-full px-3 py-1.5">
-                <span className="text-[9px] font-extrabold text-[#13253D]/50 uppercase">Category:</span>
+              <div className="flex items-center justify-between gap-1.5 bg-[#FFF8F0] border border-[#F1D9D0] rounded-xl sm:rounded-full px-3 py-2 sm:py-1.5">
+                <span className="text-[9px] font-black text-[#13253D]/50 uppercase shrink-0">Category:</span>
                 <select
                   value={categoryFilter}
                   onChange={(e) => setCategoryFilter(e.target.value)}
-                  className="bg-transparent text-xs font-semibold outline-none text-[#13253D] cursor-pointer"
+                  className="bg-transparent text-xs font-semibold outline-none text-[#13253D] cursor-pointer flex-1 min-w-0 text-right sm:text-left max-w-[110px] sm:max-w-none truncate"
                 >
                   <option value="all">All Categories</option>
                   {typeFilter !== "expense" && categories.revenue.map(c => (
@@ -604,12 +604,12 @@ export default function FinanceManager({ initialTransactions, trips }: FinanceMa
               </div>
 
               {/* Trip Select */}
-              <div className="flex items-center gap-1 bg-[#FFF8F0] border border-[#F1D9D0] rounded-full px-3 py-1.5">
-                <span className="text-[9px] font-extrabold text-[#13253D]/50 uppercase">Trip:</span>
+              <div className="flex items-center justify-between gap-1.5 bg-[#FFF8F0] border border-[#F1D9D0] rounded-xl sm:rounded-full px-3 py-2 sm:py-1.5">
+                <span className="text-[9px] font-black text-[#13253D]/50 uppercase shrink-0">Trip:</span>
                 <select
                   value={tripFilter}
                   onChange={(e) => setTripFilter(e.target.value)}
-                  className="bg-transparent text-xs font-semibold outline-none text-[#13253D] cursor-pointer max-w-[150px] truncate"
+                  className="bg-transparent text-xs font-semibold outline-none text-[#13253D] cursor-pointer flex-1 min-w-0 text-right sm:text-left max-w-[110px] sm:max-w-[150px] truncate"
                 >
                   <option value="all">All Trips</option>
                   {trips.map(t => (
@@ -619,12 +619,12 @@ export default function FinanceManager({ initialTransactions, trips }: FinanceMa
               </div>
 
               {/* Date Preset Select */}
-              <div className="flex items-center gap-1 bg-[#FFF8F0] border border-[#F1D9D0] rounded-full px-3 py-1.5">
-                <span className="text-[9px] font-extrabold text-[#13253D]/50 uppercase">Date Range:</span>
+              <div className="flex items-center justify-between gap-1.5 bg-[#FFF8F0] border border-[#F1D9D0] rounded-xl sm:rounded-full px-3 py-2 sm:py-1.5">
+                <span className="text-[9px] font-black text-[#13253D]/50 uppercase shrink-0">Range:</span>
                 <select
                   value={dateRange}
                   onChange={(e) => setDateRange(e.target.value as any)}
-                  className="bg-transparent text-xs font-semibold outline-none text-[#13253D] cursor-pointer"
+                  className="bg-transparent text-xs font-semibold outline-none text-[#13253D] cursor-pointer flex-1 min-w-0 text-right sm:text-left"
                 >
                   <option value="all">All Time</option>
                   <option value="this_month">This Month</option>
@@ -634,17 +634,17 @@ export default function FinanceManager({ initialTransactions, trips }: FinanceMa
               </div>
 
               {/* Sort Order Select */}
-              <div className="flex items-center gap-1 bg-[#FFF8F0] border border-[#F1D9D0] rounded-full px-3 py-1.5">
-                <span className="text-[9px] font-extrabold text-[#13253D]/50 uppercase">Sort Amount:</span>
+              <div className="col-span-2 sm:col-span-1 flex items-center justify-between gap-1.5 bg-[#FFF8F0] border border-[#F1D9D0] rounded-xl sm:rounded-full px-3 py-2 sm:py-1.5">
+                <span className="text-[9px] font-black text-[#13253D]/50 uppercase shrink-0">Sort:</span>
                 <select
                   value={sortBy}
                   onChange={(e) => setSortBy(e.target.value as any)}
-                  className="bg-transparent text-xs font-semibold outline-none text-[#13253D] cursor-pointer"
+                  className="bg-transparent text-xs font-semibold outline-none text-[#13253D] cursor-pointer flex-1 min-w-0 text-right sm:text-left"
                 >
                   <option value="newest">Newest First</option>
                   <option value="oldest">Oldest First</option>
-                  <option value="amount_desc">Amount (High to Low)</option>
-                  <option value="amount_asc">Amount (Low to High)</option>
+                  <option value="amount_desc">High to Low</option>
+                  <option value="amount_asc">Low to High</option>
                 </select>
               </div>
             </div>
@@ -663,7 +663,7 @@ export default function FinanceManager({ initialTransactions, trips }: FinanceMa
             </div>
             
             <div className="overflow-x-auto">
-              <table className="w-full text-sm text-left">
+              <table className="w-full text-sm text-left hidden md:table">
                 <thead className="bg-[#FFF8F0]/50 text-[10px] uppercase text-[#3D4A5E]/60 tracking-wider border-b border-[#F1D9D0]/50">
                   <tr>
                     <th className="p-4 font-extrabold">Date</th>
@@ -747,6 +747,87 @@ export default function FinanceManager({ initialTransactions, trips }: FinanceMa
                   )}
                 </tbody>
               </table>
+
+              {/* Mobile Card List View (visible on mobile only) */}
+              <div className="block md:hidden divide-y divide-[#F1D9D0]/30 border-t border-[#F1D9D0]/40">
+                {filteredTransactions.map((tx) => {
+                  const isTxEditing = editingTx?.id === tx.id;
+                  const tripName = tx.tripSlug 
+                    ? trips.find(t => t.slug === tx.tripSlug)?.title || tx.tripSlug 
+                    : "General Overhead";
+                  return (
+                    <div 
+                      key={tx.id} 
+                      className={`p-4 space-y-2.5 transition ${isTxEditing ? 'bg-[#FFF8F0]/30' : 'hover:bg-[#FFF8F0]/10'}`}
+                    >
+                      {/* Top Row: Date & Amount */}
+                      <div className="flex justify-between items-center">
+                        <span className="text-[11px] font-medium text-[#3D4A5E]">
+                          {new Date(tx.date).toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' })}
+                        </span>
+                        <span className={`text-xs font-black ${
+                          tx.type === "revenue" ? "text-green-600" : "text-red-600"
+                        }`}>
+                          {tx.type === "revenue" ? "+" : "-"}{formatINR(tx.amount)}
+                        </span>
+                      </div>
+
+                      {/* Mid Row: Description */}
+                      <div className="text-xs font-semibold text-[#13253D] break-words">
+                        {tx.description || "—"}
+                      </div>
+
+                      {/* Bottom Row: Category Badge, Trip, Actions */}
+                      <div className="flex items-center justify-between gap-2 pt-1.5 border-t border-[#F1D9D0]/10">
+                        <div className="flex items-center gap-1.5 min-w-0">
+                          <span className={`rounded-full px-2 py-0.5 text-[8px] font-black uppercase tracking-wide border shrink-0 ${
+                            tx.type === "revenue" 
+                              ? "bg-green-50 text-green-700 border-green-200" 
+                              : "bg-red-50 text-red-700 border-red-200"
+                          }`}>
+                            {tx.category}
+                          </span>
+                          <span className="text-[9px] text-[#3D4A5E]/70 italic truncate" title={tripName}>
+                            &bull; {tripName}
+                          </span>
+                        </div>
+
+                        {/* Actions */}
+                        <div className="flex items-center gap-1.5 shrink-0">
+                          <button
+                            onClick={() => {
+                              setEditingTx(tx);
+                              // Scroll right panel into view on mobile
+                              window.scrollTo({ top: document.getElementById("log-panel-container")?.offsetTop || 0, behavior: 'smooth' });
+                            }}
+                            className={`p-1.5 rounded-lg border transition ${
+                              isTxEditing 
+                                ? "bg-[#FF4A7D] border-[#FF4A7D] text-white" 
+                                : "bg-[#FFF8F0] border-[#F1D9D0] text-[#13253D]/70 hover:text-[#FF4A7D] hover:border-[#FF4A7D]/30"
+                            }`}
+                            title="Edit transaction"
+                          >
+                            <Edit2 className="w-3.5 h-3.5" />
+                          </button>
+                          <ConfirmButton
+                            action={handleDelete.bind(null, tx.id)}
+                            confirmText={`Are you sure you want to delete this ${tx.type} transaction "${tx.description || tx.category}"?`}
+                            className="p-1.5 rounded-lg bg-red-50 hover:bg-red-100 border border-red-200 text-red-600 transition"
+                          >
+                            <Trash2 className="w-3.5 h-3.5" />
+                          </ConfirmButton>
+                        </div>
+                      </div>
+                    </div>
+                  );
+                })}
+                {filteredTransactions.length === 0 && (
+                  <div className="p-8 text-center text-xs text-[#3D4A5E]/50">
+                    <span className="text-2xl mb-1 block">💸</span>
+                    No transactions match the active ledger filters.
+                  </div>
+                )}
+              </div>
             </div>
           </div>
         </div>

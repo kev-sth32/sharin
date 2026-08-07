@@ -5,7 +5,32 @@ import { Loader2, Plus, Trash2, Calendar, Hotel as HotelIcon, CheckCircle, XCirc
 
 export default function TripEditForm({ initial, action }: { initial?: any; action: (fd: FormData)=>Promise<any> }) {
   const [heroImage, setHeroImage] = useState(initial?.heroImage || "");
+  const [itineraryPdf, setItineraryPdf] = useState(initial?.itineraryPdf || "");
+  const [pdfUploading, setPdfUploading] = useState(false);
   const [isPending, startTransition] = useTransition();
+
+  async function handlePdfUpload(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setPdfUploading(true);
+
+    const formData = new FormData();
+    formData.append("file", file);
+
+    try {
+      const res = await fetch("/api/admin/upload", { method: "POST", body: formData });
+      const data = await res.json();
+      if (data.success) {
+        setItineraryPdf(data.url);
+      } else {
+        alert("Upload failed: " + data.error);
+      }
+    } catch (err) {
+      alert("Error uploading PDF");
+    } finally {
+      setPdfUploading(false);
+    }
+  }
 
   // New dynamic aspects states
   const [inclusionsText, setInclusionsText] = useState(
@@ -161,6 +186,22 @@ export default function TripEditForm({ initial, action }: { initial?: any; actio
             <input name="heroImage" value={heroImage} onChange={e=>setHeroImage(e.target.value)} placeholder="https://... or /uploads/..." className="w-full mt-1 rounded-xl border px-3 py-2 text-sm" />
             {heroImage && <img src={heroImage} alt="hero" className="mt-2 w-full h-48 object-cover rounded-xl" />}
             <div className="mt-2"><ImageUpload label="Upload Hero Photo" onUploaded={setHeroImage} /></div>
+          </div>
+
+          <div className="md:col-span-2">
+            <label className="text-xs font-bold uppercase text-[#13253D]">Itinerary PDF URL</label>
+            <input name="itineraryPdf" value={itineraryPdf} onChange={e=>setItineraryPdf(e.target.value)} placeholder="e.g. /uploads/kashmir-itinerary.pdf or external google drive link" className="w-full mt-1 rounded-xl border px-3 py-2 text-sm" />
+            <div className="mt-2 rounded-xl border border-dashed border-[#F1D9D0] bg-[#FFF8F0] p-4">
+              <label className="text-[11px] font-bold uppercase tracking-widest text-[#13253D]/60 block mb-1">Upload Itinerary PDF</label>
+              <input type="file" accept="application/pdf" onChange={handlePdfUpload} className="text-xs" />
+              {pdfUploading && <div className="text-xs mt-1 text-[#FF4A7D]">Uploading PDF...</div>}
+              {itineraryPdf && (
+                <div className="text-xs mt-2 text-green-700 font-semibold flex items-center gap-1">
+                  <span>✓ Configured PDF:</span>
+                  <a href={itineraryPdf} target="_blank" rel="noopener noreferrer" className="underline">{itineraryPdf}</a>
+                </div>
+              )}
+            </div>
           </div>
 
           <div className="md:col-span-2">

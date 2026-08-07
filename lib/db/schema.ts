@@ -29,6 +29,7 @@ export const tripPackages = pgTable("trip_packages", {
   seoTitle: varchar("seo_title", { length: 255 }),
   seoDescription: text("seo_description"),
   itineraryChangePolicy: text("itinerary_change_policy"),
+  itineraryPdf: text("itinerary_pdf"),
   isPublished: boolean("is_published").default(true),
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").defaultNow(),

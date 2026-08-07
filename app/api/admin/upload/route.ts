@@ -22,9 +22,9 @@ export async function POST(req: Request) {
     }
 
     // SECURITY: Validate file type
-    const allowedTypes = ["image/jpeg", "image/jpg", "image/png", "image/webp", "image/gif"];
+    const allowedTypes = ["image/jpeg", "image/jpg", "image/png", "image/webp", "image/gif", "application/pdf"];
     if (!allowedTypes.includes(file.type)) {
-      return NextResponse.json({ success: false, error: "Only JPG, PNG, WebP, GIF allowed" }, { status: 400 });
+      return NextResponse.json({ success: false, error: "Only JPG, PNG, WebP, GIF, PDF allowed" }, { status: 400 });
     }
 
     // SECURITY: Validate file size (5MB)
@@ -40,7 +40,7 @@ export async function POST(req: Request) {
 
     // SECURITY: Sanitize filename
     const ext = path.extname(file.name).toLowerCase() || ".jpg";
-    const allowedExts = [".jpg", ".jpeg", ".png", ".webp", ".gif"];
+    const allowedExts = [".jpg", ".jpeg", ".png", ".webp", ".gif", ".pdf"];
     const safeExt = allowedExts.includes(ext) ? ext : ".jpg";
     const filename = `${Date.now()}-${Math.random().toString(36).slice(2,8)}${safeExt}`;
     const filepath = path.join(uploadsDir, filename);

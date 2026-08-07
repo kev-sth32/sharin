@@ -1,6 +1,5 @@
 import { NextResponse } from "next/server";
-import { getMergedTrips, getMergedDepartures } from "@/lib/public-store";
-import { faqsSeed } from "@/lib/data";
+import { getMergedTrips, getMergedDepartures, getMergedFAQs } from "@/lib/public-store";
 
 function isAdminAuthenticated(req: Request) {
   const cookie = req.headers.get("cookie") || "";
@@ -100,7 +99,8 @@ function getCustomerSystemPrompt() {
     `- Trip: ${d.tripSlug} (Start: ${d.startDate}, End: ${d.endDate}, Status: ${d.status}, Price: ₹${d.price || "N/A"})`
   )).join("\n");
 
-  const faqsContext = faqsSeed.map((f: any) => (
+  const activeFaqs = getMergedFAQs();
+  const faqsContext = activeFaqs.map((f: any) => (
     `Q: ${f.question}\nA: ${f.answer}`
   )).join("\n\n");
 

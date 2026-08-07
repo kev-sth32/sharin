@@ -106,7 +106,7 @@ export default async function TripDetail({ params }: { params: Promise<{ slug: s
           <p className="mt-4 text-white/80 max-w-2xl text-[15px] md:text-[16px] leading-relaxed">
             {trip.shortDescription}
           </p>
-          <div className="mt-4 flex items-center gap-3">
+          <div className="mt-4 flex flex-wrap items-center gap-3 gap-y-2">
             <span className="inline-flex items-center gap-1 bg-white text-[#13253D] rounded-full px-3 py-1 text-xs font-bold shadow-sm">
               <Star className="w-3 h-3 fill-[#FF8A2B] text-[#FF8A2B]" /> {trip.ratingAvg} ({trip.ratingCount})
             </span>
@@ -118,13 +118,13 @@ export default async function TripDetail({ params }: { params: Promise<{ slug: s
       </div>
 
       <div className="max-w-[1280px] mx-auto px-4 md:px-8 py-12 grid lg:grid-cols-12 gap-10">
-        <div className="lg:col-span-8 space-y-10">
+        <div className="lg:col-span-8 space-y-10 min-w-0">
           
           {/* Price Overview Card */}
           <div className="rounded-3xl bg-white border border-[#F1D9D0] p-6 md:p-8 flex flex-wrap items-center justify-between gap-6 shadow-[0_10px_35px_-8px_rgba(19,37,61,0.05)]">
             <div>
               <div className="text-[11px] uppercase tracking-widest font-bold text-[#13253D]/50">Starts from</div>
-              <div className="flex items-baseline gap-3 mt-1">
+              <div className="flex flex-wrap items-baseline gap-3 mt-1">
                 <span className="text-3xl font-[800] text-[#13253D]">{formatINR(trip.priceFrom)}</span>
                 {trip.priceOriginal && (
                   <span className="line-through text-lg text-[#13253D]/40">{formatINR(trip.priceOriginal)}</span>
@@ -145,7 +145,64 @@ export default async function TripDetail({ params }: { params: Promise<{ slug: s
           {/* Group Departures Card */}
           <div className="rounded-3xl bg-white border border-[#F1D9D0] p-6 md:p-8 shadow-[0_10px_35px_-8px_rgba(19,37,61,0.05)]">
             <h2 className="font-display font-[800] text-xl md:text-2xl text-[#13253D] mb-6">Upcoming Group Departures</h2>
-            <div className="overflow-x-auto">
+            {/* Mobile departures list (visible on mobile, hidden on tablet/desktop) */}
+            <div className="md:hidden space-y-4">
+              {tripDepartures.map((d: any) => {
+                const startDateFormatted = new Date(d.startDate).toLocaleDateString("en-IN", { day: 'numeric', month: 'short' });
+                const endDateFormatted = new Date(d.endDate).toLocaleDateString("en-IN", { day: 'numeric', month: 'short', year: 'numeric' });
+                return (
+                  <div key={d.id} className="rounded-2xl border border-[#F1D9D0] bg-[#FFF8F0]/30 p-4 space-y-3.5 shadow-sm">
+                    <div className="flex justify-between items-start gap-2">
+                      <div>
+                        <span className="block font-bold text-sm text-[#13253D]">{startDateFormatted} — {endDateFormatted}</span>
+                        {d.isGuaranteed && (
+                          <span className="mt-1.5 inline-flex items-center gap-0.5 rounded bg-green-50 px-2 py-0.5 text-[9px] font-bold text-green-700 border border-green-200 uppercase tracking-wide">
+                            Guaranteed Departure
+                          </span>
+                        )}
+                      </div>
+                      <span className={`rounded-full px-2.5 py-0.5 text-[9px] font-bold tracking-wide uppercase ${
+                        d.status === "filling_fast" ? "bg-[#FFF0F4] text-[#FF4A7D]" :
+                        d.status === "sold_out" ? "bg-gray-100 text-gray-500" :
+                        d.status === "cancelled" ? "bg-red-50 text-red-600" :
+                        "bg-green-50 text-green-700"
+                      }`}>{d.status.replace("_", " ")}</span>
+                    </div>
+
+                    <div className="flex justify-between items-center text-xs text-[#3D4A5E]">
+                      <div>
+                        <span className="font-semibold text-[#13253D]/50 block uppercase text-[10px]">Seats Booked</span>
+                        <span className="font-bold text-sm text-[#13253D]">{d.seatsBooked} / {d.seatsTotal}</span>
+                      </div>
+                      <div className="text-right">
+                        <span className="font-semibold text-[#13253D]/50 block uppercase text-[10px]">Price</span>
+                        <span className="font-[800] text-sm text-[#13253D]">{formatINR(d.price || trip.priceFrom)}</span>
+                      </div>
+                    </div>
+
+                    <div className="pt-2 border-t border-[#F1D9D0]/50 flex justify-end">
+                      {d.status === "sold_out" || d.status === "cancelled" ? (
+                        <span className="rounded-full bg-gray-100 text-gray-400 px-5 py-2 text-xs font-bold cursor-not-allowed">
+                          Closed
+                        </span>
+                      ) : (
+                        <Link href={`?date=${d.startDate}#enquiry`} className="w-full text-center rounded-full bg-[#13253D] hover:bg-[#FF4A7D] text-white px-5 py-2 text-xs font-bold transition-colors shadow-sm">
+                          Enquire →
+                        </Link>
+                      )}
+                    </div>
+                  </div>
+                );
+              })}
+              {tripDepartures.length === 0 && (
+                <div className="py-6 text-center text-[#3D4A5E] text-sm font-medium">
+                  No scheduled departures at the moment. Please request your preferred dates.
+                </div>
+              )}
+            </div>
+
+            {/* Desktop departures table (hidden on mobile, visible on desktop) */}
+            <div className="hidden md:block overflow-x-auto">
               <table className="w-full text-sm">
                 <thead>
                   <tr className="border-b border-[#F1D9D0]/70 text-left text-xs uppercase text-[#3D4A5E]/70">
@@ -223,15 +280,27 @@ export default async function TripDetail({ params }: { params: Promise<{ slug: s
             </div>
           </div>
 
-          <LeadGate tripTitle={trip.title} />
-
-          <div id="trip-details-content" className="space-y-10">
+          <div>
+            <div id="trip-details-content" className="space-y-10">
 
           {/* Day wise plan */}
           <div className="space-y-6">
-            <div>
-              <h2 className="font-display font-[800] text-2xl text-[#13253D]">Day-wise sisterhood plan</h2>
-              <p className="text-sm text-[#3D4A5E] mt-2">Hotel names confirmed 7 days before. If weather/safety requires change, alternatives provided 12 hours prior.</p>
+            <div className="flex flex-wrap justify-between items-start gap-4">
+              <div>
+                <h2 className="font-display font-[800] text-2xl text-[#13253D]">Day-wise sisterhood plan</h2>
+                <p className="text-sm text-[#3D4A5E] mt-2">Hotel names confirmed 7 days before. If weather/safety requires change, alternatives provided 12 hours prior.</p>
+              </div>
+              {trip.itineraryPdf && (
+                <a 
+                  href={trip.itineraryPdf} 
+                  download 
+                  target="_blank" 
+                  rel="noopener noreferrer" 
+                  className="inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-[#FF4A7D] to-[#FF758F] hover:from-[#E63E6E] hover:to-[#FF4A7D] text-white px-5 py-2.5 text-xs font-bold transition-all shadow-[0_4px_10px_rgba(255,74,125,0.2)] hover:scale-105 transform duration-200"
+                >
+                  📥 Download PDF Itinerary
+                </a>
+              )}
             </div>
             <div className="space-y-6">
               {itinerary.map((d: any) => (
@@ -250,10 +319,13 @@ export default async function TripDetail({ params }: { params: Promise<{ slug: s
                 </div>
               ))}
             </div>
-            <div className="rounded-2xl bg-[#FFF6EF] border border-[#FF8A2B]/20 p-5 flex gap-3.5 text-[13px] text-[#3D4A5E]">
-              <AlertTriangle className="w-5 h-5 text-[#FF8A2B] shrink-0 mt-0.5" />
+            <div className="rounded-2xl bg-[#FFF6EF] border border-[#FF8A2B]/20 p-5 flex flex-col sm:flex-row gap-4 items-start sm:items-center text-[13px] text-[#3D4A5E]">
+              <div className="flex items-center gap-3 shrink-0">
+                <AlertTriangle className="w-5 h-5 text-[#FF8A2B]" />
+                <strong className="text-[#13253D] font-bold sm:hidden">Itinerary change policy</strong>
+              </div>
               <div>
-                <strong className="text-[#13253D] block mb-1">Itinerary change policy</strong>
+                <strong className="text-[#13253D] hidden sm:block mb-1 font-bold">Itinerary change policy</strong>
                 {trip.itineraryChangePolicy}
               </div>
             </div>
@@ -325,11 +397,13 @@ export default async function TripDetail({ params }: { params: Promise<{ slug: s
           </div>
 
           </div> {/* #trip-details-content */}
+          <LeadGate tripTitle={trip.title} itineraryPdf={trip.itineraryPdf} />
+          </div>
 
         </div>
 
         {/* Right Sticky Sidebar */}
-        <div className="lg:col-span-4">
+        <div className="lg:col-span-4 min-w-0">
           <div id="enquiry" className="sticky top-28">
             <EnquiryForm source={`trip_${trip.slug}`} defaultDestination={trip.slug} />
           </div>

@@ -15,6 +15,30 @@ function EnquiryFormInner({ source = "homepage", defaultDestination = "" }: { so
   const [travelMonth, setTravelMonth] = useState("");
   const [destination, setDestination] = useState(defaultDestination || "");
 
+  // Multi-step controlled states
+  const [step, setStep] = useState(1);
+  const [name, setName] = useState("");
+  const [phone, setPhone] = useState("");
+  const [email, setEmail] = useState("");
+  const [travelers, setTravelers] = useState("1");
+  const [budget, setBudget] = useState("<10k");
+  const [travelStyle, setTravelStyle] = useState("solo");
+  const [message, setMessage] = useState("");
+  const [consent, setConsent] = useState(false);
+
+  const isStep1Valid = name.trim() !== "" && phone.length >= 10 && email.includes("@") && email.includes(".");
+  const isStep2Valid = destination !== "" && travelMonth !== "";
+
+  const handleNextStep = (e: React.MouseEvent) => {
+    e.preventDefault();
+    if (step < 3) setStep(prev => prev + 1);
+  };
+
+  const handlePrevStep = (e: React.MouseEvent) => {
+    e.preventDefault();
+    if (step > 1) setStep(prev => prev - 1);
+  };
+
   // Update destination state when defaultDestination prop changes
   useEffect(() => {
     if (defaultDestination) {
@@ -129,10 +153,24 @@ function EnquiryFormInner({ source = "homepage", defaultDestination = "" }: { so
   })() : null;
 
   return (
-    <form action={onSubmit} className="rounded-[24px] bg-white border border-[#F1D9D0] p-6 md:p-8 card-shadow">
-      <div className="flex items-center justify-between mb-6">
+    <form action={onSubmit} className="rounded-[24px] bg-white border border-[#F1D9D0] p-6 md:p-8 card-shadow text-left">
+      <div className="flex items-center justify-between mb-4">
         <h3 className="font-display font-bold text-xl text-[#13253D]">Find my trip — free</h3>
-        <div className="text-[11px] rounded-full bg-[#13253D] text-white px-3 py-1 font-bold tracking-widest uppercase">2 min form</div>
+        <div className="text-[10px] rounded-full bg-[#13253D] text-white px-3 py-1 font-bold tracking-widest uppercase">2 min form</div>
+      </div>
+
+      {/* Progress Bar */}
+      <div className="mb-6">
+        <div className="flex justify-between items-center text-[10px] font-bold text-[#13253D]/50 uppercase mb-1.5">
+          <span>Step {step} of 3: {step === 1 ? "Contact Details" : step === 2 ? "Preferences" : "About You"}</span>
+          <span>{Math.round((step / 3) * 100)}%</span>
+        </div>
+        <div className="w-full h-1 bg-[#FFF0F4] rounded-full overflow-hidden">
+          <div 
+            className="h-full bg-gradient-to-r from-[#FF4A7D] to-[#FF758F] transition-all duration-300"
+            style={{ width: `${(step / 3) * 100}%` }}
+          />
+        </div>
       </div>
 
       {formattedSelectedDate && (
@@ -157,18 +195,48 @@ function EnquiryFormInner({ source = "homepage", defaultDestination = "" }: { so
       {/* Hidden field to submit the exact date */}
       <input type="hidden" name="date" value={selectedDate || ""} />
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <Input name="name" label="Your name" required placeholder="Ananya Sharma" />
+      {/* STEP 1: Contact Details */}
+      <div className={step === 1 ? "grid grid-cols-1 gap-4 animate-in fade-in duration-200" : "hidden"}>
+        <Input 
+          name="name" 
+          label="Your name" 
+          required 
+          placeholder="Ananya Sharma" 
+          value={name}
+          onChange={(e) => setName(e.target.value)}
+        />
         <Input 
           name="phone" 
           label="Phone / WhatsApp" 
           required 
           placeholder="e.g. 9999999999" 
+          value={phone}
           onInput={(e: React.FormEvent<HTMLInputElement>) => {
             e.currentTarget.value = e.currentTarget.value.replace(/[^0-9]/g, "");
           }}
+          onChange={(e) => setPhone(e.target.value)}
         />
-        <Input name="email" label="Email" required type="email" placeholder="you@email.com" className="md:col-span-2" />
+        <Input 
+          name="email" 
+          label="Email" 
+          required 
+          type="email" 
+          placeholder="you@email.com" 
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+        />
+        <Button 
+          type="button" 
+          onClick={handleNextStep} 
+          disabled={!isStep1Valid}
+          className="w-full mt-2 font-bold"
+        >
+          Continue to Trip Details →
+        </Button>
+      </div>
+
+      {/* STEP 2: Trip Preferences */}
+      <div className={step === 2 ? "grid grid-cols-1 gap-4 animate-in fade-in duration-200" : "hidden"}>
         <Select
           name="destination"
           label="Dream destination"
@@ -185,22 +253,91 @@ function EnquiryFormInner({ source = "homepage", defaultDestination = "" }: { so
           onChange={(e) => setTravelMonth(e.target.value)}
           options={monthsOptions}
         />
-        <Select name="travelers" label="Travelers" options={[{value:"1", label:"1 - solo"}, {value:"2", label:"2 - friends"}, {value:"3", label:"3"}, {value:"4", label:"4+"}]} />
-        <Select name="budget" label="Budget per person" options={[{value:"<10k", label:"< ₹10,000 weekend"}, {value:"10-20k", label:"₹10k-20k"}, {value:"20-35k", label:"₹20k-35k"}, {value:"35k+", label:"₹35k+ (premium/international)"}]} />
-        <Select name="travelStyle" label="Who are you?" options={[{value:"solo", label:"Solo first timer"}, {value:"mother-daughter", label:"Mother-daughter"}, {value:"friends", label:"Friends group"}, {value:"housewife", label:"Housewife exploring"}, {value:"professional", label:"Professional / entrepreneur"}, {value:"grandmother", label:"Adventurous grandmother"}]} />
-        <Textarea name="message" label="Anything we should know? Safety, food, kid-friendly?" placeholder="Jain food, kid 14y, need ground floor..." className="md:col-span-2" />
+        <Select 
+          name="travelers" 
+          label="Travelers" 
+          value={travelers}
+          onChange={(e) => setTravelers(e.target.value)}
+          options={[{value:"1", label:"1 - solo"}, {value:"2", label:"2 - friends"}, {value:"3", label:"3"}, {value:"4", label:"4+"}]} 
+        />
+        <div className="flex gap-3 mt-2">
+          <button 
+            type="button" 
+            onClick={handlePrevStep}
+            className="flex-1 rounded-full border border-[#F1D9D0] text-[#13253D] font-bold text-xs py-3 hover:bg-[#FFF8F0]/30 transition"
+          >
+            ← Back
+          </button>
+          <Button 
+            type="button" 
+            onClick={handleNextStep} 
+            disabled={!isStep2Valid}
+            className="flex-[2] font-bold"
+          >
+            Preferences →
+          </Button>
+        </div>
       </div>
 
-      <label className="mt-5 flex gap-2 items-start text-[12px] leading-relaxed text-[#3D4A5E] cursor-pointer">
-        <input type="checkbox" name="consent" required className="mt-1" />
-        <span>I consent to TripNaari contacting me on WhatsApp/email. I have read cancellation-refund and safety promise. No spam, unsubscribe anytime.</span>
-      </label>
+      {/* STEP 3: Personal Preferences */}
+      <div className={step === 3 ? "grid grid-cols-1 gap-4 animate-in fade-in duration-200" : "hidden"}>
+        <Select 
+          name="budget" 
+          label="Budget per person" 
+          value={budget}
+          onChange={(e) => setBudget(e.target.value)}
+          options={[{value:"<10k", label:"< ₹10,000 weekend"}, {value:"10-20k", label:"₹10k-20k"}, {value:"20-35k", label:"₹20k-35k"}, {value:"35k+", label:"₹35k+ (premium/international)"}]} 
+        />
+        <Select 
+          name="travelStyle" 
+          label="Who are you?" 
+          value={travelStyle}
+          onChange={(e) => setTravelStyle(e.target.value)}
+          options={[{value:"solo", label:"Solo first timer"}, {value:"mother-daughter", label:"Mother-daughter"}, {value:"friends", label:"Friends group"}, {value:"housewife", label:"Housewife exploring"}, {value:"professional", label:"Professional / entrepreneur"}, {value:"grandmother", label:"Adventurous grandmother"}]} 
+        />
+        <Textarea 
+          name="message" 
+          label="Anything we should know? Safety, food, kid-friendly?" 
+          placeholder="Jain food, kid 14y, need ground floor..." 
+          value={message}
+          onChange={(e) => setMessage(e.target.value)}
+        />
+        
+        <label className="mt-2 flex gap-2 items-start text-[12px] leading-relaxed text-[#3D4A5E] cursor-pointer">
+          <input 
+            type="checkbox" 
+            name="consent" 
+            required 
+            className="mt-1" 
+            checked={consent}
+            onChange={(e) => setConsent(e.target.checked)}
+          />
+          <span>I consent to TripNaari contacting me on WhatsApp/email. I have read cancellation-refund and safety promise. No spam, unsubscribe anytime.</span>
+        </label>
 
-      {status==="error" && <div className="mt-4 rounded-xl bg-red-50 border border-red-200 p-3 text-sm text-red-600">{errorMsg}</div>}
+        {status==="error" && <div className="mt-2 rounded-xl bg-red-50 border border-red-200 p-3 text-sm text-red-600">{errorMsg}</div>}
 
-      <Button type="submit" size="lg" className="w-full mt-6" isLoading={status==="loading"}>Get itinerary on WhatsApp →</Button>
+        <div className="flex gap-3 mt-4">
+          <button 
+            type="button" 
+            onClick={handlePrevStep}
+            className="flex-1 rounded-full border border-[#F1D9D0] text-[#13253D] font-bold text-xs py-3 hover:bg-[#FFF8F0]/30 transition"
+          >
+            ← Back
+          </button>
+          <Button 
+            type="submit" 
+            size="lg" 
+            className="flex-[2] font-bold" 
+            isLoading={status==="loading"}
+            disabled={!consent}
+          >
+            Get itinerary on WhatsApp →
+          </Button>
+        </div>
+      </div>
 
-      <div className="mt-3 text-[11px] text-center text-[#3D4A5E]/60">🔒 Data encrypted. 2 hours response 10AM-8PM. Emergency 24x7 for ongoing trips. By MSME & Startup India recognised.</div>
+      <div className="mt-4 text-[11px] text-center text-[#3D4A5E]/60">🔒 Data encrypted. 2 hours response 10AM-8PM. Emergency 24x7 for ongoing trips. By MSME & Startup India recognised.</div>
     </form>
   );
 }

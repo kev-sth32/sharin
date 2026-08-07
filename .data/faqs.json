@@ -1,0 +1,38 @@
+[
+  {
+    "id": 1,
+    "question": "Is TripNaari only for solo women? Can I join with my mother or daughter?",
+    "answer": "TripNaari is women-first, not women-only exclusive. Our group departures are women-only (including trans women). We welcome mothers, daughters (12+), grandmothers, sisterhood groups. Private custom trips can include family if at least 70% travelers are women and everyone agrees to our safety code.",
+    "category": "general"
+  },
+  {
+    "id": 2,
+    "question": "How do you ensure safety? What if I’m traveling first time?",
+    "answer": "Every TripNaari departure has: 1 verified women trip leader with 24x7 accountability, 2 background-checked drivers, 3 hotel safety audit (lock, location, reviews by solo women), 4 emergency contact card with local police, hospital & TripNaari escalation (Anjali 24x7), 5 live location sharing on travel days, 6 WhatsApp group made 48 hours before. First-timers get a pre-trip call.",
+    "category": "safety"
+  },
+  {
+    "id": 3,
+    "question": "When will I know my exact hotel names?",
+    "answer": "We show you hotel category and 2 sample properties at booking. Exact hotel name is confirmed 7-10 days before departure (3 days for weekend trips) via email & WhatsApp. If we change hotel post-confirmation, it will be same or higher category at our cost.",
+    "category": "booking"
+  },
+  {
+    "id": 4,
+    "question": "What is your cancellation refund timeline?",
+    "answer": "30+ days before: 90% refund, 15-29 days: 50% refund + 50% credit, 7-14 days: 30% refund + 50% credit, <7 days: No refund but 70% credit valid 1 year. Refunds processed in 7-10 working days to source. Credits are transferable to another Naari.",
+    "category": "cancellation"
+  },
+  {
+    "id": 5,
+    "question": "What if weather, traffic, or low group size changes itinerary?",
+    "answer": "Safety first, always. If weather/political curb/traffic requires change, trip leader will offer best alternative with group vote. If group size drops below 6, we give you choice: 1) Move to next date with upgrade, 2) Continue with small group supplement (max 10% extra), 3) Full refund. We never cancel without your consent if you have confirmed date.",
+    "category": "booking"
+  },
+  {
+    "id": 6,
+    "question": "Are inclusives and exclusives really transparent?",
+    "answer": "Yes. On every trip page we list exact inclusions: stay type, meals (B/D), transport (Tempo traveler/4x4), entry fees, permits, trip leader fee, first aid. Exclusions always: personal expenses, any meal not mentioned, adventure activity insurance, Tips (optional). No hidden snow boots rent.",
+    "category": "booking"
+  }
+]

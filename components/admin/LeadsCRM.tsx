@@ -207,14 +207,14 @@ export default function LeadsCRM({ initialLeads }: LeadsCRMProps) {
           </div>
 
           {/* Quick Filters */}
-          <div className="flex flex-wrap gap-2 items-center">
+          <div className="grid grid-cols-2 sm:flex sm:flex-wrap gap-2 items-center w-full md:w-auto">
             {/* Status Select */}
-            <div className="flex items-center gap-1 bg-[#FFF8F0] border border-[#F1D9D0] rounded-full px-3 py-1.5">
-              <span className="text-[10px] font-bold text-[#13253D]/50 uppercase">Status:</span>
+            <div className="flex items-center justify-between sm:justify-start gap-1 bg-[#FFF8F0] border border-[#F1D9D0] rounded-full px-3 py-1.5 w-full sm:w-auto">
+              <span className="text-[10px] font-bold text-[#13253D]/50 uppercase shrink-0">Status:</span>
               <select
                 value={statusFilter}
                 onChange={(e) => setStatusFilter(e.target.value)}
-                className="bg-transparent text-xs font-semibold outline-none text-[#13253D]"
+                className="bg-transparent text-xs font-semibold outline-none text-[#13253D] w-full flex-1 min-w-0 cursor-pointer text-right sm:text-left"
               >
                 <option value="all">All</option>
                 {statuses.map(s => (
@@ -224,12 +224,12 @@ export default function LeadsCRM({ initialLeads }: LeadsCRMProps) {
             </div>
 
             {/* Destination Select */}
-            <div className="flex items-center gap-1 bg-[#FFF8F0] border border-[#F1D9D0] rounded-full px-3 py-1.5">
-              <span className="text-[10px] font-bold text-[#13253D]/50 uppercase">Dest:</span>
+            <div className="flex items-center justify-between sm:justify-start gap-1 bg-[#FFF8F0] border border-[#F1D9D0] rounded-full px-3 py-1.5 w-full sm:w-auto">
+              <span className="text-[10px] font-bold text-[#13253D]/50 uppercase shrink-0">Dest:</span>
               <select
                 value={destinationFilter}
                 onChange={(e) => setDestinationFilter(e.target.value)}
-                className="bg-transparent text-xs font-semibold outline-none text-[#13253D]"
+                className="bg-transparent text-xs font-semibold outline-none text-[#13253D] w-full flex-1 min-w-0 cursor-pointer text-right sm:text-left"
               >
                 <option value="all">All Destinations</option>
                 {uniqueDestinations.map(d => (
@@ -239,12 +239,12 @@ export default function LeadsCRM({ initialLeads }: LeadsCRMProps) {
             </div>
 
             {/* Source Select */}
-            <div className="flex items-center gap-1 bg-[#FFF8F0] border border-[#F1D9D0] rounded-full px-3 py-1.5">
-              <span className="text-[10px] font-bold text-[#13253D]/50 uppercase">Source:</span>
+            <div className="flex items-center justify-between sm:justify-start gap-1 bg-[#FFF8F0] border border-[#F1D9D0] rounded-full px-3 py-1.5 w-full sm:w-auto">
+              <span className="text-[10px] font-bold text-[#13253D]/50 uppercase shrink-0">Source:</span>
               <select
                 value={sourceFilter}
                 onChange={(e) => setSourceFilter(e.target.value)}
-                className="bg-transparent text-xs font-semibold outline-none text-[#13253D]"
+                className="bg-transparent text-xs font-semibold outline-none text-[#13253D] w-full flex-1 min-w-0 cursor-pointer text-right sm:text-left"
               >
                 <option value="all">All Sources</option>
                 {uniqueSources.map(src => (
@@ -254,12 +254,12 @@ export default function LeadsCRM({ initialLeads }: LeadsCRMProps) {
             </div>
 
             {/* Sort Select */}
-            <div className="flex items-center gap-1 bg-[#FFF8F0] border border-[#F1D9D0] rounded-full px-3 py-1.5">
-              <span className="text-[10px] font-bold text-[#13253D]/50 uppercase">Sort:</span>
+            <div className="flex items-center justify-between sm:justify-start gap-1 bg-[#FFF8F0] border border-[#F1D9D0] rounded-full px-3 py-1.5 w-full sm:w-auto">
+              <span className="text-[10px] font-bold text-[#13253D]/50 uppercase shrink-0">Sort:</span>
               <select
                 value={sortBy}
                 onChange={(e) => setSortBy(e.target.value as "newest" | "oldest")}
-                className="bg-transparent text-xs font-semibold outline-none text-[#13253D]"
+                className="bg-transparent text-xs font-semibold outline-none text-[#13253D] w-full flex-1 min-w-0 cursor-pointer text-right sm:text-left"
               >
                 <option value="newest">Newest First</option>
                 <option value="oldest">Oldest First</option>
@@ -269,7 +269,7 @@ export default function LeadsCRM({ initialLeads }: LeadsCRMProps) {
             {(searchTerm || statusFilter !== "all" || destinationFilter !== "all" || sourceFilter !== "all") && (
               <button
                 onClick={resetFilters}
-                className="rounded-full bg-red-50 hover:bg-red-100 text-red-600 border border-red-200 text-xs font-bold px-3 py-1.5 transition flex items-center gap-1"
+                className="col-span-2 sm:col-span-1 rounded-full bg-red-50 hover:bg-red-100 text-red-600 border border-red-200 text-xs font-bold px-3 py-1.5 transition flex items-center justify-center gap-1 w-full sm:w-auto"
               >
                 Clear Filters
               </button>
@@ -299,8 +299,190 @@ export default function LeadsCRM({ initialLeads }: LeadsCRMProps) {
         </div>
       </div>
 
-      {/* Leads Table */}
-      <div className="overflow-x-auto rounded-2xl border border-[#F1D9D0] bg-white shadow-sm">
+      {/* Mobile leads card list (visible on mobile/tablet, hidden on desktop) */}
+      <div className="lg:hidden space-y-4">
+        {filteredAndSortedLeads.map((l) => {
+          const isExpanded = !!expandedLeads[l.id];
+          return (
+            <div key={l.id} className={`bg-white border border-[#F1D9D0] rounded-2xl p-4 shadow-sm space-y-4 transition-colors ${isExpanded ? 'bg-[#FFF8F0]/10 border-[#FF4A7D]/35' : ''}`}>
+              {/* Header: Name & Status */}
+              <div className="flex justify-between items-start gap-2">
+                <div className="font-bold text-sm text-[#13253D] flex items-center gap-1.5">
+                  <User className="w-4 h-4 text-[#FF4A7D]" />
+                  <span>{l.name}</span>
+                </div>
+                <span className={`inline-block border rounded-full px-2.5 py-0.5 text-[9px] font-extrabold uppercase tracking-wider ${getStatusBadgeClass(l.status)}`}>
+                  {l.status.replace("_", " ")}
+                </span>
+              </div>
+
+              {/* Contact details & Trip details grid */}
+              <div className="grid grid-cols-2 gap-4 text-xs pt-2.5 border-t border-[#F1D9D0]/40">
+                <div className="space-y-1.5">
+                  <span className="text-[9px] uppercase font-bold text-[#13253D]/50 block">Contact Info</span>
+                  <div className="flex items-center gap-1.5 text-[#3D4A5E]">
+                    <Mail className="w-3.5 h-3.5 text-[#3D4A5E]/40 shrink-0" />
+                    <a href={`mailto:${l.email}`} className="hover:underline truncate max-w-[120px]">{l.email}</a>
+                  </div>
+                  <div className="flex items-center gap-1.5 text-[#3D4A5E]">
+                    <Phone className="w-3.5 h-3.5 text-[#3D4A5E]/40 shrink-0" />
+                    <a href={`tel:${l.phone}`} className="hover:underline">{l.phone}</a>
+                  </div>
+                </div>
+
+                <div className="space-y-1.5">
+                  <span className="text-[9px] uppercase font-bold text-[#13253D]/50 block">Trip Details</span>
+                  <div className="flex items-center gap-1 text-[#13253D] font-semibold">
+                    <MapPin className="w-3.5 h-3.5 text-[#FF8A2B] shrink-0" />
+                    <span>{l.destination}</span>
+                  </div>
+                  <div className="text-[10px] text-[#3D4A5E] flex flex-wrap gap-1 items-center font-medium">
+                    <span className="bg-[#FFF8F0] border border-[#F1D9D0]/60 rounded px-1">{l.travelMonth}</span>
+                    <span>•</span>
+                    <span>{l.travelers} pax</span>
+                    <span>•</span>
+                    <span className="text-[#13253D] font-bold">{l.budget}</span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Source & Date info */}
+              <div className="flex justify-between items-center text-[10px] text-[#3D4A5E] bg-[#FFF8F0]/30 rounded-xl p-2 border border-[#F1D9D0]/30">
+                <div>
+                  <span className="font-semibold">Received: </span>
+                  {new Date(l.createdAt).toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' })}
+                </div>
+                <div className="font-extrabold uppercase text-[#FF4A7D]">
+                  Source: {l.source || "organic"}
+                </div>
+              </div>
+
+              {/* Action buttons */}
+              <div className="flex justify-between items-center gap-2 pt-2 border-t border-[#F1D9D0]/40">
+                <a
+                  href={`https://wa.me/${l.phone?.replace(/[^0-9]/g, "")}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center justify-center gap-1.5 rounded-full bg-[#25D366] hover:bg-[#20ba5a] text-white px-4 py-2 text-xs font-bold transition shadow-sm"
+                >
+                  <svg viewBox="0 0 24 24" className="w-3.5 h-3.5 fill-current" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946C.06 5.348 5.397.01 12.008.01c3.202.001 6.212 1.246 8.477 3.514 2.266 2.268 3.507 5.28 3.505 8.484-.004 6.657-5.34 11.997-11.953 11.997-2.005-.001-3.973-.502-5.724-1.455L0 24zm6.59-4.846c1.6.95 3.188 1.449 4.625 1.451 5.437.002 9.861-4.416 9.864-9.852.002-2.63-1.023-5.101-2.885-6.963C16.388 1.928 13.916.904 11.285.902c-5.439 0-9.863 4.417-9.867 9.853-.001 1.73.457 3.419 1.328 4.908l-.989 3.613 3.708-.973zm11.58-6.143c-.302-.15-1.788-.882-2.057-.98-.268-.099-.463-.149-.658.15-.195.299-.754.98-.925 1.178-.17.199-.341.224-.643.075-.302-.15-1.273-.469-2.427-1.498-.897-.8-1.502-1.787-1.678-2.087-.177-.3-.019-.462.13-.611.135-.134.302-.35.454-.523.151-.174.2-.299.302-.498.101-.2.05-.374-.025-.523-.075-.15-.658-1.588-.901-2.173-.236-.57-.497-.493-.68-.5-.187-.008-.401-.01-.614-.01s-.56.08-.853.4c-.293.32-1.12 1.1-1.12 2.68 0 1.58 1.147 3.11 1.307 3.32.16.21 2.257 3.45 5.47 4.83.763.329 1.36.526 1.822.673.768.243 1.467.209 2.02.127.616-.093 1.788-.732 2.042-1.44.254-.707.254-1.314.178-1.44-.076-.124-.268-.199-.57-.348z" />
+                  </svg>
+                  <span>WhatsApp</span>
+                </a>
+                <button
+                  onClick={() => toggleExpand(l.id)}
+                  className="rounded-full bg-[#13253D] hover:bg-[#FF4A7D] text-white px-4 py-2 text-xs font-bold transition shadow-sm flex items-center gap-1"
+                >
+                  <span>{isExpanded ? "Hide Details" : "View / Edit"}</span>
+                </button>
+              </div>
+
+              {/* Expanded details container */}
+              {isExpanded && (
+                <div className="pt-2 border-t border-[#F1D9D0]/50 animate-in fade-in duration-300">
+                  <div className="grid grid-cols-1 gap-6 bg-[#FFF8F0]/30 rounded-2xl p-4 border border-[#F1D9D0]/40 shadow-inner text-left">
+                    {/* Traveler info & message */}
+                    <div className="space-y-3">
+                      <h4 className="text-[10px] uppercase font-bold tracking-wider text-[#13253D]/50">Traveler Inquiry details</h4>
+                      <div className="bg-white p-3.5 rounded-xl border border-[#F1D9D0]/30 text-xs text-[#3D4A5E]">
+                        {l.message ? (
+                          <div>
+                            <div className="font-semibold text-[10px] uppercase text-[#13253D]/40 mb-1">Message</div>
+                            <p className="italic leading-relaxed whitespace-pre-wrap">"{l.message}"</p>
+                          </div>
+                        ) : (
+                          <p className="text-gray-400 italic text-[11px]">No custom message provided.</p>
+                        )}
+                      </div>
+                    </div>
+
+                    {/* Interactive state form */}
+                    <div className="space-y-3 pt-3 border-t border-[#F1D9D0]/40">
+                      <h4 className="text-[10px] uppercase font-bold tracking-wider text-[#13253D]/50">Update Pipeline State</h4>
+                      <ConfirmForm
+                        action={async (formData: FormData) => {
+                          const status = formData.get("status") as string;
+                          const notes = formData.get("notes") as string;
+                          const follow = formData.get("followUpAt") as string;
+                          await handleLeadUpdate(l.id, status, notes, follow);
+                        }}
+                        confirmText={`Update pipeline details for "${l.name}"?`}
+                        buttonText="Save & Update Lead"
+                        buttonClassName="w-full rounded-full bg-[#13253D] hover:bg-[#FF4A7D] text-white py-2.5 text-xs font-bold transition-all shadow-sm"
+                        className="space-y-3"
+                      >
+                        <div>
+                          <label className="text-[9px] font-extrabold uppercase text-[#13253D]/40 block pl-1 mb-1">Pipeline Status</label>
+                          <select
+                            name="status"
+                            defaultValue={l.status}
+                            className="w-full rounded-xl border border-[#F1D9D0] px-2.5 py-2 text-xs bg-white outline-none font-semibold text-[#13253D] focus:border-[#FF4A7D]/40 transition"
+                          >
+                            {statuses.map(s => (
+                              <option key={s} value={s}>{s.replace("_", " ")}</option>
+                            ))}
+                          </select>
+                        </div>
+                        <div>
+                          <label className="text-[9px] font-extrabold uppercase text-[#13253D]/40 block pl-1 mb-1">CRM Notes</label>
+                          <textarea
+                            name="notes"
+                            defaultValue={l.notes || ""}
+                            placeholder="Add preferences, updates, etc..."
+                            className="w-full rounded-xl border border-[#F1D9D0] p-2.5 text-xs bg-white outline-none focus:border-[#FF4A7D]/40 transition"
+                            rows={3}
+                          />
+                        </div>
+                        <div>
+                          <label className="text-[9px] font-extrabold uppercase text-[#13253D]/40 block pl-1 mb-1">Reminder Date</label>
+                          <input
+                            name="followUpAt"
+                            type="datetime-local"
+                            defaultValue={l.followUpAt || ""}
+                            className="w-full rounded-xl border border-[#F1D9D0] px-2.5 py-2 text-xs outline-none bg-white text-[#13253D]"
+                          />
+                        </div>
+                      </ConfirmForm>
+                    </div>
+
+                    {/* Notes history & AI Assistant */}
+                    <div className="space-y-3 pt-3 border-t border-[#F1D9D0]/40">
+                      <h4 className="text-[10px] uppercase font-bold tracking-wider text-[#13253D]/50">Status & Notes History</h4>
+                      <p className="text-xs text-[#13253D] bg-white p-3 rounded-xl border border-[#F1D9D0]/30 italic leading-relaxed min-h-[60px] whitespace-pre-wrap text-left">
+                        {l.notes || "No notes logged yet."}
+                      </p>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          window.dispatchEvent(
+                            new CustomEvent("tripnaari-ai-context", {
+                              detail: { type: "lead", data: l }
+                            })
+                          );
+                        }}
+                        className="w-full flex items-center justify-center gap-1.5 rounded-xl border border-[#FF4A7D]/30 bg-white hover:bg-[#FFF0F4] text-[#FF4A7D] py-2 text-xs font-bold transition shadow-sm"
+                      >
+                        <Sparkles className="w-3.5 h-3.5" />
+                        <span>Consult AI Assistant</span>
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              )}
+            </div>
+          );
+        })}
+        {filteredAndSortedLeads.length === 0 && (
+          <div className="p-12 text-center text-sm text-[#3D4A5E] bg-white border border-[#F1D9D0] rounded-2xl shadow-sm">
+            <span className="text-3xl block mb-2">🔍</span>
+            No leads found matching your active filters or search queries.
+          </div>
+        )}
+      </div>
+
+      {/* Desktop view: Leads Table (hidden on mobile/tablet, visible on desktop) */}
+      <div className="hidden lg:block overflow-x-auto rounded-2xl border border-[#F1D9D0] bg-white shadow-sm">
         <table className="w-full text-sm">
           <thead className="bg-[#FFF8F0] text-[10px] uppercase tracking-wider text-[#13253D]/60 border-b border-[#F1D9D0]">
             <tr>

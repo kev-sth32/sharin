@@ -6,9 +6,10 @@ import { ShieldCheck, Lock, Loader2 } from "lucide-react";
 
 interface LeadGateProps {
   tripTitle: string;
+  itineraryPdf?: string;
 }
 
-export default function LeadGate({ tripTitle }: LeadGateProps) {
+export default function LeadGate({ tripTitle, itineraryPdf }: LeadGateProps) {
   const [isLocked, setIsLocked] = useState(true);
   const [isPending, startTransition] = useTransition();
   const [errorMsg, setErrorMsg] = useState("");
@@ -18,10 +19,20 @@ export default function LeadGate({ tripTitle }: LeadGateProps) {
     if (isUnlocked) {
       setIsLocked(false);
     } else {
-      // Add blur and scroll-lock classes to details section
+      // Add visible-but-unreadable, scroll-lock classes to details section
       const content = document.getElementById("trip-details-content");
       if (content) {
-        content.classList.add("blur-md", "pointer-events-none", "select-none", "max-h-[500px]", "overflow-hidden");
+        // Explicitly remove blur-md in case it was left over from a previous session/code state
+        content.classList.remove("blur-md", "blur");
+        content.classList.add("opacity-40", "pointer-events-none", "select-none", "max-h-[380px]", "overflow-hidden", "relative");
+
+        // Dynamically add gradient overlay at the bottom of the content container
+        if (!document.getElementById("leadgate-fade-overlay")) {
+          const overlay = document.createElement("div");
+          overlay.id = "leadgate-fade-overlay";
+          overlay.className = "absolute inset-x-0 bottom-0 h-32 bg-gradient-to-t from-[#FFF8F0] to-transparent z-10 pointer-events-none";
+          content.appendChild(overlay);
+        }
       }
     }
   }, []);
@@ -37,10 +48,23 @@ export default function LeadGate({ tripTitle }: LeadGateProps) {
         if (res.success) {
           localStorage.setItem("tn_unlocked_trips", "true");
           setIsLocked(false);
-          // Remove blur from details section
+          // Remove locking classes from details section
           const content = document.getElementById("trip-details-content");
           if (content) {
-            content.classList.remove("blur-md", "pointer-events-none", "select-none", "max-h-[500px]", "overflow-hidden");
+            content.classList.remove("opacity-40", "blur-md", "blur", "pointer-events-none", "select-none", "max-h-[380px]", "overflow-hidden");
+            const overlay = document.getElementById("leadgate-fade-overlay");
+            if (overlay) overlay.remove();
+          }
+
+          // Auto-download PDF if configured
+          if (itineraryPdf) {
+            const link = document.createElement("a");
+            link.href = itineraryPdf;
+            link.setAttribute("download", `${tripTitle.toLowerCase().replace(/[^a-z0-9]+/g, "-")}-itinerary.pdf`);
+            link.setAttribute("target", "_blank");
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
           }
         } else {
           setErrorMsg(res.error || "An error occurred. Please try again.");
@@ -54,23 +78,26 @@ export default function LeadGate({ tripTitle }: LeadGateProps) {
   if (!isLocked) return null;
 
   return (
-    <div className="relative z-40 -mt-8 mb-20 max-w-[550px] mx-auto px-4 animate-in fade-in zoom-in-95 duration-200">
-      <div className="bg-white rounded-[32px] p-6 md:p-8 border border-[#FF4A7D]/20 shadow-[0_20px_50px_rgba(255,74,125,0.12)] text-[#13253D]">
+    <div className="relative z-40 -mt-28 mb-20 max-w-[500px] mx-auto px-4 animate-in fade-in slide-in-from-bottom-6 duration-500">
+      <div className="bg-white rounded-[32px] p-5 sm:p-6 md:p-8 border border-[#FF4A7D]/25 shadow-[0_25px_60px_rgba(255,74,125,0.15)] text-[#13253D] w-full">
         <div className="flex justify-center mb-4">
-          <div className="w-12 h-12 rounded-2xl bg-[#FFF0F4] border border-[#FF4A7D]/20 flex items-center justify-center text-[#FF4A7D]">
-            <Lock className="w-5 h-5" />
+          <div className="relative flex items-center justify-center">
+            <div className="absolute inset-0 rounded-2xl bg-[#FF4A7D]/10 animate-ping" />
+            <div className="relative w-12 h-12 rounded-2xl bg-gradient-to-br from-[#FF4A7D] to-[#FF758F] flex items-center justify-center text-white shadow-md border border-[#FF4A7D]/25">
+              <Lock className="w-5 h-5" />
+            </div>
           </div>
         </div>
 
         <div className="text-center space-y-2">
-          <span className="inline-flex items-center gap-1 text-[10px] font-extrabold uppercase tracking-wider text-[#FF4A7D]">
+          <span className="inline-flex items-center gap-1.5 text-[10px] font-extrabold uppercase tracking-wider text-[#FF4A7D] bg-[#FFF0F4] border border-[#FF4A7D]/15 px-3 py-1 rounded-full">
             🔐 Detailed Itinerary & Hotels Gated
           </span>
-          <h3 className="font-display font-[800] text-[22px] md:text-[24px] leading-tight text-[#13253D]">
-            Unlock Full Trip Details
+          <h3 className="font-display font-[800] text-[22px] md:text-[24px] leading-tight text-[#13253D] pt-1">
+            Unlock & Download Itinerary
           </h3>
           <p className="text-xs text-[#3D4A5E] leading-relaxed max-w-sm mx-auto">
-            Unlock the day-by-day sisterhood plan, dynamic inclusion details, and verified hotel previews for <strong className="text-[#13253D]">{tripTitle}</strong> instantly.
+            Get the full day-by-day plan, inclusions, hotel previews, and automatically download the PDF itinerary for <strong className="text-[#13253D]">{tripTitle}</strong> instantly.
           </p>
         </div>
 
@@ -84,7 +111,7 @@ export default function LeadGate({ tripTitle }: LeadGateProps) {
               type="text" 
               name="name" 
               placeholder="e.g. Priyanjali Sharma"
-              className="w-full mt-1.5 rounded-xl border border-[#F1D9D0] bg-[#FFF8F0]/30 px-3.5 py-2.5 text-sm text-[#13253D] font-semibold focus:outline-none focus:border-[#FF4A7D]"
+              className="w-full mt-1.5 rounded-xl border border-[#F1D9D0] bg-[#FFF8F0]/30 px-3.5 py-2.5 text-sm text-[#13253D] font-semibold focus:outline-none focus:border-[#FF4A7D] focus:ring-2 focus:ring-[#FF4A7D]/10 transition-all"
             />
           </div>
 
@@ -95,7 +122,7 @@ export default function LeadGate({ tripTitle }: LeadGateProps) {
               type="email" 
               name="email" 
               placeholder="name@gmail.com"
-              className="w-full mt-1.5 rounded-xl border border-[#F1D9D0] bg-[#FFF8F0]/30 px-3.5 py-2.5 text-sm text-[#13253D] font-semibold focus:outline-none focus:border-[#FF4A7D]"
+              className="w-full mt-1.5 rounded-xl border border-[#F1D9D0] bg-[#FFF8F0]/30 px-3.5 py-2.5 text-sm text-[#13253D] font-semibold focus:outline-none focus:border-[#FF4A7D] focus:ring-2 focus:ring-[#FF4A7D]/10 transition-all"
             />
           </div>
 
@@ -109,7 +136,7 @@ export default function LeadGate({ tripTitle }: LeadGateProps) {
               onInput={(e) => {
                 e.currentTarget.value = e.currentTarget.value.replace(/[^0-9]/g, "");
               }}
-              className="w-full mt-1.5 rounded-xl border border-[#F1D9D0] bg-[#FFF8F0]/30 px-3.5 py-2.5 text-sm text-[#13253D] font-semibold focus:outline-none focus:border-[#FF4A7D]"
+              className="w-full mt-1.5 rounded-xl border border-[#F1D9D0] bg-[#FFF8F0]/30 px-3.5 py-2.5 text-sm text-[#13253D] font-semibold focus:outline-none focus:border-[#FF4A7D] focus:ring-2 focus:ring-[#FF4A7D]/10 transition-all"
             />
           </div>
 
@@ -120,14 +147,14 @@ export default function LeadGate({ tripTitle }: LeadGateProps) {
           <button 
             type="submit" 
             disabled={isPending}
-            className="w-full text-center rounded-full bg-[#FF4A7D] hover:bg-[#800F2D] disabled:bg-[#FF4A7D]/70 text-white font-extrabold text-[14px] py-3.5 transition-all duration-300 shadow-md flex items-center justify-center gap-2"
+            className="w-full text-center rounded-full bg-gradient-to-r from-[#FF4A7D] to-[#FF758F] hover:from-[#E63E6E] hover:to-[#FF4A7D] disabled:opacity-70 text-white font-extrabold text-[14px] py-4 transition-all duration-300 shadow-[0_4px_15px_rgba(255,74,125,0.3)] hover:shadow-[0_6px_20px_rgba(255,74,125,0.4)] flex items-center justify-center gap-2 hover:scale-[1.02] active:scale-[0.98] transform"
           >
             {isPending ? (
               <>
                 <Loader2 className="w-4 h-4 animate-spin" /> Unlocking...
               </>
             ) : (
-              "Unlock Details Instantly →"
+              "Unlock & Download Itinerary →"
             )}
           </button>
         </form>

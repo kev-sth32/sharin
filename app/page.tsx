@@ -11,10 +11,11 @@ import CommunityBanner from "@/components/sections/CommunityBanner";
 import EnquiryModal from "@/components/sections/EnquiryModal";
 import TripLeaders from "@/components/sections/TripLeaders";
 import Testimonials from "@/components/sections/Testimonials";
-import { getSettings } from "@/lib/public-store";
+import { getSettings, getMergedFAQs } from "@/lib/public-store";
 
 export default function HomePage() {
   const settings = getSettings();
+  const faqs = getMergedFAQs();
   const rawText = settings.marqueeText || "";
   const cleanText = rawText.trim().replace(/^[\s•·\-/*]+|[\s•·\-/*]+$/g, "");
 
@@ -37,7 +38,7 @@ export default function HomePage() {
       <TripLeaders />
       <Testimonials />
       <Gallery />
-      <FAQSection />
+      <FAQSection faqs={faqs} />
       <ContactSection />
       <Newsletter />
       <CommunityBanner />
