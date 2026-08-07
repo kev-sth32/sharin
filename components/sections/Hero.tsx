@@ -92,37 +92,37 @@ export default function Hero() {
 
             {/* Right side Quick Enquiry Widget */}
             <div className="lg:col-span-5 flex justify-center lg:justify-end">
-              <div className="w-full max-w-[430px] bg-white rounded-[32px] p-5 2xl:p-8 border border-[#F1D9D0]/50 shadow-[0_20px_50px_rgba(0,0,0,0.3)] text-[#13253D]">
-                <div className="text-[11px] font-extrabold uppercase tracking-wider text-[#FF4A7D] leading-tight">
+              <div className="w-full max-w-[430px] bg-white rounded-[32px] p-5 lg:p-4.5 xl:p-6 2xl:p-8 border border-[#F1D9D0]/50 shadow-[0_20px_50px_rgba(0,0,0,0.3)] text-[#13253D]">
+                <div className="text-[10px] xl:text-[11px] font-extrabold uppercase tracking-wider text-[#FF4A7D] leading-tight">
                   Quick Enquiry • 2 Min • 2 Hours Response
                 </div>
-                <h3 className="font-display font-[800] text-[20px] md:text-[22px] 2xl:text-[28px] text-[#13253D] leading-[1.15] mt-2 mb-3 2xl:mb-5">
+                <h3 className="font-display font-[800] text-[19px] sm:text-[21px] lg:text-[19px] xl:text-[24px] 2xl:text-[28px] text-[#13253D] leading-[1.15] mt-2 mb-3.5 2xl:mb-5">
                   Where do you want to go next, Naari?
                 </h3>
 
                 {/* Popular Recommendation Cards */}
-                <div className="grid grid-cols-2 gap-2 mb-3 2xl:mb-5">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-1 xl:grid-cols-2 gap-2.5 mb-3.5 2xl:mb-5">
                   <button 
                     onClick={() => openEnquiryModal()}
-                    className="flex flex-col text-left p-2.5 lg:p-3 xl:p-3.5 rounded-2xl bg-[#FFF8F0] border border-[#FF4A7D]/10 hover:border-[#FF4A7D]/30 transition-all group/pill"
+                    className="flex flex-col text-left p-3 lg:p-2.5 xl:p-3.5 rounded-2xl bg-[#FFF8F0] border border-[#FF4A7D]/10 hover:border-[#FF4A7D]/30 transition-all group/pill cursor-pointer"
                   >
                     <span className="text-[9px] font-extrabold text-[#FF4A7D] uppercase tracking-wider">Most Loved</span>
-                    <span className="text-sm font-extrabold text-[#13253D] mt-1 group-hover/pill:text-[#FF4A7D] transition-colors">Kashmir Tulip • 5D</span>
-                    <span className="text-[11px] text-[#3D4A5E]/80 mt-1 font-semibold">₹21,999 • 8 seats left</span>
+                    <span className="text-[13px] sm:text-[14px] lg:text-[13px] xl:text-[14px] font-extrabold text-[#13253D] mt-1 group-hover/pill:text-[#FF4A7D] transition-colors">Kashmir Tulip • 5D</span>
+                    <span className="text-[10px] sm:text-[11px] lg:text-[10px] xl:text-[11px] text-[#3D4A5E]/80 mt-1 font-semibold">₹21,999 • 8 seats left</span>
                   </button>
 
                   <button 
                     onClick={() => openEnquiryModal()}
-                    className="flex flex-col text-left p-2.5 lg:p-3 xl:p-3.5 rounded-2xl bg-[#FFF8F0] border border-[#FF4A7D]/10 hover:border-[#FF4A7D]/30 transition-all group/pill"
+                    className="flex flex-col text-left p-3 lg:p-2.5 xl:p-3.5 rounded-2xl bg-[#FFF8F0] border border-[#FF4A7D]/10 hover:border-[#FF4A7D]/30 transition-all group/pill cursor-pointer"
                   >
                     <span className="text-[9px] font-extrabold text-[#FF4A7D] uppercase tracking-wider">Weekend</span>
-                    <span className="text-sm font-extrabold text-[#13253D] mt-1 group-hover/pill:text-[#FF4A7D] transition-colors">Tirthan 3D • Solo</span>
-                    <span className="text-[11px] text-[#3D4A5E]/80 mt-1 font-semibold">₹9,999 • Fri departure</span>
+                    <span className="text-[13px] sm:text-[14px] lg:text-[13px] xl:text-[14px] font-extrabold text-[#13253D] mt-1 group-hover/pill:text-[#FF4A7D] transition-colors">Tirthan 3D • Solo</span>
+                    <span className="text-[10px] sm:text-[11px] lg:text-[10px] xl:text-[11px] text-[#3D4A5E]/80 mt-1 font-semibold">₹9,999 • Fri departure</span>
                   </button>
                 </div>
 
                 {/* Alert/Live Tag */}
-                <div className="flex items-center justify-between gap-3 bg-[#13253D] text-white rounded-2xl p-3 lg:p-4 mb-3 2xl:mb-5 text-sm font-semibold shadow-sm">
+                <div className="flex items-center justify-between gap-3 bg-[#13253D] text-white rounded-2xl p-3 lg:p-2.5 xl:p-3.5 2xl:p-4 mb-3.5 2xl:mb-5 text-xs sm:text-sm lg:text-xs xl:text-sm font-semibold shadow-sm">
                   <div className="flex items-center gap-2">
                     <span className="text-base">⚡</span>
                     <span>{enquiryCount} Naaris enquired last hour</span>
@@ -133,13 +133,13 @@ export default function Hero() {
                 {/* Action CTA Button */}
                 <button 
                   onClick={() => openEnquiryModal()}
-                  className="w-full text-center rounded-full bg-[#FF4A7D] hover:bg-[#E63E6E] text-white font-extrabold text-[15px] py-3 2xl:py-4 transition-all duration-300 shadow-[0_6px_20px_-4px_rgba(255,74,125,0.4)]"
+                  className="w-full text-center rounded-full bg-[#FF4A7D] hover:bg-[#E63E6E] text-white font-extrabold text-[14px] xl:text-[15px] py-3 xl:py-3.5 2xl:py-4 transition-all duration-300 shadow-[0_6px_20px_-4px_rgba(255,74,125,0.4)] cursor-pointer"
                 >
                   Check availability →
                 </button>
 
                 {/* Footer Disclosures */}
-                <p className="text-[11px] text-[#3D4A5E]/70 text-center mt-3 lg:mt-4 font-medium leading-relaxed">
+                <p className="text-[11px] text-[#3D4A5E]/70 text-center mt-3 lg:mt-3.5 font-medium leading-relaxed">
                   No spam, itinerary on WhatsApp. Cancellation policy transparent.
                 </p>
               </div>
