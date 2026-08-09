@@ -30,6 +30,7 @@ export default function PWARegistry() {
   const [isIOS, setIsIOS] = useState(false);
   const [isStandalone, setIsStandalone] = useState(false);
   const [showIosGuide, setShowIosGuide] = useState(false);
+  const [showAndroidGuide, setShowAndroidGuide] = useState(false);
   const [isSecureContext, setIsSecureContext] = useState(true);
 
   useEffect(() => {
@@ -126,21 +127,61 @@ export default function PWARegistry() {
   };
 
   const handleSubscribe = async () => {
-    if (!swRegistration || !VAPID_PUBLIC_KEY) {
-      alert("Push notifications are not fully supported on this browser/device, or VAPID keys are missing.");
-      return;
-    }
-
     setIsPending(true);
     try {
+      if (typeof window === "undefined") return;
+
+      // 1. Check browser push support basics
+      if (!("serviceWorker" in navigator) || !("Notification" in window)) {
+        alert("Push notifications are not supported on this browser or device. Please use Safari on iOS 16.4+ or Chrome on Android/Desktop.");
+        return;
+      }
+
+      // 2. Fetch or await active Service Worker registration
+      let registration = swRegistration;
+      if (!registration) {
+        try {
+          registration = await navigator.serviceWorker.getRegistration() || await navigator.serviceWorker.ready;
+          if (registration) {
+            setSwRegistration(registration);
+          }
+        } catch (err) {
+          console.error("Failed to retrieve service worker registration:", err);
+        }
+      }
+
+      if (!registration) {
+        alert("Notification Service Worker is registering. Please wait a few seconds and try again.");
+        return;
+      }
+
+      // 3. Check pushManager compatibility
+      if (!registration.pushManager) {
+        if (isIOS) {
+          alert("To subscribe to notifications on iPhone, you must first add this app to your Home Screen using Safari's 'Share' -> 'Add to Home Screen' option.");
+        } else {
+          alert("Push notification manager is not supported on this browser. Try Google Chrome or Samsung Internet.");
+        }
+        return;
+      }
+
+      // 4. Validate VAPID keys
+      if (!VAPID_PUBLIC_KEY) {
+        console.error("VAPID public key (NEXT_PUBLIC_VAPID_PUBLIC_KEY) is missing or empty.");
+        alert("Notification setup failed (VAPID key is missing). Please contact support.");
+        return;
+      }
+
+      // 5. Ask user permission
       const permission = await Notification.requestPermission();
       setPermissionState(permission);
       
       if (permission !== "granted") {
-        throw new Error("Permission not granted for notifications");
+        throw new Error("Notification permission denied");
       }
 
-      const subscription = await swRegistration.pushManager.subscribe({
+      // 6. Subscribe to push manager
+      const subscription = await registration.pushManager.subscribe({
         userVisibleOnly: true,
         applicationServerKey: urlBase64ToUint8Array(VAPID_PUBLIC_KEY),
       });
@@ -160,16 +201,20 @@ export default function PWARegistry() {
         setIsVisible(false);
       }, 2000);
 
-    } catch (err) {
+    } catch (err: any) {
       console.error("Subscription process failed:", err);
-      alert("Failed to subscribe. Please check your browser's notification permissions.");
+      alert(`Subscription failed: ${err.message || "Permissions blocked or connection issue."}`);
     } finally {
       setIsPending(false);
     }
   };
 
   const handleInstall = async () => {
-    if (!deferredPrompt) return;
+    if (!deferredPrompt) {
+      // If native PWA install prompt is not available, show manual step-by-step instructions
+      setShowAndroidGuide(true);
+      return;
+    }
     
     setIsPending(true);
     try {
@@ -195,89 +240,91 @@ export default function PWARegistry() {
     <>
       {/* Floating Prompt Widget */}
       {isVisible && (
-        <div className="fixed bottom-6 left-6 z-[9999] max-w-[360px] w-[calc(100vw-48px)] bg-white/95 backdrop-blur-xl border border-[#F1D9D0] rounded-3xl p-5 shadow-[0_20px_50px_rgba(128,15,45,0.12)] animate-in slide-in-from-bottom-8 fade-in duration-300">
-          {/* Header */}
-          <div className="flex justify-between items-start gap-4 mb-3">
-            <div className="flex items-center gap-2.5">
-              <div className="w-9 h-9 rounded-2xl bg-[#FFF0F4] text-[#FF4A7D] flex items-center justify-center font-bold shrink-0">
-                <Sparkles className="w-4 h-4 animate-pulse" />
+        <div className="fixed inset-0 z-[9999] bg-black/60 backdrop-blur-sm flex items-center justify-center p-4 animate-in fade-in duration-300">
+          <div className="bg-white border border-[#F1D9D0] rounded-[32px] p-6 max-w-[380px] w-full shadow-2xl relative animate-in zoom-in-95 duration-200">
+            {/* Close Button */}
+            <button 
+              onClick={handleDismiss} 
+              className="absolute top-4 right-4 p-1.5 rounded-full text-[#13253D]/50 hover:bg-[#FFF0F4] hover:text-[#FF4A7D] transition"
+              aria-label="Close"
+            >
+              <X className="w-5 h-5" />
+            </button>
+
+            {/* Header */}
+            <div className="flex items-center gap-3 mb-4 pr-6">
+              <div className="w-10 h-10 rounded-2xl bg-[#FFF0F4] text-[#FF4A7D] flex items-center justify-center font-bold shrink-0">
+                <Sparkles className="w-5 h-5 animate-pulse" />
               </div>
               <div>
-                <h4 className="font-display font-bold text-sm text-[#800F2D] leading-tight">
+                <h4 className="font-display font-bold text-[15px] text-[#800F2D] leading-tight">
                   {isStandalone ? "Enable Travel Alerts" : "Install TripNaari App"}
                 </h4>
-                <p className="text-[10px] text-[#13253D]/65 mt-0.5">
+                <p className="text-[11px] text-[#13253D]/65 mt-0.5">
                   {isStandalone ? "Safety & Tour Drops Live" : "Fast & safe women-only travel"}
                 </p>
               </div>
             </div>
-            <button 
-              onClick={handleDismiss} 
-              className="p-1 rounded-full text-[#13253D]/40 hover:bg-[#FFF0F4] hover:text-[#FF4A7D] transition"
-              aria-label="Close"
-            >
-              <X className="w-4 h-4" />
-            </button>
-          </div>
 
-          {/* Insecure Context Warning */}
-          {!isSecureContext && (
-            <div className="mb-3 p-3 bg-amber-50 border border-amber-200 text-amber-800 rounded-2xl text-[10px] leading-relaxed flex gap-2">
-              <AlertTriangle className="w-4 h-4 shrink-0 text-amber-600" />
-              <div>
-                <strong>Insecure Context Detected:</strong> iOS Safari only supports service workers & installation over HTTPS. Deploy or test via an HTTPS tunnel (e.g. ngrok).
+            {/* Insecure Context Warning */}
+            {!isSecureContext && (
+              <div className="mb-3.5 p-3 bg-amber-50 border border-amber-200 text-amber-800 rounded-2xl text-[10px] leading-relaxed flex gap-2">
+                <AlertTriangle className="w-4 h-4 shrink-0 text-amber-600" />
+                <div>
+                  <strong>Insecure Context Detected:</strong> iOS Safari only supports service workers & installation over HTTPS. Deploy or test via an HTTPS tunnel (e.g. ngrok).
+                </div>
               </div>
-            </div>
-          )}
+            )}
 
-          {/* Content & Actions */}
-          {isStandalone ? (
-            /* Case A: App is already installed (Standalone Mode) -> Prompt for push subscriptions */
-            <div className="space-y-3.5">
-              <p className="text-xs text-[#13253D]/90 leading-relaxed">
-                Enable real-time safety alerts, sudden schedule updates, and upcoming group tour departure drops directly on your device.
-              </p>
-              <Button 
-                onClick={handleSubscribe} 
-                isLoading={isPending}
-                variant="primary" 
-                size="sm" 
-                className="w-full justify-center gap-2 font-semibold text-xs shadow-md"
-              >
-                <Bell className="w-4.5 h-4.5" /> Subscribe to Safety Alerts
-              </Button>
-            </div>
-          ) : (
-            /* Case B: App is NOT installed -> Prompt for PWA installation */
-            <div className="space-y-3.5">
-              <p className="text-xs text-[#13253D]/90 leading-relaxed">
-                Save TripNaari on your homescreen for instant booking reviews, community alerts, and full offline safety logs.
-              </p>
-
-              {isIOS ? (
-                /* iOS PWA Installation Button (Triggers Share-guide overlay) */
+            {/* Content & Actions */}
+            {isStandalone ? (
+              /* Case A: App is already installed (Standalone Mode) -> Prompt for push subscriptions */
+              <div className="space-y-3.5">
+                <p className="text-xs text-[#13253D]/90 leading-relaxed">
+                  Enable real-time safety alerts, sudden schedule updates, and upcoming group tour departure drops directly on your device.
+                </p>
                 <Button 
-                  onClick={() => setShowIosGuide(true)}
-                  variant="cream" 
-                  size="sm" 
-                  className="w-full justify-center gap-2 text-xs border border-[#F1D9D0] bg-[#FFF8F0] hover:bg-white text-[#800F2D] font-bold"
-                >
-                  <Download className="w-4.5 h-4.5 text-[#FF4A7D]" /> Install on iPhone
-                </Button>
-              ) : (
-                /* Chrome/Android Native PWA Installation Trigger */
-                <Button 
-                  onClick={handleInstall} 
+                  onClick={handleSubscribe} 
                   isLoading={isPending}
-                  variant="cream" 
+                  variant="primary" 
                   size="sm" 
-                  className="w-full justify-center gap-2 text-xs border border-[#F1D9D0] bg-[#FFF8F0] hover:bg-white text-[#800F2D] font-bold"
+                  className="w-full justify-center gap-2 font-semibold text-xs shadow-md"
                 >
-                  <Download className="w-4.5 h-4.5 text-[#FF4A7D]" /> Install Homescreen App
+                  <Bell className="w-4.5 h-4.5" /> Subscribe to Safety Alerts
                 </Button>
-              )}
-            </div>
-          )}
+              </div>
+            ) : (
+              /* Case B: App is NOT installed -> Prompt for PWA installation */
+              <div className="space-y-3.5">
+                <p className="text-xs text-[#13253D]/90 leading-relaxed">
+                  Save TripNaari on your homescreen for instant booking reviews, community alerts, and full offline safety logs.
+                </p>
+
+                {isIOS ? (
+                  /* iOS PWA Installation Button (Triggers Share-guide overlay) */
+                  <Button 
+                    onClick={() => setShowIosGuide(true)}
+                    variant="cream" 
+                    size="sm" 
+                    className="w-full justify-center gap-2 text-xs border border-[#F1D9D0] bg-[#FFF8F0] hover:bg-white text-[#800F2D] font-bold"
+                  >
+                    <Download className="w-4.5 h-4.5 text-[#FF4A7D]" /> Install on iPhone
+                  </Button>
+                ) : (
+                  /* Chrome/Android Native PWA Installation Trigger */
+                  <Button 
+                    onClick={handleInstall} 
+                    isLoading={isPending}
+                    variant="cream" 
+                    size="sm" 
+                    className="w-full justify-center gap-2 text-xs border border-[#F1D9D0] bg-[#FFF8F0] hover:bg-white text-[#800F2D] font-bold"
+                  >
+                    <Download className="w-4.5 h-4.5 text-[#FF4A7D]" /> Add to Home Screen
+                  </Button>
+                )}
+              </div>
+            )}
+          </div>
         </div>
       )}
 
@@ -365,6 +412,67 @@ export default function PWARegistry() {
               Tap Share Button Below
             </div>
             <div className="w-0 h-0 border-l-[6px] border-l-transparent border-r-[6px] border-r-transparent border-t-[8px] border-t-[#800F2D] mt-0.5" />
+          </div>
+        </div>
+      )}
+
+      {/* Android/Chrome Step-by-Step Guided Overlay Modal */}
+      {showAndroidGuide && (
+        <div className="fixed inset-0 z-[10000] bg-black/60 backdrop-blur-sm flex items-end justify-center p-4 animate-in fade-in duration-300">
+          <div className="bg-white border border-[#F1D9D0] rounded-[32px] p-6 max-w-[380px] w-full shadow-2xl relative mb-20 animate-in slide-in-from-bottom-12 duration-300">
+            {/* Close */}
+            <button 
+              onClick={() => setShowAndroidGuide(false)}
+              className="absolute top-4 right-4 p-1.5 rounded-full text-[#13253D]/50 hover:bg-[#FFF0F4] hover:text-[#FF4A7D] transition"
+            >
+              <X className="w-5 h-5" />
+            </button>
+
+            {/* Title */}
+            <div className="flex items-center gap-2.5 mb-4">
+              <div className="w-9 h-9 rounded-2xl bg-[#FFF0F4] text-[#FF4A7D] flex items-center justify-center font-bold">
+                <Smartphone className="w-4.5 h-4.5" />
+              </div>
+              <h4 className="font-display font-extrabold text-base text-[#800F2D]">
+                Add TripNaari to Home Screen
+              </h4>
+            </div>
+
+            {/* Guide Steps */}
+            <div className="space-y-4 text-[12px] text-[#13253D]/90 leading-relaxed mb-6">
+              <div className="flex gap-3.5 items-start bg-[#FFF8F0] p-3.5 rounded-2xl border border-[#F1D9D0]/50">
+                <span className="w-6 h-6 rounded-full bg-white border border-[#F1D9D0] flex items-center justify-center text-xs font-bold text-[#800F2D] shrink-0 mt-0.5">1</span>
+                <div>
+                  Tap the browser menu button **(three dots)**.
+                  <div className="flex items-center gap-1.5 mt-1.5 text-xs text-[#FF4A7D] font-bold">
+                    Located in the top-right corner of Chrome, or bottom/top bar in other browsers.
+                  </div>
+                </div>
+              </div>
+
+              <div className="flex gap-3.5 items-start bg-[#FFF8F0] p-3.5 rounded-2xl border border-[#F1D9D0]/50">
+                <span className="w-6 h-6 rounded-full bg-white border border-[#F1D9D0] flex items-center justify-center text-xs font-bold text-[#800F2D] shrink-0 mt-0.5">2</span>
+                <div>
+                  Select **Add to Home screen** or **Install app** from the menu list.
+                </div>
+              </div>
+
+              <div className="flex gap-3.5 items-start bg-[#FFF8F0] p-3.5 rounded-2xl border border-[#F1D9D0]/50">
+                <span className="w-6 h-6 rounded-full bg-white border border-[#F1D9D0] flex items-center justify-center text-xs font-bold text-[#800F2D] shrink-0 mt-0.5">3</span>
+                <div>
+                  Confirm the installation prompt and enjoy instant access to booking reviews and offline logs!
+                </div>
+              </div>
+            </div>
+
+            {/* Dismiss Button */}
+            <Button
+              onClick={() => setShowAndroidGuide(false)}
+              className="w-full justify-center text-xs font-bold shadow-none"
+              variant="primary"
+            >
+              Got it, let's do it!
+            </Button>
           </div>
         </div>
       )}
