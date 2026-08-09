@@ -25,9 +25,23 @@ export default function PWARegistry() {
   const [isVisible, setIsVisible] = useState(false);
   const [swRegistration, setSwRegistration] = useState<ServiceWorkerRegistration | null>(null);
   const [isPending, setIsPending] = useState(false);
+  
+  // Mobile Safari / iOS handling
+  const [isIOS, setIsIOS] = useState(false);
+  const [isStandalone, setIsStandalone] = useState(false);
 
   useEffect(() => {
     if (typeof window === "undefined") return;
+
+    // Detect iOS
+    const userAgent = window.navigator.userAgent;
+    const isDeviceIOS = /iPhone|iPad|iPod/i.test(userAgent) || 
+      (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+    setIsIOS(isDeviceIOS);
+
+    // Detect Standalone mode (added to homescreen)
+    const standaloneMode = window.matchMedia("(display-mode: standalone)").matches || (navigator as any).standalone;
+    setIsStandalone(!!standaloneMode);
 
     // 1. Register Service Worker
     if ("serviceWorker" in navigator) {
@@ -55,13 +69,13 @@ export default function PWARegistry() {
       setPermissionState(Notification.permission);
     }
 
-    // 3. Listen for PWA installation prompt
+    // 3. Listen for PWA installation prompt (Chrome/Android)
     const handleBeforeInstallPrompt = (e: any) => {
       e.preventDefault();
       setDeferredPrompt(e);
       setIsInstallable(true);
       
-      // Show the banner if not dismissed before
+      // Auto-show banner if not dismissed before
       const dismissed = localStorage.getItem("pwa_prompt_dismissed");
       if (!dismissed) {
         setIsVisible(true);
@@ -70,19 +84,17 @@ export default function PWARegistry() {
 
     window.addEventListener("beforeinstallprompt", handleBeforeInstallPrompt);
 
-    // If running in standalone mode, don't show installation prompt
-    const isStandalone = window.matchMedia("(display-mode: standalone)").matches || (navigator as any).standalone;
-    if (isStandalone) {
+    // If running in standalone mode, do not show install options
+    if (standaloneMode) {
       setIsInstallable(false);
     }
 
-    // Show subscription offer if not dismissed, even if not installable
+    // Show banner after 4 seconds on mobile/phone screens if not dismissed
     const dismissed = localStorage.getItem("pwa_prompt_dismissed");
-    if (!dismissed && "Notification" in window && Notification.permission === "default") {
-      // Delay slightly to not annoy user immediately on load
+    if (!dismissed) {
       const timer = setTimeout(() => {
         setIsVisible(true);
-      }, 5000);
+      }, 4000);
       return () => clearTimeout(timer);
     }
 
@@ -98,7 +110,7 @@ export default function PWARegistry() {
 
   const handleSubscribe = async () => {
     if (!swRegistration || !VAPID_PUBLIC_KEY) {
-      alert("Push notifications are not fully supported on this device or keys are missing.");
+      alert("Push notifications are not fully supported on this browser/device, or VAPID keys are missing.");
       return;
     }
 
@@ -129,17 +141,16 @@ export default function PWARegistry() {
 
       setIsSubscribed(true);
       
-      // Auto close after 2 seconds on success
+      // Close prompt after 2 seconds if not installable
       setTimeout(() => {
-        // If not installable, close the banner
-        if (!isInstallable) {
+        if (!isInstallable && !isIOS) {
           setIsVisible(false);
         }
       }, 2000);
 
     } catch (err) {
       console.error("Subscription process failed:", err);
-      alert("Failed to subscribe. Please verify your notification permissions.");
+      alert("Failed to subscribe. Please verify your notification settings.");
     } finally {
       setIsPending(false);
     }
@@ -157,7 +168,6 @@ export default function PWARegistry() {
       if (outcome === "accepted") {
         setIsInstallable(false);
         setDeferredPrompt(null);
-        // If also subscribed or notifications disabled, dismiss banner
         if (isSubscribed || permissionState !== "default") {
           setIsVisible(false);
         }
@@ -169,8 +179,10 @@ export default function PWARegistry() {
     }
   };
 
-  // Render nothing if banner is not active or both features are satisfied
-  if (!isVisible || (isSubscribed && !isInstallable)) return null;
+  // Render nothing if banner is not active or features are satisfied
+  if (!isVisible) return null;
+  if (!isIOS && isSubscribed && !isInstallable) return null;
+  if (isIOS && isStandalone && isSubscribed) return null;
 
   return (
     <div className="fixed bottom-6 left-6 z-[9999] max-w-[360px] w-[calc(100vw-48px)] bg-white/90 backdrop-blur-xl border border-[#F1D9D0] rounded-3xl p-5 shadow-[0_20px_50px_rgba(128,15,45,0.12)] animate-in slide-in-from-bottom-8 fade-in duration-300">
@@ -194,16 +206,40 @@ export default function PWARegistry() {
         </button>
       </div>
 
-      {/* Body text */}
-      <p className="text-xs text-[#13253D] leading-relaxed mb-4">
-        {!isSubscribed 
-          ? "Subscribe to get real-time safety alerts, new women-only trip drops, and itinerary updates directly on your device." 
-          : "Now install our lightweight app on your homescreen for instant booking access and offline support!"}
-      </p>
+      {/* Body text / iOS guide */}
+      <div className="text-xs text-[#13253D] leading-relaxed mb-4">
+        {isIOS && !isStandalone ? (
+          <div className="space-y-2">
+            <p>
+              Install the **TripNaari App** on your iPhone for quick access and real-time safety alerts.
+            </p>
+            <div className="bg-[#FFF8F0] border border-[#F1D9D0] rounded-2xl p-3 text-[11px] text-[#800F2D] space-y-1.5 font-medium">
+              <div className="flex items-center gap-1.5">
+                <span className="w-5 h-5 rounded-full bg-white border border-[#F1D9D0] flex items-center justify-center text-[10px] font-bold shrink-0">1</span>
+                <span>Tap the share icon <span className="text-[14px]">📤</span> at the bottom of Safari.</span>
+              </div>
+              <div className="flex items-center gap-1.5">
+                <span className="w-5 h-5 rounded-full bg-white border border-[#F1D9D0] flex items-center justify-center text-[10px] font-bold shrink-0">2</span>
+                <span>Scroll down and select <strong>Add to Home Screen</strong> <span className="text-[14px]">➕</span>.</span>
+              </div>
+              <div className="flex items-center gap-1.5">
+                <span className="w-5 h-5 rounded-full bg-white border border-[#F1D9D0] flex items-center justify-center text-[10px] font-bold shrink-0">3</span>
+                <span>Launch it from your homescreen to enable safety alerts!</span>
+              </div>
+            </div>
+          </div>
+        ) : (
+          <p>
+            {!isSubscribed 
+              ? "Subscribe to get real-time safety alerts, new women-only trip drops, and itinerary updates directly on your device." 
+              : "Now install our lightweight app on your homescreen for instant booking access and offline support!"}
+          </p>
+        )}
+      </div>
 
       {/* Action Buttons */}
       <div className="flex flex-col gap-2">
-        {!isSubscribed && (
+        {(!isIOS || isStandalone) && !isSubscribed && (
           <Button 
             onClick={handleSubscribe} 
             isLoading={isPending}
@@ -221,7 +257,7 @@ export default function PWARegistry() {
           </div>
         )}
 
-        {isInstallable && (
+        {!isIOS && isInstallable && (
           <Button 
             onClick={handleInstall} 
             isLoading={isPending}
