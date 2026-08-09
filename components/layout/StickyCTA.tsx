@@ -2,7 +2,8 @@
 import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { X } from "lucide-react";
-import Link from "next/link";
+import { usePathname } from "next/navigation";
+import { openEnquiryModal } from "@/lib/utils";
 
 const WhatsAppIcon = (props: any) => (
   <svg viewBox="0 0 24 24" fill="currentColor" {...props}>
@@ -13,6 +14,7 @@ const WhatsAppIcon = (props: any) => (
 export default function StickyCTA() {
   const [show, setShow] = useState(false);
   const [dismissed, setDismissed] = useState(false);
+  const pathname = usePathname();
 
   useEffect(() => {
     const onScroll = () => {
@@ -24,6 +26,19 @@ export default function StickyCTA() {
   }, []);
 
   if (dismissed) return null;
+
+  // Extract destination slug if on a trip details page (e.g. /trips/kashmir-blossom-sisterhood)
+  let currentDestination = "";
+  if (pathname && pathname.startsWith("/trips/")) {
+    const parts = pathname.split("/");
+    if (parts.length > 2) {
+      currentDestination = parts[2];
+    }
+  }
+
+  const handleEnquireClick = () => {
+    openEnquiryModal(currentDestination);
+  };
 
   return (
     <div className={`fixed bottom-0 left-0 right-0 z-[60] transition-transform duration-300 ${show ? "translate-y-0" : "translate-y-full"}`}>
@@ -48,11 +63,14 @@ export default function StickyCTA() {
             >
               <WhatsAppIcon className="w-5 h-5 text-white" />
             </a>
-            <Link href="/#enquiry">
-              <Button size="md" className="shadow-none whitespace-nowrap">
-                Enquire now
-              </Button>
-            </Link>
+            <Button 
+              size="md" 
+              onClick={handleEnquireClick}
+              className="bg-gradient-to-r from-[#FF4A7D] to-[#FF758F] hover:from-[#E63E6E] hover:to-[#FF4A7D] hover:scale-[1.03] active:scale-[0.98] transition-all duration-300 shadow-[0_4px_14px_rgba(255,74,125,0.35)] hover:shadow-[0_8px_25px_-4px_rgba(255,74,125,0.5)] border-none text-white font-bold whitespace-nowrap px-6 py-2.5 rounded-full group"
+            >
+              <span>Enquire now</span>
+              <span className="ml-1.5 inline-block transition-transform duration-200 group-hover:translate-x-0.5">→</span>
+            </Button>
             <button 
               onClick={() => setDismissed(true)} 
               className="w-11 h-11 rounded-full bg-white/10 hover:bg-white/20 text-white flex items-center justify-center transition-all"

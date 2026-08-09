@@ -4,6 +4,7 @@ import { usePathname } from "next/navigation";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
 import StickyCTA from "@/components/layout/StickyCTA";
+import EnquiryModal from "@/components/sections/EnquiryModal";
 
 export default function SiteLayoutWrapper({
   children,
@@ -25,6 +26,7 @@ export default function SiteLayoutWrapper({
       <main className="flex-1">{children}</main>
       <Footer />
       <StickyCTA />
+      <EnquiryModal />
     </>
   );
 }

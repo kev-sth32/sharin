@@ -109,7 +109,11 @@ function EnquiryFormInner({ source = "homepage", defaultDestination = "" }: { so
 
   if (status === "success") {
     return (
-      <div className="rounded-[24px] bg-white border border-[#F1D9D0] p-8 text-center">
+      <div className={
+        source === "modal"
+          ? "p-5 text-center"
+          : "rounded-[24px] bg-white border border-[#F1D9D0] p-8 text-center"
+      }>
         <div className="w-16 h-16 rounded-full bg-[#FFF0F4] border border-[#FF4A7D]/20 grid place-items-center mx-auto text-[#FF4A7D] text-2xl">✓</div>
         <h3 className="mt-4 font-display font-bold text-2xl text-[#13253D]">Received, Naari! We’ve got your back.</h3>
         <p className="mt-2 text-[14px] text-[#3D4A5E] leading-relaxed">Our sister will WhatsApp you in 2 hours (10AM-8PM). You’ll get itinerary, hotel sample, inclusions, cancellation timeline. No spam calls.</p>
@@ -153,7 +157,14 @@ function EnquiryFormInner({ source = "homepage", defaultDestination = "" }: { so
   })() : null;
 
   return (
-    <form action={onSubmit} className="rounded-[24px] bg-white border border-[#F1D9D0] p-6 md:p-8 card-shadow text-left">
+    <form 
+      action={onSubmit} 
+      className={
+        source === "modal"
+          ? "text-left p-4 sm:p-6"
+          : "rounded-[24px] bg-white border border-[#F1D9D0] p-6 md:p-8 card-shadow text-left"
+      }
+    >
       <div className="flex items-center justify-between mb-4">
         <h3 className="font-display font-bold text-xl text-[#13253D]">Find my trip — free</h3>
         <div className="text-[10px] rounded-full bg-[#13253D] text-white px-3 py-1 font-bold tracking-widest uppercase">2 min form</div>

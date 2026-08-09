@@ -8,7 +8,6 @@ import FAQSection from "@/components/sections/FAQ";
 import ContactSection from "@/components/sections/ContactSection";
 import Newsletter from "@/components/forms/Newsletter";
 import CommunityBanner from "@/components/sections/CommunityBanner";
-import EnquiryModal from "@/components/sections/EnquiryModal";
 import TripLeaders from "@/components/sections/TripLeaders";
 import Testimonials from "@/components/sections/Testimonials";
 import { getSettings, getMergedFAQs } from "@/lib/public-store";
@@ -42,7 +41,6 @@ export default function HomePage() {
       <ContactSection />
       <Newsletter />
       <CommunityBanner />
-      <EnquiryModal />
     </>
   );
 }

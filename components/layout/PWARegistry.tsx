@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { Bell, Download, X, Check, Smartphone, Sparkles, Share, Plus, AlertTriangle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
-const VAPID_PUBLIC_KEY = process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY || "";
+// VAPID_PUBLIC_KEY is read at runtime inside functions to ensure correct Next.js build-time inlining
 
 function urlBase64ToUint8Array(base64String: string) {
   const padding = "=".repeat((4 - (base64String.length % 4)) % 4);
@@ -166,7 +166,8 @@ export default function PWARegistry() {
       }
 
       // 4. Validate VAPID keys
-      if (!VAPID_PUBLIC_KEY) {
+      const vapidPublicKey = process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY || "";
+      if (!vapidPublicKey) {
         console.error("VAPID public key (NEXT_PUBLIC_VAPID_PUBLIC_KEY) is missing or empty.");
         alert("Notification setup failed (VAPID key is missing). Please contact support.");
         return;
@@ -183,7 +184,7 @@ export default function PWARegistry() {
       // 6. Subscribe to push manager
       const subscription = await registration.pushManager.subscribe({
         userVisibleOnly: true,
-        applicationServerKey: urlBase64ToUint8Array(VAPID_PUBLIC_KEY),
+        applicationServerKey: urlBase64ToUint8Array(vapidPublicKey),
       });
 
       const res = await fetch("/api/push/subscribe", {
