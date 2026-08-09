@@ -30,10 +30,10 @@ export default function HomePage() {
         </div>
       </div>
 
-      <WhyChoose />
       <FeaturedDepartures />
       <SafetyPromise />
       <HowItWorks />
+      <WhyChoose />
       <TripLeaders />
       <Testimonials />
       <Gallery />
