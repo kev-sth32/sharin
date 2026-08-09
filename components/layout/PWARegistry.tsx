@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Bell, Download, X, Check, Smartphone, Sparkles, Share, Plus } from "lucide-react";
+import { Bell, Download, X, Check, Smartphone, Sparkles, Share, Plus, AlertTriangle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 const VAPID_PUBLIC_KEY = process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY || "";
@@ -30,9 +30,14 @@ export default function PWARegistry() {
   const [isIOS, setIsIOS] = useState(false);
   const [isStandalone, setIsStandalone] = useState(false);
   const [showIosGuide, setShowIosGuide] = useState(false);
+  const [isSecureContext, setIsSecureContext] = useState(true);
 
   useEffect(() => {
     if (typeof window === "undefined") return;
+
+    // Detect if secure context (HTTPS or localhost)
+    const secure = window.isSecureContext || window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1";
+    setIsSecureContext(secure);
 
     // Detect iOS
     const userAgent = window.navigator.userAgent;
@@ -44,7 +49,7 @@ export default function PWARegistry() {
     const standaloneMode = window.matchMedia("(display-mode: standalone)").matches || (navigator as any).standalone;
     setIsStandalone(!!standaloneMode);
 
-    // 1. Register Service Worker
+    // 1. Register Service Worker (requires HTTPS/localhost on mobile devices)
     if ("serviceWorker" in navigator) {
       navigator.serviceWorker
         .register("/sw.js")
@@ -88,7 +93,6 @@ export default function PWARegistry() {
     // If running in standalone mode (already installed), show push subscription prompt if not already subscribed
     if (standaloneMode) {
       setIsInstallable(false);
-      // Wait for a few seconds before prompting for push subscription inside the PWA
       const promptDismissed = localStorage.getItem("push_prompt_dismissed");
       if (!promptDismissed) {
         const timer = setTimeout(() => {
@@ -185,90 +189,113 @@ export default function PWARegistry() {
     }
   };
 
-  // Hide component if visible is false, or both conditions are satisfied
-  if (!isVisible) return null;
-  if (!isStandalone && isSubscribed) {
-    // If we aren't standalone, we should only be prompting for installation. If already subscribed somehow, but not installed, we can still prompt to install.
-  }
-  if (isStandalone && isSubscribed) return null;
+  const shouldShowLauncher = !isVisible && !(isStandalone && isSubscribed);
 
   return (
     <>
       {/* Floating Prompt Widget */}
-      <div className="fixed bottom-6 left-6 z-[9999] max-w-[360px] w-[calc(100vw-48px)] bg-white/95 backdrop-blur-xl border border-[#F1D9D0] rounded-3xl p-5 shadow-[0_20px_50px_rgba(128,15,45,0.12)] animate-in slide-in-from-bottom-8 fade-in duration-300">
-        {/* Header */}
-        <div className="flex justify-between items-start gap-4 mb-3">
-          <div className="flex items-center gap-2.5">
-            <div className="w-9 h-9 rounded-2xl bg-[#FFF0F4] text-[#FF4A7D] flex items-center justify-center font-bold shrink-0">
-              <Sparkles className="w-4 h-4 animate-pulse" />
+      {isVisible && (
+        <div className="fixed bottom-6 left-6 z-[9999] max-w-[360px] w-[calc(100vw-48px)] bg-white/95 backdrop-blur-xl border border-[#F1D9D0] rounded-3xl p-5 shadow-[0_20px_50px_rgba(128,15,45,0.12)] animate-in slide-in-from-bottom-8 fade-in duration-300">
+          {/* Header */}
+          <div className="flex justify-between items-start gap-4 mb-3">
+            <div className="flex items-center gap-2.5">
+              <div className="w-9 h-9 rounded-2xl bg-[#FFF0F4] text-[#FF4A7D] flex items-center justify-center font-bold shrink-0">
+                <Sparkles className="w-4 h-4 animate-pulse" />
+              </div>
+              <div>
+                <h4 className="font-display font-bold text-sm text-[#800F2D] leading-tight">
+                  {isStandalone ? "Enable Travel Alerts" : "Install TripNaari App"}
+                </h4>
+                <p className="text-[10px] text-[#13253D]/65 mt-0.5">
+                  {isStandalone ? "Safety & Tour Drops Live" : "Fast & safe women-only travel"}
+                </p>
+              </div>
             </div>
-            <div>
-              <h4 className="font-display font-bold text-sm text-[#800F2D] leading-tight">
-                {isStandalone ? "Enable Travel Alerts" : "Install TripNaari App"}
-              </h4>
-              <p className="text-[10px] text-[#13253D]/65 mt-0.5">
-                {isStandalone ? "Safety & Tour Drops Live" : "Fast & safe women-only travel"}
-              </p>
-            </div>
-          </div>
-          <button 
-            onClick={handleDismiss} 
-            className="p-1 rounded-full text-[#13253D]/40 hover:bg-[#FFF0F4] hover:text-[#FF4A7D] transition"
-            aria-label="Close"
-          >
-            <X className="w-4 h-4" />
-          </button>
-        </div>
-
-        {/* Content & Actions */}
-        {isStandalone ? (
-          /* Case A: App is already installed (Standalone Mode) -> Prompt for push subscriptions */
-          <div className="space-y-3.5">
-            <p className="text-xs text-[#13253D]/90 leading-relaxed">
-              Enable real-time safety alerts, sudden schedule updates, and upcoming group tour departure drops directly on your device.
-            </p>
-            <Button 
-              onClick={handleSubscribe} 
-              isLoading={isPending}
-              variant="primary" 
-              size="sm" 
-              className="w-full justify-center gap-2 font-semibold text-xs shadow-md"
+            <button 
+              onClick={handleDismiss} 
+              className="p-1 rounded-full text-[#13253D]/40 hover:bg-[#FFF0F4] hover:text-[#FF4A7D] transition"
+              aria-label="Close"
             >
-              <Bell className="w-4.5 h-4.5" /> Subscribe to Safety Alerts
-            </Button>
+              <X className="w-4 h-4" />
+            </button>
           </div>
-        ) : (
-          /* Case B: App is NOT installed -> Prompt for PWA installation */
-          <div className="space-y-3.5">
-            <p className="text-xs text-[#13253D]/90 leading-relaxed">
-              Save TripNaari on your homescreen for instant booking reviews, community alerts, and full offline safety logs.
-            </p>
 
-            {isIOS ? (
-              /* iOS PWA Installation Button (Triggers Share-guide overlay) */
+          {/* Insecure Context Warning */}
+          {!isSecureContext && (
+            <div className="mb-3 p-3 bg-amber-50 border border-amber-200 text-amber-800 rounded-2xl text-[10px] leading-relaxed flex gap-2">
+              <AlertTriangle className="w-4 h-4 shrink-0 text-amber-600" />
+              <div>
+                <strong>Insecure Context Detected:</strong> iOS Safari only supports service workers & installation over HTTPS. Deploy or test via an HTTPS tunnel (e.g. ngrok).
+              </div>
+            </div>
+          )}
+
+          {/* Content & Actions */}
+          {isStandalone ? (
+            /* Case A: App is already installed (Standalone Mode) -> Prompt for push subscriptions */
+            <div className="space-y-3.5">
+              <p className="text-xs text-[#13253D]/90 leading-relaxed">
+                Enable real-time safety alerts, sudden schedule updates, and upcoming group tour departure drops directly on your device.
+              </p>
               <Button 
-                onClick={() => setShowIosGuide(true)}
-                variant="cream" 
-                size="sm" 
-                className="w-full justify-center gap-2 text-xs border border-[#F1D9D0] bg-[#FFF8F0] hover:bg-white text-[#800F2D] font-bold"
-              >
-                <Download className="w-4.5 h-4.5 text-[#FF4A7D]" /> Install on iPhone
-              </Button>
-            ) : (
-              /* Chrome/Android Native PWA Installation Trigger */
-              <Button 
-                onClick={handleInstall} 
+                onClick={handleSubscribe} 
                 isLoading={isPending}
-                variant="cream" 
+                variant="primary" 
                 size="sm" 
-                className="w-full justify-center gap-2 text-xs border border-[#F1D9D0] bg-[#FFF8F0] hover:bg-white text-[#800F2D] font-bold"
+                className="w-full justify-center gap-2 font-semibold text-xs shadow-md"
               >
-                <Download className="w-4.5 h-4.5 text-[#FF4A7D]" /> Install Homescreen App
+                <Bell className="w-4.5 h-4.5" /> Subscribe to Safety Alerts
               </Button>
-            )}
-          </div>
-        )}
-      </div>
+            </div>
+          ) : (
+            /* Case B: App is NOT installed -> Prompt for PWA installation */
+            <div className="space-y-3.5">
+              <p className="text-xs text-[#13253D]/90 leading-relaxed">
+                Save TripNaari on your homescreen for instant booking reviews, community alerts, and full offline safety logs.
+              </p>
+
+              {isIOS ? (
+                /* iOS PWA Installation Button (Triggers Share-guide overlay) */
+                <Button 
+                  onClick={() => setShowIosGuide(true)}
+                  variant="cream" 
+                  size="sm" 
+                  className="w-full justify-center gap-2 text-xs border border-[#F1D9D0] bg-[#FFF8F0] hover:bg-white text-[#800F2D] font-bold"
+                >
+                  <Download className="w-4.5 h-4.5 text-[#FF4A7D]" /> Install on iPhone
+                </Button>
+              ) : (
+                /* Chrome/Android Native PWA Installation Trigger */
+                <Button 
+                  onClick={handleInstall} 
+                  isLoading={isPending}
+                  variant="cream" 
+                  size="sm" 
+                  className="w-full justify-center gap-2 text-xs border border-[#F1D9D0] bg-[#FFF8F0] hover:bg-white text-[#800F2D] font-bold"
+                >
+                  <Download className="w-4.5 h-4.5 text-[#FF4A7D]" /> Install Homescreen App
+                </Button>
+              )}
+            </div>
+          )}
+        </div>
+      )}
+
+      {/* Launcher Button (shows only when prompt banner is closed/dismissed) */}
+      {shouldShowLauncher && (
+        <button
+          onClick={() => {
+            // Force reset storage so it opens even if dismissed before
+            localStorage.removeItem("pwa_prompt_dismissed");
+            localStorage.removeItem("push_prompt_dismissed");
+            setIsVisible(true);
+          }}
+          className="fixed bottom-6 left-6 z-[9998] w-12 h-12 rounded-full bg-[#FF4A7D] text-white flex items-center justify-center shadow-[0_6px_20px_rgba(255,74,125,0.4)] hover:scale-105 active:scale-95 transition-all duration-200 border border-white/10 shrink-0"
+          title={isStandalone ? "Enable Travel Alerts" : "Install TripNaari App"}
+        >
+          {isStandalone ? <Bell className="w-5 h-5 animate-pulse" /> : <Smartphone className="w-5 h-5 animate-pulse" />}
+        </button>
+      )}
 
       {/* iOS Step-by-Step Guided Overlay Modal */}
       {showIosGuide && (
@@ -333,7 +360,7 @@ export default function PWARegistry() {
           </div>
           
           {/* Visual Indicator pointing downwards (pointing to the center share sheet on iPhone Safari) */}
-          <div className="fixed bottom-3 left-1/2 -translate-x-1/2 z-[10001] flex flex-col items-center animate-bounce pointer-events-none hidden md:hidden sm:flex">
+          <div className="fixed bottom-3 left-1/2 -translate-x-1/2 z-[10001] flex flex-col items-center animate-bounce pointer-events-none sm:flex">
             <div className="bg-[#800F2D] text-white font-semibold text-[10px] px-3 py-1.5 rounded-full shadow-lg border border-white/20">
               Tap Share Button Below
             </div>
