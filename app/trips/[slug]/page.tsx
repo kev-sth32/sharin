@@ -6,7 +6,6 @@ import { Button } from "@/components/ui/button";
 import EnquiryForm from "@/components/forms/EnquiryForm";
 import Link from "next/link";
 import { Clock, Users, MapPin, ShieldCheck, Check, X, AlertTriangle, Hotel, Utensils, Bus, Star } from "lucide-react";
-import LeadGate from "@/components/trip/LeadGate";
 
 const getInclusionIcon = (text: string) => {
   const t = text.toLowerCase();
@@ -280,124 +279,119 @@ export default async function TripDetail({ params }: { params: Promise<{ slug: s
             </div>
           </div>
 
-          <div>
-            <div id="trip-details-content" className="space-y-10">
-
-          {/* Day wise plan */}
-          <div className="space-y-6">
-            <div className="flex flex-wrap justify-between items-start gap-4">
-              <div>
-                <h2 className="font-display font-[800] text-2xl text-[#13253D]">Day-wise sisterhood plan</h2>
-                <p className="text-sm text-[#3D4A5E] mt-2">Hotel names confirmed 7 days before. If weather/safety requires change, alternatives provided 12 hours prior.</p>
-              </div>
-              {trip.itineraryPdf && (
-                <a 
-                  href={trip.itineraryPdf} 
-                  download 
-                  target="_blank" 
-                  rel="noopener noreferrer" 
-                  className="inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-[#FF4A7D] to-[#FF758F] hover:from-[#E63E6E] hover:to-[#FF4A7D] text-white px-5 py-2.5 text-xs font-bold transition-all shadow-[0_4px_10px_rgba(255,74,125,0.2)] hover:scale-105 transform duration-200"
-                >
-                  📥 Download PDF Itinerary
-                </a>
-              )}
-            </div>
+          {/* Detailed Itinerary & Info Sections */}
+          <div className="space-y-10">
+            {/* Day wise plan */}
             <div className="space-y-6">
-              {itinerary.map((d: any) => (
-                <div key={d.day} className="rounded-3xl bg-white border border-[#F1D9D0] p-6 flex gap-5 shadow-[0_10px_35px_-8px_rgba(19,37,61,0.04)]">
-                  <div className="w-12 h-12 rounded-2xl bg-[#FF4A7D] text-white flex items-center justify-center font-bold text-base shrink-0 shadow-sm">
-                    D{d.day}
-                  </div>
-                  <div className="space-y-2">
-                    <h3 className="font-display font-bold text-lg text-[#13253D]">{d.title}</h3>
-                    <p className="text-[14px] leading-relaxed text-[#3D4A5E]">{d.desc}</p>
-                    <div className="flex flex-wrap gap-2 pt-2 text-[11px] font-bold">
-                      <span className="rounded-full bg-[#FFF8F0] border border-[#F1D9D0] px-3 py-1 text-[#13253D]/70 uppercase tracking-wide">Meals: {d.meals.join(", ")}</span>
-                      <span className="rounded-full bg-[#FFF8F0] border border-[#F1D9D0] px-3 py-1 text-[#13253D]/70 uppercase tracking-wide">Stay: {d.stay}</span>
+              <div className="flex flex-wrap justify-between items-start gap-4">
+                <div>
+                  <h2 className="font-display font-[800] text-2xl text-[#13253D]">Day-wise sisterhood plan</h2>
+                  <p className="text-sm text-[#3D4A5E] mt-2">Hotel names confirmed 7 days before. If weather/safety requires change, alternatives provided 12 hours prior.</p>
+                </div>
+                {trip.itineraryPdf && (
+                  <a 
+                    href={trip.itineraryPdf} 
+                    download 
+                    target="_blank" 
+                    rel="noopener noreferrer" 
+                    className="inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-[#FF4A7D] to-[#FF758F] hover:from-[#E63E6E] hover:to-[#FF4A7D] text-white px-5 py-2.5 text-xs font-bold transition-all shadow-[0_4px_10px_rgba(255,74,125,0.2)] hover:scale-105 transform duration-200"
+                  >
+                    📥 Download PDF Itinerary
+                  </a>
+                )}
+              </div>
+              <div className="space-y-6">
+                {itinerary.map((d: any) => (
+                  <div key={d.day} className="rounded-3xl bg-white border border-[#F1D9D0] p-6 flex gap-5 shadow-[0_10px_35px_-8px_rgba(19,37,61,0.04)]">
+                    <div className="w-12 h-12 rounded-2xl bg-[#FF4A7D] text-white flex items-center justify-center font-bold text-base shrink-0 shadow-sm">
+                      D{d.day}
+                    </div>
+                    <div className="space-y-2">
+                      <h3 className="font-display font-bold text-lg text-[#13253D]">{d.title}</h3>
+                      <p className="text-[14px] leading-relaxed text-[#3D4A5E]">{d.desc}</p>
+                      <div className="flex flex-wrap gap-2 pt-2 text-[11px] font-bold">
+                        <span className="rounded-full bg-[#FFF8F0] border border-[#F1D9D0] px-3 py-1 text-[#13253D]/70 uppercase tracking-wide">Meals: {d.meals.join(", ")}</span>
+                        <span className="rounded-full bg-[#FFF8F0] border border-[#F1D9D0] px-3 py-1 text-[#13253D]/70 uppercase tracking-wide">Stay: {d.stay}</span>
+                      </div>
                     </div>
                   </div>
-                </div>
-              ))}
-            </div>
-            <div className="rounded-2xl bg-[#FFF6EF] border border-[#FF8A2B]/20 p-5 flex flex-col sm:flex-row gap-4 items-start sm:items-center text-[13px] text-[#3D4A5E]">
-              <div className="flex items-center gap-3 shrink-0">
-                <AlertTriangle className="w-5 h-5 text-[#FF8A2B]" />
-                <strong className="text-[#13253D] font-bold sm:hidden">Itinerary change policy</strong>
-              </div>
-              <div>
-                <strong className="text-[#13253D] hidden sm:block mb-1 font-bold">Itinerary change policy</strong>
-                {trip.itineraryChangePolicy}
-              </div>
-            </div>
-          </div>
-
-          {/* Inclusions / Exclusions */}
-          <div className="grid md:grid-cols-2 gap-6">
-            <div className="rounded-3xl bg-white border border-[#F1D9D0] p-6 shadow-[0_10px_35px_-8px_rgba(19,37,61,0.04)]">
-              <h3 className="font-display font-bold text-lg flex items-center gap-2 text-[#13253D] border-b border-[#F1D9D0]/50 pb-3 mb-4">
-                <Check className="w-5 h-5 text-green-600 stroke-[3]" /> Inclusions — crystal clear
-              </h3>
-              <ul className="space-y-4">
-                {inclusions.map((inc: any, index: number) => {
-                  const IconComponent = typeof inc === "object" ? inc.icon : getInclusionIcon(inc);
-                  const text = typeof inc === "object" ? inc.text : inc;
-                  return (
-                    <li key={index} className="flex gap-3 text-[13px] text-[#3D4A5E] font-medium">
-                      <IconComponent className="w-4 h-4 text-[#FF4A7D] shrink-0 mt-0.5" />
-                      <span>{text}</span>
-                    </li>
-                  );
-                })}
-              </ul>
-            </div>
-            <div className="rounded-3xl bg-white border border-[#F1D9D0] p-6 shadow-[0_10px_35px_-8px_rgba(19,37,61,0.04)]">
-              <h3 className="font-display font-bold text-lg flex items-center gap-2 text-[#13253D] border-b border-[#F1D9D0]/50 pb-3 mb-4">
-                <X className="w-5 h-5 text-red-500 stroke-[3]" /> Exclusions — no surprises
-              </h3>
-              <ul className="space-y-3 text-[13px] text-[#3D4A5E] font-medium">
-                {exclusions.map((exc: string, index: number) => (
-                  <li key={index} className="flex items-start gap-2">
-                    <span>•</span>
-                    <span>{exc}</span>
-                  </li>
                 ))}
-              </ul>
-            </div>
-          </div>
-
-
-          {/* Hotel Previews */}
-          <div className="space-y-6">
-            <h2 className="font-display font-[800] text-2xl text-[#13253D]">Hotel preview — timeline in writing</h2>
-            <div className="grid md:grid-cols-2 gap-6">
-              {hotels.map((h: any, i: number) => (
-                <div key={i} className="rounded-3xl bg-white border border-[#F1D9D0] p-6 shadow-[0_10px_35px_-8px_rgba(19,37,61,0.04)] flex flex-col justify-between">
-                  <div>
-                    <div className="flex items-start justify-between gap-4">
-                      <div className="font-display font-bold text-base text-[#13253D] leading-tight">{h.name}</div>
-                      <Badge variant="plum" className="bg-[#5B2063]/10 text-[#5B2063] border-none text-[9px] font-bold uppercase tracking-wider px-2 py-0.5 shrink-0">{h.category}</Badge>
-                    </div>
-                    <div className="text-[12px] text-[#3D4A5E] mt-2 flex items-center gap-1 font-semibold">
-                      <MapPin className="w-3.5 h-3.5 text-[#FF4A7D]" /> {h.location}
-                    </div>
-                    <div className="mt-4 flex flex-wrap gap-2">
-                      {h.amenities.map((a: any, j: number) => (
-                        <span key={j} className="text-[10px] font-bold rounded-full bg-[#FFF8F0] border border-[#F1D9D0] px-2.5 py-1 text-[#13253D]/70 uppercase tracking-wide">
-                          {a}
-                        </span>
-                      ))}
-                    </div>
-                  </div>
-                  <div className="mt-6 text-[11px] font-semibold rounded-xl bg-[#FFF0F4] border border-[#FF4A7D]/10 p-3 text-[#800F2D] flex items-center gap-1.5">
-                    <span>🕒</span> <span>{h.confirmationTimeline}</span>
-                  </div>
+              </div>
+              <div className="rounded-2xl bg-[#FFF6EF] border border-[#FF8A2B]/20 p-5 flex flex-col sm:flex-row gap-4 items-start sm:items-center text-[13px] text-[#3D4A5E]">
+                <div className="flex items-center gap-3 shrink-0">
+                  <AlertTriangle className="w-5 h-5 text-[#FF8A2B]" />
+                  <strong className="text-[#13253D] font-bold sm:hidden">Itinerary change policy</strong>
                 </div>
-              ))}
+                <div>
+                  <strong className="text-[#13253D] hidden sm:block mb-1 font-bold">Itinerary change policy</strong>
+                  {trip.itineraryChangePolicy}
+                </div>
+              </div>
             </div>
-          </div>
 
-          </div> {/* #trip-details-content */}
-          <LeadGate tripTitle={trip.title} itineraryPdf={trip.itineraryPdf} />
+            {/* Inclusions / Exclusions */}
+            <div className="grid md:grid-cols-2 gap-6">
+              <div className="rounded-3xl bg-white border border-[#F1D9D0] p-6 shadow-[0_10px_35px_-8px_rgba(19,37,61,0.04)]">
+                <h3 className="font-display font-bold text-lg flex items-center gap-2 text-[#13253D] border-b border-[#F1D9D0]/50 pb-3 mb-4">
+                  <Check className="w-5 h-5 text-green-600 stroke-[3]" /> Inclusions — crystal clear
+                </h3>
+                <ul className="space-y-4">
+                  {inclusions.map((inc: any, index: number) => {
+                    const IconComponent = typeof inc === "object" ? inc.icon : getInclusionIcon(inc);
+                    const text = typeof inc === "object" ? inc.text : inc;
+                    return (
+                      <li key={index} className="flex gap-3 text-[13px] text-[#3D4A5E] font-medium">
+                        <IconComponent className="w-4 h-4 text-[#FF4A7D] shrink-0 mt-0.5" />
+                        <span>{text}</span>
+                      </li>
+                    );
+                  })}
+                </ul>
+              </div>
+              <div className="rounded-3xl bg-white border border-[#F1D9D0] p-6 shadow-[0_10px_35px_-8px_rgba(19,37,61,0.04)]">
+                <h3 className="font-display font-bold text-lg flex items-center gap-2 text-[#13253D] border-b border-[#F1D9D0]/50 pb-3 mb-4">
+                  <X className="w-5 h-5 text-red-500 stroke-[3]" /> Exclusions — no surprises
+                </h3>
+                <ul className="space-y-3 text-[13px] text-[#3D4A5E] font-medium">
+                  {exclusions.map((exc: string, index: number) => (
+                    <li key={index} className="flex items-start gap-2">
+                      <span>•</span>
+                      <span>{exc}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </div>
+
+            {/* Hotel Previews */}
+            <div className="space-y-6">
+              <h2 className="font-display font-[800] text-2xl text-[#13253D]">Hotel preview — timeline in writing</h2>
+              <div className="grid md:grid-cols-2 gap-6">
+                {hotels.map((h: any, i: number) => (
+                  <div key={i} className="rounded-3xl bg-white border border-[#F1D9D0] p-6 shadow-[0_10px_35px_-8px_rgba(19,37,61,0.04)] flex flex-col justify-between">
+                    <div>
+                      <div className="flex items-start justify-between gap-4">
+                        <div className="font-display font-bold text-base text-[#13253D] leading-tight">{h.name}</div>
+                        <Badge variant="plum" className="bg-[#5B2063]/10 text-[#5B2063] border-none text-[9px] font-bold uppercase tracking-wider px-2 py-0.5 shrink-0">{h.category}</Badge>
+                      </div>
+                      <div className="text-[12px] text-[#3D4A5E] mt-2 flex items-center gap-1 font-semibold">
+                        <MapPin className="w-3.5 h-3.5 text-[#FF4A7D]" /> {h.location}
+                      </div>
+                      <div className="mt-4 flex flex-wrap gap-2">
+                        {h.amenities.map((a: any, j: number) => (
+                          <span key={j} className="text-[10px] font-bold rounded-full bg-[#FFF8F0] border border-[#F1D9D0] px-2.5 py-1 text-[#13253D]/70 uppercase tracking-wide">
+                            {a}
+                          </span>
+                        ))}
+                      </div>
+                    </div>
+                    <div className="mt-6 text-[11px] font-semibold rounded-xl bg-[#FFF0F4] border border-[#FF4A7D]/10 p-3 text-[#800F2D] flex items-center gap-1.5">
+                      <span>🕒</span> <span>{h.confirmationTimeline}</span>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
           </div>
 
         </div>

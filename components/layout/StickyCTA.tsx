@@ -1,7 +1,7 @@
 "use client";
 import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
-import { X } from "lucide-react";
+import { X, MessageSquare } from "lucide-react";
 import { usePathname } from "next/navigation";
 import { openEnquiryModal } from "@/lib/utils";
 
@@ -25,6 +25,19 @@ export default function StickyCTA() {
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
+  // Emit visibility event to coordinate floating widgets
+  useEffect(() => {
+    const isVisible = show && !dismissed;
+    if (typeof window !== "undefined") {
+      window.dispatchEvent(new CustomEvent("sticky-cta-change", { detail: { visible: isVisible } }));
+    }
+    return () => {
+      if (typeof window !== "undefined") {
+        window.dispatchEvent(new CustomEvent("sticky-cta-change", { detail: { visible: false } }));
+      }
+    };
+  }, [show, dismissed]);
+
   if (dismissed) return null;
 
   // Extract destination slug if on a trip details page (e.g. /trips/kashmir-blossom-sisterhood)
@@ -44,38 +57,46 @@ export default function StickyCTA() {
     <div className={`fixed bottom-0 left-0 right-0 z-[60] transition-transform duration-300 ${show ? "translate-y-0" : "translate-y-full"}`}>
       <div className="mx-auto max-w-[1280px] px-4 pb-[max(16px,env(safe-area-inset-bottom))] md:px-8">
         <div className="rounded-[24px] bg-[#13253D] text-white p-4 md:p-3 flex items-center justify-between gap-4 shadow-[0_16px_48px_rgba(19,37,61,0.4)] border border-white/10">
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-3 min-w-0">
             <div className="hidden md:flex w-10 h-10 rounded-full bg-[#FF4A7D] items-center justify-center font-bold shrink-0">TN</div>
-            <div className="leading-tight">
-              <div className="font-semibold text-[12px] sm:text-[13px] md:text-[15px]">
-                <span className="md:hidden">Need help? Get a free consult in 2h</span>
+            <div className="leading-tight min-w-0">
+              <div className="font-semibold text-[11px] sm:text-[13px] md:text-[15px] truncate sm:whitespace-normal">
+                {/* On very small screen widths (below 380px), show a shorter text to fit the 4 buttons inline */}
+                <span className="inline min-[380px]:hidden">Need help?</span>
+                <span className="hidden min-[380px]:inline md:hidden">Need help? Get free consult in 2h</span>
                 <span className="hidden md:inline">Not sure which trip? Get free consult in 2 hours</span>
               </div>
               <div className="text-[12px] text-white/60 hidden md:block">33K+ women community • Verified stays • Women trip leader 24x7 • Transparent refunds</div>
             </div>
           </div>
-          <div className="flex items-center gap-2 shrink-0">
+          <div className="flex items-center gap-1.5 sm:gap-2 shrink-0">
+            {/* WhatsApp Icon */}
             <a 
               href="https://wa.me/919999999999" 
               target="_blank" 
               rel="noopener noreferrer"
-              className="hidden md:flex w-11 h-11 rounded-full bg-[#25D366] hover:bg-[#20ba5a] text-white items-center justify-center transition-all hover:scale-105"
+              className="flex w-9 h-9 sm:w-10 sm:h-10 md:w-11 md:h-11 rounded-full bg-[#25D366] hover:bg-[#20ba5a] text-white items-center justify-center transition-all hover:scale-105 shrink-0"
+              title="Chat on WhatsApp"
             >
-              <WhatsAppIcon className="w-5 h-5 text-white" />
+              <WhatsAppIcon className="w-4.5 h-4.5 sm:w-5 sm:h-5 text-white" />
             </a>
+
+            {/* Enquire Button */}
             <Button 
               size="md" 
               onClick={handleEnquireClick}
-              className="bg-gradient-to-r from-[#FF4A7D] to-[#FF758F] hover:from-[#E63E6E] hover:to-[#FF4A7D] hover:scale-[1.03] active:scale-[0.98] transition-all duration-300 shadow-[0_4px_14px_rgba(255,74,125,0.35)] hover:shadow-[0_8px_25px_-4px_rgba(255,74,125,0.5)] border-none text-white font-bold whitespace-nowrap px-6 py-2.5 rounded-full group"
+              className="bg-gradient-to-r from-[#FF4A7D] to-[#FF758F] hover:from-[#E63E6E] hover:to-[#FF4A7D] hover:scale-[1.03] active:scale-[0.98] transition-all duration-300 shadow-[0_4px_14px_rgba(255,74,125,0.35)] hover:shadow-[0_8px_25px_-4px_rgba(255,74,125,0.5)] border-none text-white font-bold whitespace-nowrap px-4 py-2 text-xs sm:px-6 sm:py-2.5 sm:text-sm rounded-full group shrink-0"
             >
               <span>Enquire now</span>
-              <span className="ml-1.5 inline-block transition-transform duration-200 group-hover:translate-x-0.5">→</span>
+              <span className="ml-1 sm:ml-1.5 inline-block transition-transform duration-200 group-hover:translate-x-0.5">→</span>
             </Button>
+            {/* Close Button */}
             <button 
               onClick={() => setDismissed(true)} 
-              className="w-11 h-11 rounded-full bg-white/10 hover:bg-white/20 text-white flex items-center justify-center transition-all"
+              className="w-9 h-9 sm:w-10 sm:h-10 md:w-11 md:h-11 rounded-full bg-white/10 hover:bg-white/20 text-white flex items-center justify-center transition-all shrink-0"
+              title="Dismiss"
             >
-              <X className="w-4 h-4" />
+              <X className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
             </button>
           </div>
         </div>

@@ -21,7 +21,7 @@ export default function Footer() {
             </p>
             <div className="mt-6 flex items-center gap-3">
               <Link href="https://instagram.com/tripnaari" target="_blank" className="w-9 h-9 rounded-full bg-white/5 grid place-items-center hover:bg-[#FF4A7D] transition"><Instagram className="w-4 h-4" /></Link>
-              <a href="mailto:hello@tripnaari.com" className="w-9 h-9 rounded-full bg-white/5 grid place-items-center hover:bg-[#FF4A7D] transition"><Mail className="w-4 h-4" /></a>
+              <a href="mailto:info@tripnaari.com" className="w-9 h-9 rounded-full bg-white/5 grid place-items-center hover:bg-[#FF4A7D] transition"><Mail className="w-4 h-4" /></a>
             </div>
           </div>
 
@@ -50,7 +50,7 @@ export default function Footer() {
             <h4 className="font-semibold text-white mb-4 text-[15px]">Office</h4>
             <div className="flex gap-2 text-[14px] text-white/60 leading-relaxed mb-4">
               <MapPin className="w-4 h-4 mt-1 shrink-0" />
-              <span>Bangalore, India<br/>Responds in 2 hours (10AM-8PM)<br/>hello@tripnaari.com</span>
+              <span>Bangalore, India<br/>Responds in 2 hours (10AM-8PM)<br/>info@tripnaari.com</span>
             </div>
           </div>
         </div>

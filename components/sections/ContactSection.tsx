@@ -6,26 +6,40 @@ export default function ContactSection() {
     {
       icon: Phone,
       title: "Call Us",
-      value: "+91 9XXXX XXXXX",
+      value: (
+        <div className="flex flex-col gap-1 text-[15px] font-bold text-[#FF4A7D]">
+          <a href="tel:+919282794457" className="hover:underline">+91 92827 94457</a>
+          <a href="tel:+919282696757" className="hover:underline">+91 92826 96757</a>
+        </div>
+      ),
       desc: "Emergency line active 24x7 for ongoing trips.",
       btnText: "Call Now",
-      href: "tel:+919999999999",
+      href: "tel:+919282794457",
     },
     {
       icon: Mail,
       title: "Email Us",
-      value: "hello@tripnaari.com",
+      value: (
+        <div className="flex flex-col gap-1 text-[15px] font-bold text-[#FF4A7D] break-all">
+          <a href="mailto:info@tripnaari.com" className="hover:underline">info@tripnaari.com</a>
+          <a href="mailto:viatripnaari@gmail.com" className="hover:underline">viatripnaari@gmail.com</a>
+        </div>
+      ),
       desc: "Response within 24 hours guaranteed.",
       btnText: "Email Us",
-      href: "mailto:hello@tripnaari.com",
+      href: "mailto:info@tripnaari.com",
     },
     {
       icon: MessageCircle,
       title: "WhatsApp Chat",
-      value: "Chat on WhatsApp",
+      value: (
+        <a href="https://wa.me/919282794457" target="_blank" rel="noopener noreferrer" className="text-[15px] font-bold text-[#FF4A7D] hover:underline">
+          +91 92827 94457
+        </a>
+      ),
       desc: "Instant responses from 10 AM to 8 PM.",
       btnText: "Chat Now",
-      href: "https://wa.me/919999999999",
+      href: "https://wa.me/919282794457",
     },
   ];
 
@@ -55,14 +69,14 @@ export default function ContactSection() {
               <h3 className="font-display font-[800] text-[20px] text-[#13253D] mb-2">
                 {c.title}
               </h3>
-              <p className="text-[15px] font-bold text-[#FF4A7D] mb-1">
+              <div className="mb-3 min-h-[48px] flex items-center justify-center">
                 {c.value}
-              </p>
+              </div>
               <p className="text-[13px] text-[#3D4A5E] mb-6 leading-relaxed">
                 {c.desc}
               </p>
 
-              <a href={c.href} className="w-full mt-auto">
+              <a href={c.href} target={c.title === "WhatsApp Chat" ? "_blank" : undefined} rel={c.title === "WhatsApp Chat" ? "noopener noreferrer" : undefined} className="w-full mt-auto">
                 <Button className="w-full bg-[#FF4A7D] hover:bg-[#E63E6E] text-white rounded-full font-semibold">
                   {c.btnText}
                 </Button>

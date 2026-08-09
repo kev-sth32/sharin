@@ -31,7 +31,7 @@ export default function Header() {
             <span className="hidden md:inline-flex gap-2"><span>33K+ Instagram community</span><a href="https://instagram.com/tripnaari" target="_blank" className="underline underline-offset-2 hover:text-[#FF4A7D] inline-flex items-center gap-1"><Instagram className="w-3 h-3" /> @tripnaari</a></span>
           </div>
           <div className="hidden md:flex items-center gap-4">
-            <a href="tel:+919999999999" className="inline-flex items-center gap-1 hover:text-[#FF4A7D]"><Phone className="w-3 h-3" /> Emergency: +91 9XXXX XXXXX</a>
+            <a href="tel:+919282794457" className="inline-flex items-center gap-1 hover:text-[#FF4A7D]"><Phone className="w-3 h-3" /> Emergency: +91 92827 94457</a>
           </div>
         </div>
       </div>
@@ -39,9 +39,11 @@ export default function Header() {
       <header className="sticky top-0 z-50 w-full border-b border-[#F1D9D0] bg-white/95 backdrop-blur-md">
         <div className="max-w-[1280px] mx-auto px-4 md:px-8 h-[64px] lg:h-[70px] xl:h-[76px] flex items-center justify-between">
           <Link href="/" className="flex items-center gap-2 group">
-            <span className="font-display font-[800] text-[26px] tracking-tight text-[#800F2D] hover:opacity-90 transition-opacity">
-              TripNaari
-            </span>
+            <img 
+              src="/logo.png" 
+              alt="TripNaari Logo" 
+              className="h-10 md:h-12 w-auto object-contain hover:opacity-90 transition-opacity" 
+            />
           </Link>
 
           <nav className="hidden lg:flex items-center gap-8">

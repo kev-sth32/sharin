@@ -105,7 +105,7 @@ export default function ContactPage() {
             <div className="rounded-3xl bg-gradient-to-br from-[#800F2D] to-[#4A0516] text-white p-6 md:p-8 shadow-xl border border-white/5 space-y-4">
               <div className="font-display font-bold text-xl">Emergency — ongoing trips only</div>
               <p className="text-[14px] text-white/80 leading-relaxed">
-                WhatsApp or call <strong className="text-white font-bold">+91 9XXXX XXXXX</strong>. Pick up within 2 minutes. Operations callback within 30 minutes. Keep the emergency card from your Trip Leader handy.
+                WhatsApp or call <a href="tel:+919282794457" className="underline font-bold hover:text-[#FF4A7D] transition-colors">+91 92827 94457</a> or <a href="tel:+919282696757" className="underline font-bold hover:text-[#FF4A7D] transition-colors">+91 92826 96757</a>. Pick up within 2 minutes. Operations callback within 30 minutes. Keep the emergency card from your Trip Leader handy.
               </p>
             </div>
 

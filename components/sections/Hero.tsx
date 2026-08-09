@@ -2,7 +2,7 @@
 import Link from "next/link";
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
-import { Star, ShieldCheck, Calendar, Briefcase } from "lucide-react";
+import { ShieldCheck, Calendar, Briefcase, Users } from "lucide-react";
 import { openEnquiryModal } from "@/lib/utils";
 
 const WhatsAppIcon = (props: any) => (
@@ -155,13 +155,13 @@ export default function Hero() {
             {/* Stat 1 */}
             <div className="flex flex-col items-center text-center p-4 pb-6 border-r border-b border-[#F1D9D0]/80 md:border-0 md:p-4">
               <div className="w-12 h-12 rounded-full bg-[#FFF0F4] border border-[#FF4A7D]/20 flex items-center justify-center text-[#FF4A7D] mb-3">
-                <Calendar className="w-5 h-5" />
+                <Users className="w-5 h-5" />
               </div>
               <div className="font-display font-[800] text-[24px] md:text-[28px] text-[#13253D] leading-none">
-                2,500+
+                6,000+
               </div>
               <div className="text-[12px] md:text-[13px] font-bold text-[#FF4A7D] tracking-wider uppercase mt-2">
-                Travelled
+                Travellers
               </div>
             </div>
 
@@ -181,6 +181,19 @@ export default function Hero() {
             {/* Stat 3 */}
             <div className="flex flex-col items-center text-center p-4 pt-6 border-r border-[#F1D9D0]/80 md:border-0 md:p-4">
               <div className="w-12 h-12 rounded-full bg-[#FFF0F4] border border-[#FF4A7D]/20 flex items-center justify-center text-[#FF4A7D] mb-3">
+                <Calendar className="w-5 h-5" />
+              </div>
+              <div className="font-display font-[800] text-[24px] md:text-[28px] text-[#13253D] leading-none">
+                500+
+              </div>
+              <div className="text-[12px] md:text-[13px] font-bold text-[#FF4A7D] tracking-wider uppercase mt-2">
+                Trips
+              </div>
+            </div>
+
+            {/* Stat 4 */}
+            <div className="flex flex-col items-center text-center p-4 pt-6 md:border-0 md:p-4">
+              <div className="w-12 h-12 rounded-full bg-[#FFF0F4] border border-[#FF4A7D]/20 flex items-center justify-center text-[#FF4A7D] mb-3">
                 <ShieldCheck className="w-5 h-5" />
               </div>
               <div className="font-display font-[800] text-[24px] md:text-[28px] text-[#13253D] leading-none">
@@ -188,19 +201,6 @@ export default function Hero() {
               </div>
               <div className="text-[12px] md:text-[13px] font-bold text-[#FF4A7D] tracking-wider uppercase mt-2">
                 Safety Rate
-              </div>
-            </div>
-
-            {/* Stat 4 */}
-            <div className="flex flex-col items-center text-center p-4 pt-6 md:border-0 md:p-4">
-              <div className="w-12 h-12 rounded-full bg-[#FFF0F4] border border-[#FF4A7D]/20 flex items-center justify-center text-[#FF4A7D] mb-3">
-                <Star className="w-5 h-5 fill-[#FF4A7D]" />
-              </div>
-              <div className="font-display font-[800] text-[24px] md:text-[28px] text-[#13253D] leading-none">
-                4.9
-              </div>
-              <div className="text-[12px] md:text-[13px] font-bold text-[#FF4A7D] tracking-wider uppercase mt-2">
-                Google Rating
               </div>
             </div>
           </div>

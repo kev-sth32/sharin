@@ -20,7 +20,6 @@ const nav = [
   { href: "/admin/gallery", label: "Gallery", icon: "🖼️" },
   { href: "/admin/contacts", label: "Contacts & Refunds", icon: "📥" },
   { href: "/admin/finance", label: "Finance Tracker", icon: "💵" },
-  { href: "/admin/notifications", label: "Push Alerts", icon: "🔔" },
 ];
 
 export default function AdminLayoutClient({ children }: { children: React.ReactNode }) {
