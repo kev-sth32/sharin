@@ -1,0 +1,1949 @@
+{
+  "version": "5",
+  "dialect": "mysql",
+  "id": "01376e84-78a7-48aa-8bb9-7a9d07661afa",
+  "prevId": "00000000-0000-0000-0000-000000000000",
+  "tables": {
+    "add_ons": {
+      "name": "add_ons",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "int",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": true
+        },
+        "trip_package_id": {
+          "name": "trip_package_id",
+          "type": "int",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "name": {
+          "name": "name",
+          "type": "varchar(150)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "description": {
+          "name": "description",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "price": {
+          "name": "price",
+          "type": "int",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "is_optional": {
+          "name": "is_optional",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false,
+          "default": true
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "add_ons_trip_package_id_trip_packages_id_fk": {
+          "name": "add_ons_trip_package_id_trip_packages_id_fk",
+          "tableFrom": "add_ons",
+          "tableTo": "trip_packages",
+          "columnsFrom": [
+            "trip_package_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {
+        "add_ons_id": {
+          "name": "add_ons_id",
+          "columns": [
+            "id"
+          ]
+        }
+      },
+      "uniqueConstraints": {},
+      "checkConstraint": {}
+    },
+    "blog_posts": {
+      "name": "blog_posts",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "int",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": true
+        },
+        "slug": {
+          "name": "slug",
+          "type": "varchar(150)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "title": {
+          "name": "title",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "excerpt": {
+          "name": "excerpt",
+          "type": "varchar(500)",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "content": {
+          "name": "content",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "hero_image": {
+          "name": "hero_image",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "author": {
+          "name": "author",
+          "type": "varchar(100)",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false,
+          "default": "'TripNaari Team'"
+        },
+        "category": {
+          "name": "category",
+          "type": "varchar(100)",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "tags": {
+          "name": "tags",
+          "type": "json",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false,
+          "default": "(JSON_ARRAY())"
+        },
+        "is_published": {
+          "name": "is_published",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false,
+          "default": true
+        },
+        "seo_title": {
+          "name": "seo_title",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "seo_description": {
+          "name": "seo_description",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "published_at": {
+          "name": "published_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false,
+          "default": "(now())"
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false,
+          "default": "(now())"
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {
+        "blog_posts_id": {
+          "name": "blog_posts_id",
+          "columns": [
+            "id"
+          ]
+        }
+      },
+      "uniqueConstraints": {
+        "blog_posts_slug_unique": {
+          "name": "blog_posts_slug_unique",
+          "columns": [
+            "slug"
+          ]
+        }
+      },
+      "checkConstraint": {}
+    },
+    "booking_requests": {
+      "name": "booking_requests",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "int",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": true
+        },
+        "lead_id": {
+          "name": "lead_id",
+          "type": "int",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "trip_package_id": {
+          "name": "trip_package_id",
+          "type": "int",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "departure_id": {
+          "name": "departure_id",
+          "type": "int",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "travelers": {
+          "name": "travelers",
+          "type": "int",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "total_amount": {
+          "name": "total_amount",
+          "type": "int",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "status": {
+          "name": "status",
+          "type": "varchar(50)",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false,
+          "default": "'pending'"
+        },
+        "special_requests": {
+          "name": "special_requests",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false,
+          "default": "(now())"
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "booking_requests_lead_id_leads_id_fk": {
+          "name": "booking_requests_lead_id_leads_id_fk",
+          "tableFrom": "booking_requests",
+          "tableTo": "leads",
+          "columnsFrom": [
+            "lead_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "booking_requests_trip_package_id_trip_packages_id_fk": {
+          "name": "booking_requests_trip_package_id_trip_packages_id_fk",
+          "tableFrom": "booking_requests",
+          "tableTo": "trip_packages",
+          "columnsFrom": [
+            "trip_package_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "booking_requests_departure_id_departure_dates_id_fk": {
+          "name": "booking_requests_departure_id_departure_dates_id_fk",
+          "tableFrom": "booking_requests",
+          "tableTo": "departure_dates",
+          "columnsFrom": [
+            "departure_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {
+        "booking_requests_id": {
+          "name": "booking_requests_id",
+          "columns": [
+            "id"
+          ]
+        }
+      },
+      "uniqueConstraints": {},
+      "checkConstraint": {}
+    },
+    "contact_messages": {
+      "name": "contact_messages",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "int",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": true
+        },
+        "name": {
+          "name": "name",
+          "type": "varchar(150)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "email": {
+          "name": "email",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "phone": {
+          "name": "phone",
+          "type": "varchar(20)",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "category": {
+          "name": "category",
+          "type": "varchar(50)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "priority": {
+          "name": "priority",
+          "type": "varchar(20)",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false,
+          "default": "'normal'"
+        },
+        "subject": {
+          "name": "subject",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "message": {
+          "name": "message",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "status": {
+          "name": "status",
+          "type": "varchar(50)",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false,
+          "default": "'new'"
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false,
+          "default": "(now())"
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {
+        "contact_messages_id": {
+          "name": "contact_messages_id",
+          "columns": [
+            "id"
+          ]
+        }
+      },
+      "uniqueConstraints": {},
+      "checkConstraint": {}
+    },
+    "day_itineraries": {
+      "name": "day_itineraries",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "int",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": true
+        },
+        "trip_package_id": {
+          "name": "trip_package_id",
+          "type": "int",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "day_number": {
+          "name": "day_number",
+          "type": "int",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "title": {
+          "name": "title",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "description": {
+          "name": "description",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "location": {
+          "name": "location",
+          "type": "varchar(150)",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "meals_included": {
+          "name": "meals_included",
+          "type": "json",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false,
+          "default": "(JSON_ARRAY())"
+        },
+        "activities": {
+          "name": "activities",
+          "type": "json",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false,
+          "default": "(JSON_ARRAY())"
+        },
+        "accommodation": {
+          "name": "accommodation",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "travel_notes": {
+          "name": "travel_notes",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "image": {
+          "name": "image",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "day_itineraries_trip_package_id_trip_packages_id_fk": {
+          "name": "day_itineraries_trip_package_id_trip_packages_id_fk",
+          "tableFrom": "day_itineraries",
+          "tableTo": "trip_packages",
+          "columnsFrom": [
+            "trip_package_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {
+        "day_itineraries_id": {
+          "name": "day_itineraries_id",
+          "columns": [
+            "id"
+          ]
+        }
+      },
+      "uniqueConstraints": {},
+      "checkConstraint": {}
+    },
+    "departure_dates": {
+      "name": "departure_dates",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "int",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": true
+        },
+        "trip_package_id": {
+          "name": "trip_package_id",
+          "type": "int",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "start_date": {
+          "name": "start_date",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "end_date": {
+          "name": "end_date",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "seats_total": {
+          "name": "seats_total",
+          "type": "int",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false,
+          "default": 16
+        },
+        "seats_booked": {
+          "name": "seats_booked",
+          "type": "int",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false,
+          "default": 0
+        },
+        "price": {
+          "name": "price",
+          "type": "int",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "status": {
+          "name": "status",
+          "type": "varchar(30)",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false,
+          "default": "'open'"
+        },
+        "is_guaranteed": {
+          "name": "is_guaranteed",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false,
+          "default": false
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false,
+          "default": "(now())"
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "departure_dates_trip_package_id_trip_packages_id_fk": {
+          "name": "departure_dates_trip_package_id_trip_packages_id_fk",
+          "tableFrom": "departure_dates",
+          "tableTo": "trip_packages",
+          "columnsFrom": [
+            "trip_package_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {
+        "departure_dates_id": {
+          "name": "departure_dates_id",
+          "columns": [
+            "id"
+          ]
+        }
+      },
+      "uniqueConstraints": {},
+      "checkConstraint": {}
+    },
+    "exclusions": {
+      "name": "exclusions",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "int",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": true
+        },
+        "trip_package_id": {
+          "name": "trip_package_id",
+          "type": "int",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "text": {
+          "name": "text",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "exclusions_trip_package_id_trip_packages_id_fk": {
+          "name": "exclusions_trip_package_id_trip_packages_id_fk",
+          "tableFrom": "exclusions",
+          "tableTo": "trip_packages",
+          "columnsFrom": [
+            "trip_package_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {
+        "exclusions_id": {
+          "name": "exclusions_id",
+          "columns": [
+            "id"
+          ]
+        }
+      },
+      "uniqueConstraints": {},
+      "checkConstraint": {}
+    },
+    "faqs": {
+      "name": "faqs",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "int",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": true
+        },
+        "question": {
+          "name": "question",
+          "type": "varchar(500)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "answer": {
+          "name": "answer",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "category": {
+          "name": "category",
+          "type": "varchar(100)",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "trip_package_id": {
+          "name": "trip_package_id",
+          "type": "int",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "order": {
+          "name": "order",
+          "type": "int",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false,
+          "default": 0
+        },
+        "is_published": {
+          "name": "is_published",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false,
+          "default": true
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "faqs_trip_package_id_trip_packages_id_fk": {
+          "name": "faqs_trip_package_id_trip_packages_id_fk",
+          "tableFrom": "faqs",
+          "tableTo": "trip_packages",
+          "columnsFrom": [
+            "trip_package_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {
+        "faqs_id": {
+          "name": "faqs_id",
+          "columns": [
+            "id"
+          ]
+        }
+      },
+      "uniqueConstraints": {},
+      "checkConstraint": {}
+    },
+    "gallery_assets": {
+      "name": "gallery_assets",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "int",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": true
+        },
+        "url": {
+          "name": "url",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "alt": {
+          "name": "alt",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "caption": {
+          "name": "caption",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "trip_package_id": {
+          "name": "trip_package_id",
+          "type": "int",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "tags": {
+          "name": "tags",
+          "type": "json",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false,
+          "default": "(JSON_ARRAY())"
+        },
+        "uploaded_at": {
+          "name": "uploaded_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false,
+          "default": "(now())"
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "gallery_assets_trip_package_id_trip_packages_id_fk": {
+          "name": "gallery_assets_trip_package_id_trip_packages_id_fk",
+          "tableFrom": "gallery_assets",
+          "tableTo": "trip_packages",
+          "columnsFrom": [
+            "trip_package_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {
+        "gallery_assets_id": {
+          "name": "gallery_assets_id",
+          "columns": [
+            "id"
+          ]
+        }
+      },
+      "uniqueConstraints": {},
+      "checkConstraint": {}
+    },
+    "hotel_previews": {
+      "name": "hotel_previews",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "int",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": true
+        },
+        "trip_package_id": {
+          "name": "trip_package_id",
+          "type": "int",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "name": {
+          "name": "name",
+          "type": "varchar(150)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "category": {
+          "name": "category",
+          "type": "varchar(50)",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "location": {
+          "name": "location",
+          "type": "varchar(150)",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "image": {
+          "name": "image",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "amenities": {
+          "name": "amenities",
+          "type": "json",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false,
+          "default": "(JSON_ARRAY())"
+        },
+        "confirmation_timeline": {
+          "name": "confirmation_timeline",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false,
+          "default": "'Hotel name shared 7 days before departure'"
+        },
+        "is_tbc": {
+          "name": "is_tbc",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false,
+          "default": false
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "hotel_previews_trip_package_id_trip_packages_id_fk": {
+          "name": "hotel_previews_trip_package_id_trip_packages_id_fk",
+          "tableFrom": "hotel_previews",
+          "tableTo": "trip_packages",
+          "columnsFrom": [
+            "trip_package_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {
+        "hotel_previews_id": {
+          "name": "hotel_previews_id",
+          "columns": [
+            "id"
+          ]
+        }
+      },
+      "uniqueConstraints": {},
+      "checkConstraint": {}
+    },
+    "inclusions": {
+      "name": "inclusions",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "int",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": true
+        },
+        "trip_package_id": {
+          "name": "trip_package_id",
+          "type": "int",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "text": {
+          "name": "text",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "category": {
+          "name": "category",
+          "type": "varchar(100)",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "icon": {
+          "name": "icon",
+          "type": "varchar(50)",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "inclusions_trip_package_id_trip_packages_id_fk": {
+          "name": "inclusions_trip_package_id_trip_packages_id_fk",
+          "tableFrom": "inclusions",
+          "tableTo": "trip_packages",
+          "columnsFrom": [
+            "trip_package_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {
+        "inclusions_id": {
+          "name": "inclusions_id",
+          "columns": [
+            "id"
+          ]
+        }
+      },
+      "uniqueConstraints": {},
+      "checkConstraint": {}
+    },
+    "leads": {
+      "name": "leads",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "int",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": true
+        },
+        "name": {
+          "name": "name",
+          "type": "varchar(150)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "email": {
+          "name": "email",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "phone": {
+          "name": "phone",
+          "type": "varchar(20)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "destination": {
+          "name": "destination",
+          "type": "varchar(150)",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "travel_month": {
+          "name": "travel_month",
+          "type": "varchar(50)",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "travelers": {
+          "name": "travelers",
+          "type": "int",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false,
+          "default": 1
+        },
+        "travel_style": {
+          "name": "travel_style",
+          "type": "varchar(100)",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "budget": {
+          "name": "budget",
+          "type": "varchar(50)",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "message": {
+          "name": "message",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "consent": {
+          "name": "consent",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false,
+          "default": true
+        },
+        "source": {
+          "name": "source",
+          "type": "varchar(100)",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false,
+          "default": "'website'"
+        },
+        "status": {
+          "name": "status",
+          "type": "varchar(50)",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false,
+          "default": "'new'"
+        },
+        "notes": {
+          "name": "notes",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "follow_up_at": {
+          "name": "follow_up_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false,
+          "default": "(now())"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false,
+          "default": "(now())"
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {
+        "leads_id": {
+          "name": "leads_id",
+          "columns": [
+            "id"
+          ]
+        }
+      },
+      "uniqueConstraints": {},
+      "checkConstraint": {}
+    },
+    "newsletter_subscribers": {
+      "name": "newsletter_subscribers",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "int",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": true
+        },
+        "email": {
+          "name": "email",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "name": {
+          "name": "name",
+          "type": "varchar(150)",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "source": {
+          "name": "source",
+          "type": "varchar(50)",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false,
+          "default": "'footer'"
+        },
+        "is_active": {
+          "name": "is_active",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false,
+          "default": true
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false,
+          "default": "(now())"
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {
+        "newsletter_subscribers_id": {
+          "name": "newsletter_subscribers_id",
+          "columns": [
+            "id"
+          ]
+        }
+      },
+      "uniqueConstraints": {
+        "newsletter_subscribers_email_unique": {
+          "name": "newsletter_subscribers_email_unique",
+          "columns": [
+            "email"
+          ]
+        }
+      },
+      "checkConstraint": {}
+    },
+    "policy_pages": {
+      "name": "policy_pages",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "int",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": true
+        },
+        "slug": {
+          "name": "slug",
+          "type": "varchar(100)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "title": {
+          "name": "title",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "content": {
+          "name": "content",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "version": {
+          "name": "version",
+          "type": "int",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false,
+          "default": 1
+        },
+        "last_updated": {
+          "name": "last_updated",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false,
+          "default": "(now())"
+        },
+        "is_published": {
+          "name": "is_published",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false,
+          "default": true
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {
+        "policy_pages_id": {
+          "name": "policy_pages_id",
+          "columns": [
+            "id"
+          ]
+        }
+      },
+      "uniqueConstraints": {
+        "policy_pages_slug_unique": {
+          "name": "policy_pages_slug_unique",
+          "columns": [
+            "slug"
+          ]
+        }
+      },
+      "checkConstraint": {}
+    },
+    "refund_requests": {
+      "name": "refund_requests",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "int",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": true
+        },
+        "booking_request_id": {
+          "name": "booking_request_id",
+          "type": "int",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "lead_id": {
+          "name": "lead_id",
+          "type": "int",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "reason": {
+          "name": "reason",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "amount_requested": {
+          "name": "amount_requested",
+          "type": "int",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "policy_acknowledged": {
+          "name": "policy_acknowledged",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false,
+          "default": false
+        },
+        "status": {
+          "name": "status",
+          "type": "varchar(50)",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false,
+          "default": "'pending'"
+        },
+        "admin_notes": {
+          "name": "admin_notes",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false,
+          "default": "(now())"
+        },
+        "resolved_at": {
+          "name": "resolved_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "refund_requests_booking_request_id_booking_requests_id_fk": {
+          "name": "refund_requests_booking_request_id_booking_requests_id_fk",
+          "tableFrom": "refund_requests",
+          "tableTo": "booking_requests",
+          "columnsFrom": [
+            "booking_request_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "refund_requests_lead_id_leads_id_fk": {
+          "name": "refund_requests_lead_id_leads_id_fk",
+          "tableFrom": "refund_requests",
+          "tableTo": "leads",
+          "columnsFrom": [
+            "lead_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {
+        "refund_requests_id": {
+          "name": "refund_requests_id",
+          "columns": [
+            "id"
+          ]
+        }
+      },
+      "uniqueConstraints": {},
+      "checkConstraint": {}
+    },
+    "site_settings": {
+      "name": "site_settings",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "int",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": true
+        },
+        "key": {
+          "name": "key",
+          "type": "varchar(100)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "value": {
+          "name": "value",
+          "type": "json",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "description": {
+          "name": "description",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false,
+          "default": "(now())"
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {
+        "site_settings_id": {
+          "name": "site_settings_id",
+          "columns": [
+            "id"
+          ]
+        }
+      },
+      "uniqueConstraints": {
+        "site_settings_key_unique": {
+          "name": "site_settings_key_unique",
+          "columns": [
+            "key"
+          ]
+        }
+      },
+      "checkConstraint": {}
+    },
+    "testimonials": {
+      "name": "testimonials",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "int",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": true
+        },
+        "name": {
+          "name": "name",
+          "type": "varchar(150)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "location": {
+          "name": "location",
+          "type": "varchar(100)",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "trip_slug": {
+          "name": "trip_slug",
+          "type": "varchar(150)",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "rating": {
+          "name": "rating",
+          "type": "int",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false,
+          "default": 5
+        },
+        "content": {
+          "name": "content",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "image": {
+          "name": "image",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "is_featured": {
+          "name": "is_featured",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false,
+          "default": false
+        },
+        "is_approved": {
+          "name": "is_approved",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false,
+          "default": true
+        },
+        "travel_date": {
+          "name": "travel_date",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false,
+          "default": "(now())"
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {
+        "testimonials_id": {
+          "name": "testimonials_id",
+          "columns": [
+            "id"
+          ]
+        }
+      },
+      "uniqueConstraints": {},
+      "checkConstraint": {}
+    },
+    "trip_leaders": {
+      "name": "trip_leaders",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "int",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": true
+        },
+        "slug": {
+          "name": "slug",
+          "type": "varchar(100)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "name": {
+          "name": "name",
+          "type": "varchar(150)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "bio": {
+          "name": "bio",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "specialties": {
+          "name": "specialties",
+          "type": "json",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false,
+          "default": "(JSON_ARRAY())"
+        },
+        "languages": {
+          "name": "languages",
+          "type": "json",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false,
+          "default": "(JSON_ARRAY())"
+        },
+        "experience_years": {
+          "name": "experience_years",
+          "type": "int",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false,
+          "default": 3
+        },
+        "trips_led": {
+          "name": "trips_led",
+          "type": "int",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false,
+          "default": 50
+        },
+        "image": {
+          "name": "image",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "instagram": {
+          "name": "instagram",
+          "type": "varchar(100)",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "is_verified": {
+          "name": "is_verified",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false,
+          "default": true
+        },
+        "safety_training": {
+          "name": "safety_training",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false,
+          "default": true
+        },
+        "is_published": {
+          "name": "is_published",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false,
+          "default": true
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {
+        "trip_leaders_id": {
+          "name": "trip_leaders_id",
+          "columns": [
+            "id"
+          ]
+        }
+      },
+      "uniqueConstraints": {
+        "trip_leaders_slug_unique": {
+          "name": "trip_leaders_slug_unique",
+          "columns": [
+            "slug"
+          ]
+        }
+      },
+      "checkConstraint": {}
+    },
+    "trip_packages": {
+      "name": "trip_packages",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "int",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": true
+        },
+        "slug": {
+          "name": "slug",
+          "type": "varchar(150)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "destination_slug": {
+          "name": "destination_slug",
+          "type": "varchar(100)",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "title": {
+          "name": "title",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "short_description": {
+          "name": "short_description",
+          "type": "varchar(500)",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "long_description": {
+          "name": "long_description",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "duration_days": {
+          "name": "duration_days",
+          "type": "int",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "duration_nights": {
+          "name": "duration_nights",
+          "type": "int",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "price_from": {
+          "name": "price_from",
+          "type": "int",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "price_original": {
+          "name": "price_original",
+          "type": "int",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "group_size_min": {
+          "name": "group_size_min",
+          "type": "int",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false,
+          "default": 8
+        },
+        "group_size_max": {
+          "name": "group_size_max",
+          "type": "int",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false,
+          "default": 16
+        },
+        "difficulty": {
+          "name": "difficulty",
+          "type": "varchar(50)",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "comfort_level": {
+          "name": "comfort_level",
+          "type": "varchar(50)",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "is_women_only": {
+          "name": "is_women_only",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false,
+          "default": true
+        },
+        "is_family_friendly": {
+          "name": "is_family_friendly",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false,
+          "default": false
+        },
+        "is_featured": {
+          "name": "is_featured",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false,
+          "default": false
+        },
+        "hero_image": {
+          "name": "hero_image",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "gallery": {
+          "name": "gallery",
+          "type": "json",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false,
+          "default": "(JSON_ARRAY())"
+        },
+        "highlights": {
+          "name": "highlights",
+          "type": "json",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false,
+          "default": "(JSON_ARRAY())"
+        },
+        "rating_avg": {
+          "name": "rating_avg",
+          "type": "decimal(3,2)",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false,
+          "default": "'4.9'"
+        },
+        "rating_count": {
+          "name": "rating_count",
+          "type": "int",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false,
+          "default": 127
+        },
+        "seo_title": {
+          "name": "seo_title",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "seo_description": {
+          "name": "seo_description",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "itinerary_change_policy": {
+          "name": "itinerary_change_policy",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "itinerary_pdf": {
+          "name": "itinerary_pdf",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "is_published": {
+          "name": "is_published",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false,
+          "default": true
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false,
+          "default": "(now())"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false,
+          "default": "(now())"
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {
+        "trip_packages_id": {
+          "name": "trip_packages_id",
+          "columns": [
+            "id"
+          ]
+        }
+      },
+      "uniqueConstraints": {
+        "trip_packages_slug_unique": {
+          "name": "trip_packages_slug_unique",
+          "columns": [
+            "slug"
+          ]
+        }
+      },
+      "checkConstraint": {}
+    }
+  },
+  "views": {},
+  "_meta": {
+    "schemas": {},
+    "tables": {},
+    "columns": {}
+  },
+  "internal": {
+    "tables": {},
+    "indexes": {}
+  }
+}

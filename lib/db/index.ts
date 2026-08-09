@@ -1,9 +1,9 @@
-import { drizzle as drizzlePg } from "drizzle-orm/node-postgres";
-import { Pool } from "pg";
+import { drizzle as drizzleMysql } from "drizzle-orm/mysql2";
+import mysql from "mysql2/promise";
 import * as schema from "./schema";
 
 let db: any;
-let pool: Pool | null = null;
+let pool: mysql.Pool | null = null;
 
 function getDb() {
   if (db) return db;
@@ -12,17 +12,17 @@ function getDb() {
 
   if (connectionString) {
     try {
-      pool = new Pool({ connectionString, ssl: connectionString.includes("neon") ? { rejectUnauthorized: false } : false });
-      db = drizzlePg(pool, { schema });
-      console.log("[TripNaari DB] Connected to PostgreSQL");
+      pool = mysql.createPool({ uri: connectionString });
+      db = drizzleMysql(pool, { schema, mode: "default" });
+      console.log("[TripNaari DB] Connected to MySQL");
       return db;
     } catch (e) {
-      console.warn("[TripNaari DB] PG connection failed, falling back to mock", e);
+      console.warn("[TripNaari DB] MySQL connection failed, falling back to mock", e);
     }
   }
 
-  // Fallback mock DB - logs queries but doesn't persist to PG (for demo / no DB_URL)
-  console.log("[TripNaari DB] Using in-memory fallback (set DATABASE_URL for real PG)");
+  // Fallback mock DB - logs queries but doesn't persist to MySQL (for demo / no DB_URL)
+  console.log("[TripNaari DB] Using in-memory fallback (set DATABASE_URL for real MySQL)");
   db = {
     _isMock: true,
     query: {},

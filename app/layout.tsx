@@ -3,6 +3,7 @@ import { Plus_Jakarta_Sans, Fraunces } from "next/font/google";
 import "./globals.css";
 import SiteLayoutWrapper from "@/components/layout/SiteLayoutWrapper";
 import CustomerChatbot from "@/components/chat/CustomerChatbot";
+import PWARegistry from "@/components/layout/PWARegistry";
 
 const jakarta = Plus_Jakarta_Sans({
   variable: "--font-jakarta",
@@ -47,6 +48,8 @@ export default function RootLayout({
   return (
     <html lang="en" className={`${jakarta.variable} ${fraunces.variable} h-full antialiased`}>
       <head>
+        <link rel="manifest" href="/manifest.json" />
+        <meta name="theme-color" content="#800F2D" />
         {/* Structured Data */}
         <script type="application/ld+json" dangerouslySetInnerHTML={{__html: JSON.stringify({
           "@context":"https://schema.org",
@@ -64,7 +67,9 @@ export default function RootLayout({
       <body className="min-h-full flex flex-col bg-[#FFF8F0] text-[#13253D]">
         <SiteLayoutWrapper>{children}</SiteLayoutWrapper>
         <CustomerChatbot />
+        <PWARegistry />
       </body>
     </html>
   );
 }
+
