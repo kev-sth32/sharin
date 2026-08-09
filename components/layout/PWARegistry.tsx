@@ -32,6 +32,18 @@ export default function PWARegistry() {
   const [showIosGuide, setShowIosGuide] = useState(false);
   const [showAndroidGuide, setShowAndroidGuide] = useState(false);
   const [isSecureContext, setIsSecureContext] = useState(true);
+  const [showSticky, setShowSticky] = useState(false);
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const onScroll = () => {
+      if (window.scrollY > 800) setShowSticky(true);
+      else setShowSticky(false);
+    };
+    window.addEventListener("scroll", onScroll);
+    onScroll();
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
 
   useEffect(() => {
     if (typeof window === "undefined") return;
@@ -338,7 +350,7 @@ export default function PWARegistry() {
             localStorage.removeItem("push_prompt_dismissed");
             setIsVisible(true);
           }}
-          className="fixed bottom-6 left-6 z-[9998] w-12 h-12 rounded-full bg-[#FF4A7D] text-white flex items-center justify-center shadow-[0_6px_20px_rgba(255,74,125,0.4)] hover:scale-105 active:scale-95 transition-all duration-200 border border-white/10 shrink-0"
+          className={`fixed ${showSticky ? "bottom-[calc(84px+max(16px,env(safe-area-inset-bottom)))]" : "bottom-6"} left-6 z-[9998] w-12 h-12 rounded-full bg-[#FF4A7D] text-white flex items-center justify-center shadow-[0_6px_20px_rgba(255,74,125,0.4)] hover:scale-105 active:scale-95 transition-all duration-200 border border-white/10 shrink-0`}
           title={isStandalone ? "Enable Travel Alerts" : "Install TripNaari App"}
         >
           {isStandalone ? <Bell className="w-5 h-5 animate-pulse" /> : <Smartphone className="w-5 h-5 animate-pulse" />}

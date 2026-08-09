@@ -233,7 +233,7 @@ export default function CustomerChatbot() {
       {/* Floating Chat Bubble */}
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className={`fixed ${showSticky ? "bottom-24" : "bottom-6"} right-6 z-[70] flex h-14 w-14 items-center justify-center rounded-full bg-[#13253D] text-white hover:bg-[#FF4A7D] transition-all duration-300 shadow-xl border border-white/20 hover:scale-105`}
+        className={`fixed ${showSticky ? "bottom-[calc(84px+max(16px,env(safe-area-inset-bottom)))]" : "bottom-6"} right-6 z-[70] flex h-14 w-14 items-center justify-center rounded-full bg-[#13253D] text-white hover:bg-[#FF4A7D] transition-all duration-300 shadow-xl border border-white/20 hover:scale-105`}
         title="Chat with NaariAI"
       >
         {isOpen ? <X className="h-6 w-6" /> : <MessageSquare className="h-6 w-6 text-white" />}
@@ -241,7 +241,7 @@ export default function CustomerChatbot() {
 
       {/* Floating Panel */}
       {isOpen && (
-        <div className={`fixed ${showSticky ? "bottom-44" : "bottom-24"} right-6 z-[70] w-[90%] sm:w-[380px] h-[500px] bg-white border border-[#F1D9D0] rounded-3xl shadow-2xl flex flex-col overflow-hidden animate-in fade-in slide-in-from-bottom-5 duration-300`}>
+        <div className={`fixed ${showSticky ? "bottom-[calc(156px+max(16px,env(safe-area-inset-bottom)))]" : "bottom-24"} right-6 z-[70] w-[90%] sm:w-[380px] h-[500px] bg-white border border-[#F1D9D0] rounded-3xl shadow-2xl flex flex-col overflow-hidden animate-in fade-in slide-in-from-bottom-5 duration-300`}>
           
           {/* Header */}
           <div className="p-4 bg-gradient-to-r from-[#13253D] to-[#203D64] text-white flex items-center justify-between shrink-0">
