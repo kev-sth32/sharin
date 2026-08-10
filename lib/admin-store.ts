@@ -14,218 +14,23 @@ function readFile(name: string, fallback: any[] = []) {
   if (!fs.existsSync(fp)) return fallback;
   try { return JSON.parse(fs.readFileSync(fp, "utf-8")); } catch { return fallback; }
 }
-function writeFile(name: string, data: any) {
+function writeFile(name: string, data: any, revalidate = true) {
   ensureDir();
   fs.writeFileSync(path.join(dataDir, name), JSON.stringify(data, null, 2));
-  revalidatePath("/", "layout");
+  if (revalidate) {
+    try {
+      revalidatePath("/", "layout");
+    } catch (e) {
+      console.warn("revalidatePath failed (likely called during render):", e);
+    }
+  }
 }
 
 // ===== Core Data Merge =====
+import { getAdminDataShared } from "./admin-store-shared";
+
 export async function getAdminData() {
-  const leads = readFile("leads.json", []);
-  if (leads.length === 0) {
-    const seedLeads = [
-      {
-        id: 1,
-        name: "Ananya Sharma",
-        email: "ananya.sharma@example.com",
-        phone: "+91 98765 43210",
-        destination: "Kashmir",
-        travelMonth: "October 2026",
-        travelers: 3,
-        budget: "₹30,000 - ₹50,000",
-        message: "Looking for a luxury women-only getaway to Srinagar, Gulmarg, and Pahalgam. Prefer premium hotel stays and verified drivers.",
-        status: "new",
-        notes: "Interested in premium packages. Indicated she has a group of 3 sisters.",
-        followUpAt: "",
-        source: "homepage",
-        createdAt: new Date(Date.now() - 2 * 3600000).toISOString() // 2 hours ago
-      },
-      {
-        id: 2,
-        name: "Priya Nair",
-        email: "priya.nair@example.com",
-        phone: "+91 99998 88877",
-        destination: "Meghalaya",
-        travelMonth: "September 2026",
-        travelers: 1,
-        budget: "₹20,000 - ₹30,000",
-        message: "Solo traveler wanting to join the Meghalaya sisterhood group departure. Very excited about the double-decker root bridge trek!",
-        status: "itinerary_shared",
-        notes: "Shared Meghalaya itinerary PDF and hotel details via WhatsApp. She wants to check flight options before confirming.",
-        followUpAt: new Date(Date.now() + 2 * 24 * 3600000).toISOString().slice(0, 16), // 2 days from now
-        source: "enquiry",
-        createdAt: new Date(Date.now() - 24 * 3600000).toISOString() // 1 day ago
-      },
-      {
-        id: 3,
-        name: "Sneha Patil",
-        email: "sneha.patil@example.com",
-        phone: "+91 91234 56789",
-        destination: "Spiti Valley",
-        travelMonth: "September 2026",
-        travelers: 2,
-        budget: "₹30,000 - ₹50,000",
-        message: "Me and my sister want to book the Spiti road trip. Can we confirm if the trip leader is female and if hotels have heaters?",
-        status: "booked",
-        notes: "Confirmed women-only group leaders and hotel heating. Booking token received. Paid 10k.",
-        followUpAt: "",
-        source: "custom",
-        createdAt: new Date(Date.now() - 3 * 24 * 3600000).toISOString() // 3 days ago
-      },
-      {
-        id: 4,
-        name: "Aditi Rao",
-        email: "aditi.rao@example.com",
-        phone: "+91 98111 22233",
-        destination: "Kerala",
-        travelMonth: "November 2026",
-        travelers: 4,
-        budget: "Above ₹50,000",
-        message: "Custom private houseboat tour and tea plantation walk in Munnar for a group of 4 close girlfriends.",
-        status: "payment_pending",
-        notes: "Sent proposal deck for Munnar + Alleppey. Waiting for payment verification of token transfer.",
-        followUpAt: new Date(Date.now() + 4 * 3600000).toISOString().slice(0, 16), // 4 hours from now
-        source: "homepage",
-        createdAt: new Date(Date.now() - 4 * 24 * 3600000).toISOString() // 4 days ago
-      },
-      {
-        id: 5,
-        name: "Ritu Verma",
-        email: "ritu.verma@example.com",
-        phone: "+91 90000 11111",
-        destination: "Ladakh",
-        travelMonth: "September 2026",
-        travelers: 1,
-        budget: "₹30,000 - ₹50,000",
-        message: "Is high altitude medical support provided? I am traveling solo for the first time and want to ensure safety.",
-        status: "contacted",
-        notes: "Explained oxygen cylinder backup and 24/7 support line. Ritu seemed reassured, will verify budget and confirm.",
-        followUpAt: new Date(Date.now() + 24 * 3600000).toISOString().slice(0, 16), // tomorrow
-        source: "newsletter",
-        createdAt: new Date(Date.now() - 6 * 24 * 3600000).toISOString() // 6 days ago
-      }
-    ];
-    leads.push(...seedLeads);
-    writeFile("leads.json", leads);
-  }
-
-  const custom = readFile("custom_trips.json", []);
-  const newsletter = readFile("newsletter.json", []);
-  const contacts = readFile("contacts.json", []);
-  const refunds = readFile("refunds.json", []);
-  const tripsOverrides = readFile("trips_overrides.json", []);
-  const tripsCustom = readFile("trips_custom.json", []);
-
-  const testimonialsOverrides = readFile("testimonials_overrides.json", []);
-  const leadersOverrides = readFile("leaders_overrides.json", []);
-  const leadersCustom = readFile("leaders_custom.json", []);
-
-  const departures = readFile("departures.json", []);
-  // If departures is empty, populate it on first load
-  if (departures.length === 0 && tripPackagesSeed.length > 0) {
-    const today = new Date();
-    let idCounter = 1;
-    tripPackagesSeed.forEach((t: any) => {
-      const start1 = new Date(today.getTime() + 7 * 24 * 60 * 60 * 1000);
-      const end1 = new Date(start1.getTime() + t.durationDays * 24 * 60 * 60 * 1000);
-      const start2 = new Date(today.getTime() + 20 * 24 * 60 * 60 * 1000);
-      const end2 = new Date(start2.getTime() + t.durationDays * 24 * 60 * 60 * 1000);
-      
-      departures.push({
-        id: idCounter++,
-        tripSlug: t.slug,
-        startDate: start1.toISOString().slice(0, 10),
-        endDate: end1.toISOString().slice(0, 10),
-        seatsTotal: 14,
-        seatsBooked: 8,
-        price: t.priceFrom,
-        status: "open",
-        isGuaranteed: false
-      });
-      departures.push({
-        id: idCounter++,
-        tripSlug: t.slug,
-        startDate: start2.toISOString().slice(0, 10),
-        endDate: end2.toISOString().slice(0, 10),
-        seatsTotal: 16,
-        seatsBooked: 14,
-        price: t.priceFrom,
-        status: "filling_fast",
-        isGuaranteed: true
-      });
-    });
-    writeFile("departures.json", departures);
-  }
-
-  const transactions = readFile("transactions.json", []);
-  if (transactions.length === 0) {
-    const seedTx = [
-      { id: 1, type: "revenue", amount: 145000, category: "Trip Bookings", tripSlug: "kashmir-girls-gateway", description: "Batch 1 bookings (5 slots)", date: "2026-07-15", createdAt: new Date().toISOString() },
-      { id: 2, type: "revenue", amount: 110000, category: "Trip Bookings", tripSlug: "meghalaya-monsoon-magic", description: "Batch 2 bookings (4 slots)", date: "2026-07-20", createdAt: new Date().toISOString() },
-      { id: 3, type: "expense", amount: 45000, category: "Hotel Bookings", tripSlug: "kashmir-girls-gateway", description: "Hotel advance - Srinagar Residency", date: "2026-07-22", createdAt: new Date().toISOString() },
-      { id: 4, type: "expense", amount: 35000, category: "Transport Cost", tripSlug: "kashmir-girls-gateway", description: "Tempo Traveller booking 6 days", date: "2026-07-23", createdAt: new Date().toISOString() },
-      { id: 5, type: "revenue", amount: 65000, category: "Custom Private Trips", tripSlug: "kerala-backwater-escape", description: "Private family trip advance", date: "2026-07-28", createdAt: new Date().toISOString() },
-      { id: 6, type: "expense", amount: 18000, category: "Trip Leader Payout", tripSlug: "kashmir-girls-gateway", description: "Leader pay - batch 1 guide", date: "2026-07-30", createdAt: new Date().toISOString() },
-      { id: 7, type: "expense", amount: 12000, category: "Marketing / Ads", description: "Instagram ads for Spiti Valley trip", date: "2026-08-01", createdAt: new Date().toISOString() },
-      { id: 8, type: "revenue", amount: 95000, category: "Trip Bookings", tripSlug: "spiti-valley-road-trip", description: "Bookings inflow Spiti", date: "2026-08-03", createdAt: new Date().toISOString() }
-    ];
-    transactions.push(...seedTx);
-    writeFile("transactions.json", transactions);
-  }
-
-  let totalRevenue = 0;
-  let totalExpenses = 0;
-  transactions.forEach((tx: any) => {
-    if (tx.type === "revenue") totalRevenue += tx.amount;
-    else if (tx.type === "expense") totalExpenses += tx.amount;
-  });
-  const netProfit = totalRevenue - totalExpenses;
-
-  const trips = [
-    ...tripPackagesSeed.map((t: any) => {
-      const over = tripsOverrides.find((o: any) => o.slug === t.slug);
-      if (over?.isDeleted) return null as any;
-      return over ? { ...t, ...over } : t;
-    }).filter(Boolean),
-    ...tripsCustom
-  ];
-
-
-  const testimonials = [...testimonialsSeed.map((t: any, i: number)=>({ id: 1000+i, isApproved: true, ...t })), ...testimonialsOverrides];
-  const tripLeaders = [
-    ...tripLeadersSeed.map((l: any) => {
-      const over = leadersOverrides.find((o: any) => o.slug === l.slug);
-      return over ? { ...l, ...over } : l;
-    }),
-    ...leadersCustom
-  ];
-
-  return {
-    stats: {
-      leads: leads.length,
-      custom: custom.length,
-      newsletter: newsletter.length,
-      contacts: contacts.length,
-      refunds: refunds.length,
-      trips: trips.length,
-      testimonials: testimonials.length,
-      departures: departures.length,
-      totalRevenue,
-      totalExpenses,
-      netProfit,
-    },
-    leads: leads.reverse(),
-    trips,
-
-    testimonials,
-    tripLeaders,
-    departures,
-    faqs: faqsSeed,
-    blogs: blogSeed,
-    tripsOverrides,
-    tripsCustom,
-  };
+  return getAdminDataShared();
 }
 
 export async function getTripBySlug(slug: string) {
@@ -719,6 +524,186 @@ export async function savePolicy(slug: string, title: string, body: string, vers
   }
   return { success: false, error: "Policy not found" };
 }
+
+export async function getAISettings() {
+  const fallback = {
+    nvidiaApiKey: "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",
+    modelName: "meta/llama-3.1-70b-instruct",
+    welcomeMessage: "Namaste! 🙏 Welcome to TripNaari. I am NaariAI, your travel companion. I can help you find safe women-only packages, check active departures, and answer any queries you have. What destinations are you dreaming of?",
+    systemInstruction: `You are "NaariAI", the official women's safety & group travel assistant for TripNaari.
+TripNaari is India's leading travel brand focusing on safe solo and group travel experiences for women, sisters, mothers, and daughters.
+
+YOUR INSTRUCTIONS:
+1. ONLY answer questions using the provided TripNaari information (Trips, Departures, FAQs, Policies, Custom Knowledge) listed below.
+2. Be extremely warm, friendly, encouraging, and supportive. Emphasize women's safety, sisterhood, local women leaders, and verified safety audits.
+3. If a customer is asking to book a trip or wants a customized itinerary, encourage them to fill out our quick Enquiry/Booking Form. You can output "[SHOW_ENQUIRY_FORM]" at the end of your response to trigger the form interface inside the chat drawer.
+4. If a user asks about topics completely unrelated to TripNaari (e.g. coding, cooking recipes, other travel operators, general news), politely state that you are only programmed to help with TripNaari trips and safety queries.
+5. Do NOT hallucinate prices, dates, or destinations that are not in the context below.
+6. BUDGET & MATH ACCURACY: When a user specifies a budget (e.g. "X for N people"), carefully verify that the total cost (Price Per Person * N) is mathematically less than or equal to their budget X. Do not recommend any package that exceeds their budget. Show your calculation clearly (e.g., "₹A per person * B people = ₹C total").`,
+    customKnowledge: `Here are additional training details and rules for NaariAI:
+- We are currently offering a special discount for solo travelers booking active trips: extra ₹1,000 off if they mention safety questions.
+- All trip leaders are certified women professionals who stay in the same accommodation.
+- Verification audits are done for every single hotel room lock prior to group check-in.`,
+    temperature: 0.2,
+    personaTone: "warm",
+    includeTrips: true,
+    includeDepartures: true,
+    includeFaqs: true,
+    qaPairs: [
+      {
+        id: 1786362000001,
+        question: "Can children join group tours?",
+        answer: "Girls aged 12+ can join group trips with mothers/guardians. Boys are strictly not allowed on group packages."
+      },
+      {
+        id: 1786362000002,
+        question: "Can I join solo? How is room sharing arranged?",
+        answer: "Yes! Over 70% of our travelers join solo. We pair you with another solo female traveler of a similar age to share a twin room. You don't have to pay single supplement fees!"
+      },
+      {
+        id: 1786362000003,
+        question: "Does a female trip leader stay with us?",
+        answer: "Yes, absolutely. A certified female TripNaari leader stays at the same hotels/homestays and travels in the same vehicles for 24/7 security and coordination. They are trained in wilderness first-aid."
+      },
+      {
+        id: 1786362000004,
+        question: "Do you organize custom private trips for families or friends?",
+        answer: "Yes! We design custom private packages for couples, families, and girlfriend groups. Tap [SHOW_ENQUIRY_FORM] at the end of your message to submit details and request a custom quote."
+      },
+      {
+        id: 1786362000005,
+        question: "I am not very fit. Can I join your trips?",
+        answer: "Most of our trips have easy-to-moderate paces. Each trip page shows its difficulty level. Our leaders provide support, and alternate light walks are arranged if you want to skip tough treks."
+      },
+      {
+        id: 1786362000006,
+        question: "How much advance do I pay to book a slot?",
+        answer: "You can secure any slot with a token advance of just ₹5,000. The remaining balance is payable in installments, with the full amount due 15 days before the departure."
+      },
+      {
+        id: 1786362000007,
+        question: "Do you provide Jain or pure vegetarian food on tours?",
+        answer: "Yes, we arrange pure veg, Jain, vegan, or gluten-free meals. Simply indicate your dietary preferences in the pre-trip booking form so we can alert our host properties."
+      },
+      {
+        id: 1786362000008,
+        question: "How can I meet other girls booking the same trip before departure?",
+        answer: "We create a WhatsApp group 48 hours before the trip and host a virtual Zoom/Google Meet icebreaker session. This helps you get to know your fellow sisters before reaching the destination!"
+      },
+      {
+        id: 1786362000009,
+        question: "Are cab drivers police-verified?",
+        answer: "Absolutely. All drivers undergo police verification and background audits. They have a minimum of 5 years of experience in mountain driving (for Himalayan trips) and are briefed on female traveler safety protocols."
+      },
+      {
+        id: 1786362000010,
+        question: "What happens in case of a medical emergency during a high-altitude trip?",
+        answer: "Our leaders carry portable oxygen cylinders, comprehensive first-aid kits, and pulse oximeters. We have tie-ups with local doctors, and our 24/7 operations line coordinates rapid evacuations if required."
+      }
+    ] as Array<{ id: number; question: string; answer: string }>
+  };
+  
+  let settings: any = null;
+  const fp = path.join(dataDir, "ai_settings.json");
+  if (fs.existsSync(fp)) {
+    try {
+      settings = JSON.parse(fs.readFileSync(fp, "utf-8"));
+    } catch {}
+  }
+
+  if (!settings || Array.isArray(settings) || typeof settings !== "object") {
+    writeFile("ai_settings.json", fallback, false);
+    return fallback;
+  }
+  
+  const merged = { ...fallback, ...settings };
+  // Auto-repair key if browser autofilled admin password
+  if (merged.nvidiaApiKey === "TripNaari2026!") {
+    merged.nvidiaApiKey = fallback.nvidiaApiKey;
+    writeFile("ai_settings.json", merged, false);
+  }
+  return merged;
+}
+
+export async function saveAISettings(settings: any) {
+  writeFile("ai_settings.json", settings);
+  return { success: true };
+}
+
+export async function getAIChatLogs() {
+  return readFile("ai_conversations.json", []);
+}
+
+export async function clearAIChatLogs() {
+  writeFile("ai_conversations.json", []);
+  return { success: true };
+}
+
+export async function logConversation(
+  conversationId: string,
+  messages: any[],
+  assistantResponse: string,
+  role: string,
+  context: any
+) {
+  try {
+    ensureDir();
+    const fp = path.join(dataDir, "ai_conversations.json");
+    let logs: any[] = [];
+    if (fs.existsSync(fp)) {
+      try {
+        logs = JSON.parse(fs.readFileSync(fp, "utf-8"));
+      } catch {}
+    }
+
+    // Filter messages to be only clean role/content
+    const cleanedMessages = messages.map((m: any) => ({
+      role: m.role,
+      content: m.content
+    }));
+
+    const updatedMessages = [
+      ...cleanedMessages,
+      { role: "assistant", content: assistantResponse }
+    ];
+
+    const now = new Date().toISOString();
+    const existingIndex = logs.findIndex((l: any) => l.id === conversationId);
+
+    if (existingIndex >= 0) {
+      logs[existingIndex] = {
+        ...logs[existingIndex],
+        updatedAt: now,
+        messages: updatedMessages,
+        messageCount: updatedMessages.length,
+        context: { ...logs[existingIndex].context, ...context }
+      };
+    } else {
+      logs.push({
+        id: conversationId || `conv_${Date.now()}`,
+        role: role || "customer",
+        createdAt: now,
+        updatedAt: now,
+        messages: updatedMessages,
+        messageCount: updatedMessages.length,
+        context: context || {}
+      });
+    }
+
+    // Sort by updatedAt descending to show latest first
+    logs.sort((a, b) => new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime());
+
+    // Keep the latest 200 conversations
+    if (logs.length > 200) {
+      logs = logs.slice(0, 200);
+    }
+
+    fs.writeFileSync(fp, JSON.stringify(logs, null, 2));
+  } catch (e) {
+    console.error("Failed to log conversation:", e);
+  }
+}
+
 
 
 

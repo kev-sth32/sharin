@@ -22,9 +22,7 @@ export default function CustomerChatbot() {
   ]);
   const [input, setInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-  const [chatCount, setChatCount] = useState(0);
-  const [isRateLimited, setIsRateLimited] = useState(false);
-
+  const [isTyping, setIsTyping] = useState(false);
   // Form State
   const [formSubmitted, setFormSubmitted] = useState(false);
   const [formLoading, setFormLoading] = useState(false);
@@ -38,35 +36,40 @@ export default function CustomerChatbot() {
     budget: "₹20,000 - ₹30,000",
   });
 
+  const [conversationId, setConversationId] = useState("");
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
-  // Load chat count and rate limit from localStorage (persists for 24 hours)
+  // Initialize conversationId
   useEffect(() => {
-    try {
-      const storedCount = localStorage.getItem("tripnaari_chat_count");
-      const storedTime = localStorage.getItem("tripnaari_chat_timestamp");
-      const now = Date.now();
+    let id = sessionStorage.getItem("tripnaari_ai_conv_id");
+    if (!id) {
+      id = "conv_" + Math.random().toString(36).substring(2, 11) + "_" + Date.now();
+      sessionStorage.setItem("tripnaari_ai_conv_id", id);
+    }
+    setConversationId(id);
+  }, []);
 
-      if (storedCount && storedTime) {
-        // If 24 hours have passed, reset rate limits
-        if (now - parseInt(storedTime) > 24 * 3600 * 1000) {
-          localStorage.setItem("tripnaari_chat_count", "0");
-          localStorage.setItem("tripnaari_chat_timestamp", now.toString());
-          setChatCount(0);
-        } else {
-          const count = parseInt(storedCount);
-          setChatCount(count);
-          if (count >= 10) {
-            setIsRateLimited(true);
+  // Load dynamic welcome message from AI Settings
+  useEffect(() => {
+    async function fetchAISettings() {
+      try {
+        const response = await fetch("/api/chat/settings");
+        if (response.ok) {
+          const data = await response.json();
+          if (data.welcomeMessage) {
+            setMessages([
+              {
+                role: "assistant",
+                content: data.welcomeMessage
+              }
+            ]);
           }
         }
-      } else {
-        localStorage.setItem("tripnaari_chat_count", "0");
-        localStorage.setItem("tripnaari_chat_timestamp", now.toString());
+      } catch (error) {
+        console.warn("Failed to load dynamic welcome message", error);
       }
-    } catch (e) {
-      console.warn("localStorage not available", e);
     }
+    fetchAISettings();
   }, []);
 
   // Track if StickyCTA is active and visible
@@ -101,40 +104,16 @@ export default function CustomerChatbot() {
 
   if (pathname.startsWith("/admin")) return null;
 
-  const incrementRateLimit = () => {
-    try {
-      const newCount = chatCount + 1;
-      setChatCount(newCount);
-      localStorage.setItem("tripnaari_chat_count", newCount.toString());
-      if (newCount >= 10) {
-        setIsRateLimited(true);
-      }
-    } catch (e) {
-      console.warn("Failed to update localStorage", e);
-    }
-  };
-
   const handleSend = async (textToSend?: string) => {
     const query = textToSend || input;
-    if (!query.trim() || isLoading) return;
-
-    if (isRateLimited) {
-      setMessages(prev => [
-        ...prev,
-        {
-          role: "assistant",
-          content: "🔒 You have reached your daily chat limit of 10 messages. To get instant support, please feel free to fill out the Inquiry Form below or contact our support team directly via WhatsApp!"
-        }
-      ]);
-      return;
-    }
+    if (!query.trim() || isLoading || isTyping) return;
 
     if (!textToSend) setInput("");
 
     const newMessages = [...messages, { role: "user" as const, content: query }];
     setMessages(newMessages);
     setIsLoading(true);
-    incrementRateLimit();
+    setIsTyping(true);
 
     try {
       const response = await fetch("/api/chat", {
@@ -142,52 +121,118 @@ export default function CustomerChatbot() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           role: "customer",
-          messages: newMessages
+          messages: newMessages,
+          conversationId,
+          context: {
+            pathname: window.location.pathname,
+            source: "website_chatbot"
+          }
         })
       });
 
-      const data = await response.json();
-      if (response.ok && data.reply) {
-        let replyContent = data.reply;
-        let triggerForm = false;
-
-        // Check if response contains the form trigger token
-        if (replyContent.includes("[SHOW_ENQUIRY_FORM]")) {
-          replyContent = replyContent.replace("[SHOW_ENQUIRY_FORM]", "").trim();
-          triggerForm = true;
-
-          // Attempt to extract destination name if mentioned in the query
-          const destinations = ["kashmir", "kerala", "meghalaya", "rajasthan", "spiti", "ladakh"];
-          const matchedDest = destinations.find(d => query.toLowerCase().includes(d));
-          if (matchedDest) {
-            setFormData(prev => ({ 
-              ...prev, 
-              destination: matchedDest.charAt(0).toUpperCase() + matchedDest.slice(1) 
-            }));
-          }
-        }
-
-        setMessages(prev => [
-          ...prev, 
-          { 
-            role: "assistant", 
-            content: replyContent || "I'd be happy to help you coordinate that booking! Please share your contact details below:", 
-            triggerForm 
-          }
-        ]);
-      } else {
-        setMessages(prev => [
-          ...prev,
-          { role: "assistant", content: "I apologize, but I am experiencing some difficulties. Please call or WhatsApp our helpline at +91 98765 43210 for immediate support!" }
-        ]);
+      if (!response.ok) {
+        throw new Error("Failed to connect to API");
       }
-    } catch (e) {
+
+      if (!response.body) {
+        throw new Error("No response body");
+      }
+
+      const reader = response.body.getReader();
+      const decoder = new TextDecoder();
+      let done = false;
+      let streamedReply = "";
+      let displayedReply = "";
+      let textQueue: string[] = [];
+
+      // Add a placeholder assistant message and clear thinking bubble
+      setIsLoading(false);
       setMessages(prev => [
         ...prev,
-        { role: "assistant", content: "I'm having trouble connecting to my servers. Please try again in a few seconds or message us on WhatsApp!" }
+        { role: "assistant", content: "" }
       ]);
-    } finally {
+
+      // Start the smooth typewriter interval loop
+      const typewriterInterval = setInterval(() => {
+        if (textQueue.length > 0) {
+          // Adjust character printing speed dynamically based on buffer size (optimized for 35ms ticks)
+          const batchSize = textQueue.length > 30 ? 6 : (textQueue.length > 15 ? 4 : (textQueue.length > 5 ? 2 : 1));
+          let charsToAppend = "";
+          for (let i = 0; i < batchSize; i++) {
+            const char = textQueue.shift();
+            if (char) charsToAppend += char;
+          }
+          displayedReply += charsToAppend;
+
+          setMessages(prev => {
+            const updated = [...prev];
+            const last = updated[updated.length - 1];
+            if (last && last.role === "assistant") {
+              last.content = displayedReply;
+            }
+            return updated;
+          });
+        } else if (done) {
+          clearInterval(typewriterInterval);
+          setIsTyping(false); // Finished typing!
+        }
+      }, 35); // 35ms ticks reduce React rendering load by half
+
+      try {
+        while (!done) {
+          const { value, done: doneReading } = await reader.read();
+          done = doneReading;
+          if (value) {
+            const chunk = decoder.decode(value, { stream: true });
+            streamedReply += chunk;
+            textQueue.push(...chunk.split(""));
+          }
+        }
+      } catch (streamError) {
+        console.error("Stream reading interrupted:", streamError);
+        done = true;
+        setIsTyping(false);
+      }
+
+      // Periodically check if typewriter is fully finished before checking form triggers
+      const checkFinishedInterval = setInterval(() => {
+        if (done && textQueue.length === 0) {
+          clearInterval(checkFinishedInterval);
+
+          if (streamedReply.includes("[SHOW_ENQUIRY_FORM]")) {
+            const cleanReply = streamedReply.replace("[SHOW_ENQUIRY_FORM]", "").trim();
+            const triggerForm = true;
+
+            const destinations = ["kashmir", "kerala", "meghalaya", "rajasthan", "spiti", "ladakh"];
+            const matchedDest = destinations.find(d => query.toLowerCase().includes(d));
+            
+            setMessages(prev => {
+              const updated = [...prev];
+              const last = updated[updated.length - 1];
+              if (last && last.role === "assistant") {
+                last.content = cleanReply;
+                last.triggerForm = triggerForm;
+              }
+              return updated;
+            });
+
+            if (matchedDest) {
+              setFormData(prev => ({ 
+                ...prev, 
+                destination: matchedDest.charAt(0).toUpperCase() + matchedDest.slice(1) 
+              }));
+            }
+          }
+        }
+      }, 100);
+
+    } catch (e) {
+      console.error("Chat error:", e);
       setIsLoading(false);
+      setMessages(prev => [
+        ...prev,
+        { role: "assistant", content: "I apologize, but I am experiencing some difficulties. Please call or WhatsApp our helpline at +91 98765 43210 for immediate support!" }
+      ]);
     }
   };
 
@@ -382,7 +427,7 @@ export default function CustomerChatbot() {
           </div>
 
           {/* Quick Suggestions */}
-          {!isLoading && messages.length < 5 && (
+          {!isLoading && !isTyping && messages.length < 5 && (
             <div className="px-4 py-2 bg-white border-t border-[#F1D9D0] shrink-0">
               <div className="text-[9px] font-extrabold uppercase text-[#3D4A5E]/60 tracking-wider mb-1.5 flex items-center gap-1">
                 <HelpCircle className="w-3 h-3 text-[#FF4A7D]" /> Common Questions
@@ -409,13 +454,13 @@ export default function CustomerChatbot() {
               value={input}
               onChange={(e) => setInput(e.target.value)}
               onKeyDown={(e) => e.key === "Enter" && handleSend()}
-              placeholder={isRateLimited ? "Limit reached for today." : "Ask anything about our trips..."}
-              disabled={isLoading || isRateLimited}
+              placeholder="Ask anything about our trips..."
+              disabled={isLoading || isTyping}
               className="flex-1 border border-[#F1D9D0] rounded-full px-4 py-2 text-xs focus:outline-none focus:border-[#FF4A7D]/40 font-medium text-[#13253D]"
             />
             <button
               onClick={() => handleSend()}
-              disabled={!input.trim() || isLoading || isRateLimited}
+              disabled={!input.trim() || isLoading || isTyping}
               className="rounded-full bg-[#13253D] hover:bg-[#FF4A7D] text-white p-2 transition disabled:opacity-50 shrink-0"
             >
               <Send className="h-4.5 w-4.5" />

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo, Fragment } from "react";
+import { useState, useMemo, Fragment, useEffect } from "react";
 import { updateLeadFull } from "@/lib/admin-store";
 import ConfirmForm from "@/components/admin/ConfirmForm";
 import { Search, Filter, Calendar, MapPin, User, Phone, Mail, FileText, X, CheckCircle, RefreshCw, ChevronDown, ChevronUp, Sparkles } from "lucide-react";
@@ -30,6 +30,10 @@ interface LeadsCRMProps {
 
 export default function LeadsCRM({ initialLeads }: LeadsCRMProps) {
   const [leads, setLeads] = useState<Lead[]>(initialLeads);
+
+  useEffect(() => {
+    setLeads(initialLeads);
+  }, [initialLeads]);
   const [searchTerm, setSearchTerm] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
   const [destinationFilter, setDestinationFilter] = useState("all");
