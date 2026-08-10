@@ -58,7 +58,7 @@ export default function Footer() {
         </div>
 
         <div className="mt-16 pt-8 border-t border-white/5 flex flex-col md:flex-row gap-4 items-center justify-between text-[12px] text-white/40">
-          <div className="flex items-center gap-1.5"><Heart className="w-3 h-3 text-[#FF4A7D] fill-[#FF4A7D]"/> © 2026 TripNaari • Recognised by MSME & Startup India • Women-led.</div>
+          <div className="flex items-center gap-1.5"><Heart className="w-3 h-3 text-[#FF4A7D] fill-[#FF4A7D]"/> © 2026 VIATRIPNAARI HOSPITALITIES PVT. LTD. • Recognised by MSME & Startup India • Women-led.</div>
           <div>We’ve got your back and your backpack!</div>
         </div>
       </div>

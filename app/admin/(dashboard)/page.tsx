@@ -23,7 +23,7 @@ export default async function AdminPage() {
       <div className="flex justify-between items-start gap-4">
         <div>
           <h1 className="font-display font-bold text-3xl text-[#13253D]">Dashboard — Control Everything</h1>
-          <p className="text-sm text-[#3D4A5E] mt-2">Full CMS with file-fallback + PostgreSQL Drizzle ready. Toggle featured, publish/draft, moderate testimonials, update leads.</p>
+          <p className="text-sm text-[#3D4A5E] mt-2">Full CMS with file-fallback + MySQL Drizzle ready. Toggle featured, publish/draft, moderate testimonials, update leads.</p>
         </div>
       </div>
 
@@ -205,7 +205,7 @@ export default async function AdminPage() {
               <li>✅ <Link href="/admin/policies" className="underline text-[#FF8A2B]">Policies</Link> — Version history, last updated</li>
               <li>✅ <Link href="/admin/contacts" className="underline text-[#FF8A2B]">Contacts & Refunds</Link> — Resolve, add admin notes</li>
             </ul>
-            <div className="mt-4 rounded-xl bg-white/10 border border-white/10 p-3 text-[11px] text-white/60">In production, these write to PostgreSQL via Drizzle. In demo, writes to <code>.data/*.json</code> so you see persistence. All server actions are in <code>lib/admin-store.ts</code> & <code>lib/actions.ts</code>.</div>
+            <div className="mt-4 rounded-xl bg-white/10 border border-white/10 p-3 text-[11px] text-white/60">In production, these write to MySQL via Drizzle. In demo, writes to <code>.data/*.json</code> so you see persistence. All server actions are in <code>lib/admin-store.ts</code> & <code>lib/actions.ts</code>.</div>
           </div>
 
           <div className="rounded-[20px] bg-white border border-[#F1D9D0] p-6">

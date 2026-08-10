@@ -40,13 +40,13 @@ Every trip page shows:
 
 ## 🗄️ CMS & Data Models
 
-**Drizzle ORM + PostgreSQL** schema in `lib/db/schema.ts`:
+**Drizzle ORM + MySQL** schema in `lib/db/schema.ts`:
 
 - `destinations`, `tripPackages`, `departureDates`, `dayItineraries`, `inclusions`, `exclusions`, `addOns`, `hotelPreviews`, `tripLeaders`, `testimonials`, `faqs`, `policyPages`, `galleryAssets`, `blogPosts`, `leads`, `bookingRequests`, `newsletterSubscribers`, `contactMessages`, `refundRequests`, `siteSettings`
 
 Seed data in `lib/data.ts` with 10 destinations, 8 trips, 3 leaders, 4 testimonials, 6 FAQs, 3 blogs.
 
-**File fallback:** If `DATABASE_URL` not set (demo), submissions persist to `.data/*.json` with same API — swap to real PG via `drizzle-kit push` in prod.
+**File fallback:** If `DATABASE_URL` not set (demo), submissions persist to `.data/*.json` with same API — swap to real MySQL via `drizzle-kit push` in prod.
 
 ### Admin CMS
 
@@ -79,7 +79,7 @@ Each returns success UI: next steps, hotel timeline, emergency line. Conversion 
 ## 🔧 Tech Stack
 
 - Next.js 16 App Router, TypeScript, Tailwind CSS 3.4, reusable components (`components/ui/*`)
-- PostgreSQL + Drizzle ORM + drizzle-kit (`drizzle.config.ts`)
+- MySQL + Drizzle ORM + drizzle-kit (`drizzle.config.ts`)
 - Server actions, API routes, file-based mock persistence
 - Lucide icons, clsx/tailwind-merge, date-fns, zod
 - SEO: metadata, Open Graph, sitemap, robots, structured data (TravelAgency + FAQ)
@@ -94,7 +94,7 @@ npm install
 # set env
 cp .env.example .env
 # optional: set real PG
-# DATABASE_URL=postgresql://...
+# DATABASE_URL=mysql://...
 
 npm run dev      # http://localhost:3000
 npm run build    # production build — uses webpack (turbopack css bug workaround)
@@ -142,7 +142,7 @@ Bold, feminine, premium, adventurous, safe, community-led. No clichés. Editoria
 
 ## 📍 Next steps for production
 
-- Connect real PostgreSQL (Neon/Supabase) + run migration
+- Connect real MySQL + run migration
 - Wire Resend/SES in `lib/actions.ts` `sendNotificationEmail`
 - Add admin auth (NextAuth) + role-based permissions
 - Add upload to S3 for gallery

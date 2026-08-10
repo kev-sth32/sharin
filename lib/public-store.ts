@@ -230,7 +230,7 @@ Permit application processing tokens, special high altitude entry clearances, an
         title: "Privacy Policy - Your Data, Your Sisterhood",
         version: "1.0",
         updated: "01 Jan 2026",
-        body: `We collect name, email, phone, travel preferences to craft trip. We store in PostgreSQL encrypted at rest. We use your phone only for trip-related WhatsApp (no marketing without opt-in). We never sell data to third party.\n\nYou can request deletion via privacy@tripnaari.com. Newsletter unsubscribe anytime.\n\nCookies: we use analytics (anonymized) and conversion tracking. No creepy cross-site tracking.\n\nDMCA: TripNaari community photos used with consent. If you want yours removed, email.\n\nContact DPO: dpo@tripnaari.com, Bangalore.`
+        body: `We collect name, email, phone, travel preferences to craft trip. We store in MySQL encrypted at rest. We use your phone only for trip-related WhatsApp (no marketing without opt-in). We never sell data to third party.\n\nYou can request deletion via privacy@tripnaari.com. Newsletter unsubscribe anytime.\n\nCookies: we use analytics (anonymized) and conversion tracking. No creepy cross-site tracking.\n\nDMCA: TripNaari community photos used with consent. If you want yours removed, email.\n\nContact DPO: dpo@tripnaari.com, Bangalore.`
       },
       {
         slug: "terms-conditions",

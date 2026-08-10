@@ -93,7 +93,7 @@ export default function AdminLayoutClient({ children }: { children: React.ReactN
         <div className="p-4 border-t border-white/10 space-y-3 shrink-0">
           <div className="rounded-xl bg-white/5 p-3 text-[11px] leading-relaxed text-white/60">
             <strong className="text-white font-semibold">Secure Admin</strong><br/>
-            HttpOnly cookie • 8h expiry • Rate limited login • File type validation • PG ready
+            HttpOnly cookie • 8h expiry • Rate limited login • File type validation • MySQL ready
           </div>
           <div className="flex gap-2">
             <Link href="/" className="flex-1 rounded-full bg-white/10 text-center py-2 text-xs hover:bg-white/15 transition">View Site</Link>
