@@ -91,23 +91,51 @@ export async function POST(req: Request) {
       })
     ];
 
-    // 5. Call Nvidia NIM API with streaming enabled
+    // 5. Call Nvidia NIM API with streaming enabled (with 3.5s connection timeout)
     const apiUrl = `https://integrate.api.nvidia.com/v1/chat/completions`;
     
-    const apiResponse = await fetch(apiUrl, {
-      method: "POST",
-      headers: { 
-        "Content-Type": "application/json",
-        "Authorization": `Bearer ${apiKey}`
-      },
-      body: JSON.stringify({
-        model: aiSettings.modelName || "meta/llama-3.1-70b-instruct",
-        messages: formattedMessages,
-        temperature: aiSettings.temperature !== undefined ? Number(aiSettings.temperature) : (role === "admin" ? 0.5 : 0.2),
-        max_tokens: 1000,
-        stream: true // Enable real-time streaming!
-      })
-    });
+    let apiResponse;
+    const abortCtrl = new AbortController();
+    const timeoutId = setTimeout(() => abortCtrl.abort(), 3500);
+
+    try {
+      apiResponse = await fetch(apiUrl, {
+        method: "POST",
+        headers: { 
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${apiKey}`
+        },
+        body: JSON.stringify({
+          model: aiSettings.modelName || "meta/llama-3.1-70b-instruct",
+          messages: formattedMessages,
+          temperature: aiSettings.temperature !== undefined ? Number(aiSettings.temperature) : (role === "admin" ? 0.5 : 0.2),
+          max_tokens: 1000,
+          stream: true
+        }),
+        signal: abortCtrl.signal
+      });
+      clearTimeout(timeoutId);
+    } catch (e: any) {
+      clearTimeout(timeoutId);
+      console.error("Nvidia API connection failed or timed out:", e);
+      
+      const geminiKey = process.env.GEMINI_API_KEY;
+      if (geminiKey && geminiKey !== "your_key_here" && geminiKey !== "re_xxxxxxxxxxxxxxxx") {
+        console.warn("Attempting Gemini fallback...");
+        try {
+          return await handleGeminiResponse(messages, role, context, geminiKey, aiSettings, convId);
+        } catch (geminiErr) {
+          console.error("Gemini Fallback failed:", geminiErr);
+        }
+      }
+
+      console.warn("Nvidia connection failed/timed-out and no Gemini fallback available. Cascading to Demo Mode...");
+      const demoReply = handleDemoResponseText(messages, role, context, aiSettings);
+      if (isCustomer) {
+        await logConversation(convId, messages, demoReply, role, context);
+      }
+      return makeTextStream(demoReply);
+    }
 
     if (!apiResponse.ok) {
       const errorData = await apiResponse.json().catch(() => ({}));
@@ -240,20 +268,37 @@ async function handleGeminiResponse(messages: any[], role: string, context: any,
 
   const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${geminiKey}`;
   
-  const apiResponse = await fetch(apiUrl, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({
-      contents: formattedContents,
-      systemInstruction: {
-        parts: [{ text: systemPrompt }]
-      },
-      generationConfig: {
-        temperature: aiSettings.temperature !== undefined ? Number(aiSettings.temperature) : (role === "admin" ? 0.5 : 0.2),
-        maxOutputTokens: 1000,
-      }
-    })
-  });
+  let apiResponse;
+  const abortCtrl = new AbortController();
+  const timeoutId = setTimeout(() => abortCtrl.abort(), 3500); // 3.5s timeout!
+
+  try {
+    apiResponse = await fetch(apiUrl, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        contents: formattedContents,
+        systemInstruction: {
+          parts: [{ text: systemPrompt }]
+        },
+        generationConfig: {
+          temperature: aiSettings.temperature !== undefined ? Number(aiSettings.temperature) : (role === "admin" ? 0.5 : 0.2),
+          maxOutputTokens: 1000,
+        }
+      }),
+      signal: abortCtrl.signal
+    });
+    clearTimeout(timeoutId);
+  } catch (geminiErr: any) {
+    clearTimeout(timeoutId);
+    console.error("Gemini Fallback connection failed or timed out:", geminiErr);
+    console.warn("Gemini Fallback failed. Cascading to Demo Mode...");
+    const demoReply = handleDemoResponseText(messages, role, context, aiSettings);
+    if (role === "customer") {
+      await logConversation(conversationId, messages, demoReply, role, context);
+    }
+    return makeTextStream(demoReply);
+  }
 
   if (!apiResponse.ok) {
     const errorData = await apiResponse.json().catch(() => ({}));
