@@ -50,20 +50,16 @@ export async function POST(req: Request) {
     const convId = conversationId || `conv_${Date.now()}`;
     const isCustomer = role === "customer";
 
-    // 2. Demo Mode Fallback if API Key is missing or default
-    if (!apiKey || apiKey === "your_key_here" || apiKey === "re_xxxxxxxxxxxxxxxx") {
-      // Check if GEMINI_API_KEY exists as a fallback
-      const geminiKey = process.env.GEMINI_API_KEY;
-      if (!geminiKey || geminiKey === "your_key_here" || geminiKey === "re_xxxxxxxxxxxxxxxx") {
-        const demoReply = handleDemoResponseText(messages, role, context, aiSettings);
-        if (isCustomer) {
-          await logConversation(convId, messages, demoReply, role, context);
-        }
-        return makeTextStream(demoReply);
+    // 2. Fallback to Gemini or return error if API Key is missing/default
+    const geminiKey = process.env.GEMINI_API_KEY;
+    const hasNvidiaKey = apiKey && apiKey !== "your_key_here" && apiKey !== "re_xxxxxxxxxxxxxxxx";
+    const hasGeminiKey = geminiKey && geminiKey !== "your_key_here" && geminiKey !== "re_xxxxxxxxxxxxxxxx";
+
+    if (!hasNvidiaKey) {
+      if (hasGeminiKey) {
+        return handleGeminiResponse(messages, role, context, geminiKey, aiSettings, convId);
       }
-      
-      // Fallback to Gemini
-      return handleGeminiResponse(messages, role, context, geminiKey, aiSettings, convId);
+      return makeTextStream("⚠️ **NaariAI Assistant:** API keys are not configured. Please set a valid Nvidia NIM API Key in the AI Settings dashboard, or add your `GEMINI_API_KEY` to the environment variables.");
     }
 
     // 3. Construct System Prompt based on user role (Admin vs Customer)
@@ -96,7 +92,7 @@ export async function POST(req: Request) {
     
     let apiResponse;
     const abortCtrl = new AbortController();
-    const timeoutId = setTimeout(() => abortCtrl.abort(), 3500);
+    const timeoutId = setTimeout(() => abortCtrl.abort(), 6000);
 
     try {
       apiResponse = await fetch(apiUrl, {
@@ -129,12 +125,8 @@ export async function POST(req: Request) {
         }
       }
 
-      console.warn("Nvidia connection failed/timed-out and no Gemini fallback available. Cascading to Demo Mode...");
-      const demoReply = handleDemoResponseText(messages, role, context, aiSettings);
-      if (isCustomer) {
-        await logConversation(convId, messages, demoReply, role, context);
-      }
-      return makeTextStream(demoReply);
+      console.warn("Nvidia connection failed/timed-out and no Gemini fallback available.");
+      return makeTextStream("⚠️ **NaariAI Assistant Connection Error:** Failed to connect to Nvidia NIM API (connection timed out or reset).");
     }
 
     if (!apiResponse.ok) {
@@ -152,12 +144,8 @@ export async function POST(req: Request) {
         }
       }
 
-      console.warn("Nvidia API failed and no valid Gemini fallback succeeded. Falling back to Demo Mode...");
-      const demoReply = handleDemoResponseText(messages, role, context, aiSettings);
-      if (isCustomer) {
-        await logConversation(convId, messages, demoReply, role, context);
-      }
-      return makeTextStream(demoReply);
+      const errMsg = errorData.detail || errorData.message || "Unknown error";
+      return makeTextStream(`⚠️ **NaariAI Assistant API Error:** Nvidia API returned an error: "${errMsg}".`);
     }
 
     const encoder = new TextEncoder();
@@ -245,7 +233,7 @@ export async function POST(req: Request) {
   }
 }
 
-// Fallback Google Gemini Handler (streams single block)
+// Fallback Google Gemini Handler (streams token-by-token using SSE)
 async function handleGeminiResponse(messages: any[], role: string, context: any, geminiKey: string, aiSettings: any, conversationId: string) {
   let systemPrompt = "";
   if (role === "admin" && context?.source !== "sandbox_testing") {
@@ -266,11 +254,11 @@ async function handleGeminiResponse(messages: any[], role: string, context: any,
     };
   });
 
-  const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${geminiKey}`;
+  const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-3.5-flash:streamGenerateContent?alt=sse&key=${geminiKey}`;
   
   let apiResponse;
   const abortCtrl = new AbortController();
-  const timeoutId = setTimeout(() => abortCtrl.abort(), 3500); // 3.5s timeout!
+  const timeoutId = setTimeout(() => abortCtrl.abort(), 10000); // 10s timeout!
 
   try {
     apiResponse = await fetch(apiUrl, {
@@ -283,7 +271,7 @@ async function handleGeminiResponse(messages: any[], role: string, context: any,
         },
         generationConfig: {
           temperature: aiSettings.temperature !== undefined ? Number(aiSettings.temperature) : (role === "admin" ? 0.5 : 0.2),
-          maxOutputTokens: 1000,
+          maxOutputTokens: 8192,
         }
       }),
       signal: abortCtrl.signal
@@ -292,33 +280,91 @@ async function handleGeminiResponse(messages: any[], role: string, context: any,
   } catch (geminiErr: any) {
     clearTimeout(timeoutId);
     console.error("Gemini Fallback connection failed or timed out:", geminiErr);
-    console.warn("Gemini Fallback failed. Cascading to Demo Mode...");
-    const demoReply = handleDemoResponseText(messages, role, context, aiSettings);
-    if (role === "customer") {
-      await logConversation(conversationId, messages, demoReply, role, context);
-    }
-    return makeTextStream(demoReply);
+    return makeTextStream("⚠️ **NaariAI Assistant Error:** Google Gemini fallback failed (connection timed out or error).");
   }
 
   if (!apiResponse.ok) {
     const errorData = await apiResponse.json().catch(() => ({}));
     console.error("Gemini Fallback API Error:", errorData);
-    console.warn("Gemini Fallback failed. Cascading to Demo Mode...");
-    const demoReply = handleDemoResponseText(messages, role, context, aiSettings);
-    if (role === "customer") {
-      await logConversation(conversationId, messages, demoReply, role, context);
+    const errMsg = errorData.error?.message || "Unknown error";
+    return makeTextStream(`⚠️ **NaariAI Assistant Error:** Google Gemini API returned an error: "${errMsg}".`);
+  }
+
+  const encoder = new TextEncoder();
+  const decoder = new TextDecoder();
+  const isCustomer = role === "customer";
+
+  const stream = new ReadableStream({
+    async start(controller) {
+      if (!apiResponse.body) {
+        controller.close();
+        return;
+      }
+
+      const reader = apiResponse.body.getReader();
+      let buffer = "";
+      let fullResponseText = "";
+
+      try {
+        while (true) {
+          const { done, value } = await reader.read();
+          if (done) break;
+
+          buffer += decoder.decode(value, { stream: true });
+          const lines = buffer.split("\n");
+          buffer = lines.pop() || "";
+
+          for (const line of lines) {
+            const cleaned = line.trim();
+            if (!cleaned) continue;
+            if (cleaned.startsWith("data: ")) {
+              try {
+                const jsonStr = cleaned.slice(6);
+                const parsed = JSON.parse(jsonStr);
+                const content = parsed.candidates?.[0]?.content?.parts?.[0]?.text || "";
+                if (content) {
+                  controller.enqueue(encoder.encode(content));
+                  fullResponseText += content;
+                }
+              } catch (e) {
+                // ignore malformed JSON lines
+              }
+            }
+          }
+        }
+
+        // Flush remaining buffer
+        if (buffer && buffer.startsWith("data: ")) {
+          try {
+            const jsonStr = buffer.slice(6).trim();
+            const parsed = JSON.parse(jsonStr);
+            const content = parsed.candidates?.[0]?.content?.parts?.[0]?.text || "";
+            if (content) {
+              controller.enqueue(encoder.encode(content));
+              fullResponseText += content;
+            }
+          } catch (e) {}
+        }
+
+        if (isCustomer) {
+          await logConversation(conversationId, messages, fullResponseText, role, context);
+        }
+      } catch (error) {
+        console.error("Error reading Gemini stream:", error);
+        controller.error(error);
+      } finally {
+        controller.close();
+      }
     }
-    return makeTextStream(demoReply);
-  }
+  });
 
-  const responseData = await apiResponse.json();
-  const replyText = responseData?.candidates?.[0]?.content?.parts?.[0]?.text || "I'm sorry, I could not generate a response. Please try again.";
-  
-  if (role === "customer") {
-    await logConversation(conversationId, messages, replyText, role, context);
-  }
-
-  return makeTextStream(replyText);
+  return new Response(stream, {
+    headers: {
+      "Content-Type": "text/event-stream",
+      "Cache-Control": "no-cache",
+      "Connection": "keep-alive"
+    }
+  });
 }
 
 // System Prompt for Public Customers
@@ -488,71 +534,4 @@ YOUR INSTRUCTIONS:
 ${pageInfo}`;
 }
 
-// Demo Mode text provider
-function handleDemoResponseText(messages: any[], role: string, context: any, aiSettings: any) {
-  const lastMessage = messages[messages.length - 1]?.content?.toLowerCase() || "";
-  
-  // 1. Structured Q&A lookup
-  const qaPairs = aiSettings?.qaPairs || [];
-  const matchedQA = qaPairs.find((q: any) => 
-    lastMessage.includes(q.question.toLowerCase()) || 
-    q.question.toLowerCase().includes(lastMessage)
-  );
 
-  if (matchedQA) {
-    return `🤖 **NaariAI Preview [DEMO MODE - QA Match]**\n\n${matchedQA.answer}`;
-  }
-
-  // 2. Dynamic Trip & Departures destination search
-  const destKeywords = ["kashmir", "spiti", "meghalaya", "kerala", "rajasthan"];
-  const matchedDest = destKeywords.find(k => lastMessage.includes(k));
-  if (matchedDest) {
-    const activeTrips = getMergedTrips();
-    const activeDepartures = getMergedDepartures();
-    
-    const matchedTrips = activeTrips.filter((t: any) => 
-      t.title.toLowerCase().includes(matchedDest) || 
-      t.slug.toLowerCase().includes(matchedDest)
-    );
-    const matchedDeps = activeDepartures.filter((d: any) => 
-      d.tripSlug.toLowerCase().includes(matchedDest)
-    );
-
-    if (matchedTrips.length > 0) {
-      let mockReply = `🤖 **NaariAI Preview [DEMO MODE - Context Match]**\n\nHere are the details for **${matchedDest.toUpperCase()}** group departures:\n\n`;
-      matchedTrips.forEach((t: any) => {
-        mockReply += `🎒 **${t.title}** (${t.durationDays} Days / ${t.durationNights} Nights)\n`;
-        mockReply += `- **Price Starts**: ₹${t.priceFrom}\n`;
-        mockReply += `- **Highlights**: ${t.highlights?.slice(0, 3).join(", ") || t.shortDescription}\n\n`;
-      });
-
-      if (matchedDeps.length > 0) {
-        mockReply += `📅 **Active Scheduled Departures:**\n`;
-        matchedDeps.forEach((d: any) => {
-          mockReply += `- **Dates**: ${d.startDate} to ${d.endDate} | **Seats**: ${d.seatsBooked}/${d.seatsTotal} booked | **Price**: ₹${d.price}\n`;
-        });
-      }
-      return mockReply;
-    }
-  }
-
-  // 3. Fallbacks based on role and text content
-  if (role === "admin") {
-    if (lastMessage.includes("whatsapp") || lastMessage.includes("lead") || lastMessage.includes("draft")) {
-      return `🤖 **TripNaari Admin Copilot [DEMO MODE]**\n\nHere is a template response for the lead:\n\n*"Hi ${context?.selectedLead?.name || "there"}, this is Anjali from TripNaari! 🌸 I saw you were looking into a trip to ${context?.selectedLead?.destination || "our destinations"} in ${context?.selectedLead?.travelMonth || "the coming months"}. I would love to share our women-only group itineraries and explain our safety standards. Let me know if we can chat for 5 mins!"*`;
-    } else if (lastMessage.includes("blog")) {
-      return `🤖 **TripNaari Admin Copilot [DEMO MODE]**\n\nHere are blog outline ideas for women-only travel:\n1. **Safety First:** Why we audit every hotel room lock.\n2. **The Sisterhood Effect:** Meeting lifelong friends on group trips.`;
-    } else {
-      return `🤖 **TripNaari Admin Copilot [DEMO MODE]**\n\nHello Admin! I am ready to help you draft blogs, answer questions, or formulate responses. You can test Q&As or search destinations here in the sandbox preview!`;
-    }
-  } else {
-    // Customer responses
-    if (lastMessage.includes("safety") || lastMessage.includes("safe")) {
-      return `🌸 **Hello from TripNaari!** Safety is our #1 priority. Every group departure has a verified woman trip leader, safety-audited hotels, background-verified drivers, and a 24/7 emergency support system. You are never alone!`;
-    } else if (lastMessage.includes("cancel") || lastMessage.includes("refund")) {
-      return `📜 Our cancellation policy is simple: Cancellations made 30+ days before departure receive a 90% refund. 15-29 days before receive a 50% refund and 50% travel credit. For support, please let us know!`;
-    } else {
-      return `👋 Hello! I am NaariAI, your TripNaari helper. I can tell you about our women-only group packages, safety standards, and departures. What destination are you interested in?`;
-    }
-  }
-}

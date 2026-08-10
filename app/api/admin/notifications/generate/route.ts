@@ -58,7 +58,7 @@ Output ONLY the raw JSON array. Do not include markdown codeblocks (like \`\`\`j
 
     const userPrompt = `Generate 3 push notification drafts for this request: "${prompt}" using a "${tone}" tone.`;
 
-    const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`;
+    const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-3.5-flash:generateContent?key=${apiKey}`;
 
     const apiResponse = await fetch(apiUrl, {
       method: "POST",
@@ -75,7 +75,7 @@ Output ONLY the raw JSON array. Do not include markdown codeblocks (like \`\`\`j
         },
         generationConfig: {
           temperature: 0.7,
-          maxOutputTokens: 800,
+          maxOutputTokens: 8192,
           responseMimeType: "application/json",
         },
       }),

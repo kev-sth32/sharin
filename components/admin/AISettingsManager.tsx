@@ -537,7 +537,7 @@ export default function AISettingsManager({ initialSettings, dbCounts = { trips:
                 <div className="flex gap-2 p-3 bg-blue-50/50 border border-blue-100 rounded-xl text-[10px] text-slate-600 leading-normal">
                   <Activity className="w-4 h-4 text-blue-500 shrink-0 mt-0.5" />
                   <p>
-                    Hosted on NVIDIA NIM Inference Microservices. Key is masked and cached locally. Fallbacks to Google Gemini-1.5-Flash if key is inactive or offline.
+                    Hosted on NVIDIA NIM Inference Microservices. Key is masked and cached locally. Fallbacks to Google Gemini-3.5-Flash if key is inactive or offline.
                   </p>
                 </div>
               </div>

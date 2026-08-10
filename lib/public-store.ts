@@ -252,7 +252,7 @@ export function getAISettings() {
   const dataDir = path.join(process.cwd(), ".data");
   const fp = path.join(dataDir, "ai_settings.json");
   const fallback = {
-    nvidiaApiKey: "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",
+    nvidiaApiKey: "",
     modelName: "meta/llama-3.1-70b-instruct",
     welcomeMessage: "Namaste! 🙏 Welcome to TripNaari. I am NaariAI, your travel companion. I can help you find safe women-only packages, check active departures, and answer any queries you have. What destinations are you dreaming of?",
     systemInstruction: `You are "NaariAI", the official women's safety & group travel assistant for TripNaari.
@@ -331,10 +331,6 @@ YOUR INSTRUCTIONS:
   try {
     const data = JSON.parse(fs.readFileSync(fp, "utf-8"));
     const merged = { ...fallback, ...data };
-    // Auto-repair key if browser autofilled admin password
-    if (merged.nvidiaApiKey === "TripNaari2026!") {
-      merged.nvidiaApiKey = fallback.nvidiaApiKey;
-    }
     return merged;
   } catch {
     return fallback;

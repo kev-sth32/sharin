@@ -527,7 +527,7 @@ export async function savePolicy(slug: string, title: string, body: string, vers
 
 export async function getAISettings() {
   const fallback = {
-    nvidiaApiKey: "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",
+    nvidiaApiKey: "",
     modelName: "meta/llama-3.1-70b-instruct",
     welcomeMessage: "Namaste! 🙏 Welcome to TripNaari. I am NaariAI, your travel companion. I can help you find safe women-only packages, check active departures, and answer any queries you have. What destinations are you dreaming of?",
     systemInstruction: `You are "NaariAI", the official women's safety & group travel assistant for TripNaari.
@@ -617,11 +617,6 @@ YOUR INSTRUCTIONS:
   }
   
   const merged = { ...fallback, ...settings };
-  // Auto-repair key if browser autofilled admin password
-  if (merged.nvidiaApiKey === "TripNaari2026!") {
-    merged.nvidiaApiKey = fallback.nvidiaApiKey;
-    writeFile("ai_settings.json", merged, false);
-  }
   return merged;
 }
 

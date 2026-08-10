@@ -29,7 +29,10 @@
     "message": "",
     "consent": true,
     "source": "trip_enquiry",
-    "status": "new"
+    "status": "new",
+    "notes": "",
+    "followUpAt": "",
+    "updatedAt": "2026-08-10T11:54:53.999Z"
   },
   {
     "id": 1786095748382,
@@ -45,6 +48,9 @@
     "message": "",
     "consent": true,
     "source": "trip_enquiry",
-    "status": "new"
+    "status": "new",
+    "notes": "",
+    "followUpAt": "",
+    "updatedAt": "2026-08-10T11:54:53.787Z"
   }
 ]
