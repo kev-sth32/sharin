@@ -55,7 +55,7 @@ export async function POST(req: Request) {
       // Check if GEMINI_API_KEY exists as a fallback
       const geminiKey = process.env.GEMINI_API_KEY;
       if (!geminiKey || geminiKey === "your_key_here" || geminiKey === "re_xxxxxxxxxxxxxxxx") {
-        const demoReply = handleDemoResponseText(messages, role, context);
+        const demoReply = handleDemoResponseText(messages, role, context, aiSettings);
         if (isCustomer) {
           await logConversation(convId, messages, demoReply, role, context);
         }
@@ -117,13 +117,19 @@ export async function POST(req: Request) {
       const geminiKey = process.env.GEMINI_API_KEY;
       if (geminiKey && geminiKey !== "your_key_here" && geminiKey !== "re_xxxxxxxxxxxxxxxx") {
         console.warn("Attempting Gemini fallback...");
-        return handleGeminiResponse(messages, role, context, geminiKey, aiSettings, convId);
+        try {
+          return await handleGeminiResponse(messages, role, context, geminiKey, aiSettings, convId);
+        } catch (geminiErr) {
+          console.error("Gemini Fallback failed:", geminiErr);
+        }
       }
 
-      return NextResponse.json({ 
-        error: "Failed to communicate with Nvidia AI API", 
-        details: errorData 
-      }, { status: apiResponse.status });
+      console.warn("Nvidia API failed and no valid Gemini fallback succeeded. Falling back to Demo Mode...");
+      const demoReply = handleDemoResponseText(messages, role, context, aiSettings);
+      if (isCustomer) {
+        await logConversation(convId, messages, demoReply, role, context);
+      }
+      return makeTextStream(demoReply);
     }
 
     const encoder = new TextEncoder();
@@ -252,7 +258,12 @@ async function handleGeminiResponse(messages: any[], role: string, context: any,
   if (!apiResponse.ok) {
     const errorData = await apiResponse.json().catch(() => ({}));
     console.error("Gemini Fallback API Error:", errorData);
-    return NextResponse.json({ error: "Failed to communicate with fallback Gemini API" }, { status: apiResponse.status });
+    console.warn("Gemini Fallback failed. Cascading to Demo Mode...");
+    const demoReply = handleDemoResponseText(messages, role, context, aiSettings);
+    if (role === "customer") {
+      await logConversation(conversationId, messages, demoReply, role, context);
+    }
+    return makeTextStream(demoReply);
   }
 
   const responseData = await apiResponse.json();
@@ -433,30 +444,70 @@ ${pageInfo}`;
 }
 
 // Demo Mode text provider
-function handleDemoResponseText(messages: any[], role: string, context: any) {
+function handleDemoResponseText(messages: any[], role: string, context: any, aiSettings: any) {
   const lastMessage = messages[messages.length - 1]?.content?.toLowerCase() || "";
-  let response = "";
+  
+  // 1. Structured Q&A lookup
+  const qaPairs = aiSettings?.qaPairs || [];
+  const matchedQA = qaPairs.find((q: any) => 
+    lastMessage.includes(q.question.toLowerCase()) || 
+    q.question.toLowerCase().includes(lastMessage)
+  );
 
+  if (matchedQA) {
+    return `🤖 **NaariAI Preview [DEMO MODE - QA Match]**\n\n${matchedQA.answer}`;
+  }
+
+  // 2. Dynamic Trip & Departures destination search
+  const destKeywords = ["kashmir", "spiti", "meghalaya", "kerala", "rajasthan"];
+  const matchedDest = destKeywords.find(k => lastMessage.includes(k));
+  if (matchedDest) {
+    const activeTrips = getMergedTrips();
+    const activeDepartures = getMergedDepartures();
+    
+    const matchedTrips = activeTrips.filter((t: any) => 
+      t.title.toLowerCase().includes(matchedDest) || 
+      t.slug.toLowerCase().includes(matchedDest)
+    );
+    const matchedDeps = activeDepartures.filter((d: any) => 
+      d.tripSlug.toLowerCase().includes(matchedDest)
+    );
+
+    if (matchedTrips.length > 0) {
+      let mockReply = `🤖 **NaariAI Preview [DEMO MODE - Context Match]**\n\nHere are the details for **${matchedDest.toUpperCase()}** group departures:\n\n`;
+      matchedTrips.forEach((t: any) => {
+        mockReply += `🎒 **${t.title}** (${t.durationDays} Days / ${t.durationNights} Nights)\n`;
+        mockReply += `- **Price Starts**: ₹${t.priceFrom}\n`;
+        mockReply += `- **Highlights**: ${t.highlights?.slice(0, 3).join(", ") || t.shortDescription}\n\n`;
+      });
+
+      if (matchedDeps.length > 0) {
+        mockReply += `📅 **Active Scheduled Departures:**\n`;
+        matchedDeps.forEach((d: any) => {
+          mockReply += `- **Dates**: ${d.startDate} to ${d.endDate} | **Seats**: ${d.seatsBooked}/${d.seatsTotal} booked | **Price**: ₹${d.price}\n`;
+        });
+      }
+      return mockReply;
+    }
+  }
+
+  // 3. Fallbacks based on role and text content
   if (role === "admin") {
     if (lastMessage.includes("whatsapp") || lastMessage.includes("lead") || lastMessage.includes("draft")) {
-      response = `🤖 **TripNaari Admin Copilot [DEMO MODE]**\n\nHere is a template response for the lead:\n\n*"Hi ${context?.selectedLead?.name || "there"}, this is Anjali from TripNaari! 🌸 I saw you were looking into a trip to ${context?.selectedLead?.destination || "our destinations"} in ${context?.selectedLead?.travelMonth || "the coming months"}. I would love to share our women-only group itineraries and explain our safety standards. Let me know if we can chat for 5 mins!"*\n\n*(Note: Configure your Nvidia API key in the admin panel to activate full capabilities.)*`;
+      return `🤖 **TripNaari Admin Copilot [DEMO MODE]**\n\nHere is a template response for the lead:\n\n*"Hi ${context?.selectedLead?.name || "there"}, this is Anjali from TripNaari! 🌸 I saw you were looking into a trip to ${context?.selectedLead?.destination || "our destinations"} in ${context?.selectedLead?.travelMonth || "the coming months"}. I would love to share our women-only group itineraries and explain our safety standards. Let me know if we can chat for 5 mins!"*`;
     } else if (lastMessage.includes("blog")) {
-      response = `🤖 **TripNaari Admin Copilot [DEMO MODE]**\n\nHere are blog outline ideas for women-only travel:\n1. **Safety First:** Why we audit every hotel room lock.\n2. **The Sisterhood Effect:** Meeting lifelong friends on group trips.\n\n*(Note: Configure your Nvidia API key in the admin panel to activate full capabilities.)*`;
+      return `🤖 **TripNaari Admin Copilot [DEMO MODE]**\n\nHere are blog outline ideas for women-only travel:\n1. **Safety First:** Why we audit every hotel room lock.\n2. **The Sisterhood Effect:** Meeting lifelong friends on group trips.`;
     } else {
-      response = `🤖 **TripNaari Admin Copilot [DEMO MODE]**\n\nHello Admin! I am ready to help you draft blogs, answer questions, or formulate responses. Please configure your Nvidia API key in the admin panel or settings page!`;
+      return `🤖 **TripNaari Admin Copilot [DEMO MODE]**\n\nHello Admin! I am ready to help you draft blogs, answer questions, or formulate responses. You can test Q&As or search destinations here in the sandbox preview!`;
     }
   } else {
     // Customer responses
     if (lastMessage.includes("safety") || lastMessage.includes("safe")) {
-      response = `🌸 **Hello from TripNaari!** Safety is our #1 priority. Every group departure has a verified woman trip leader, safety-audited hotels, background-verified drivers, and a 24/7 emergency support system. You are never alone!\n\n*(Note: Connect Nvidia API to enable live custom responses.)*`;
-    } else if (lastMessage.includes("kashmir") || lastMessage.includes("spiti") || lastMessage.includes("meghalaya") || lastMessage.includes("kerala")) {
-      response = `🎒 We have wonderful women-only departures to Kashmir, Kerala, Meghalaya, and Rajasthan! Would you like me to show you the inquiry form to request a custom quote?\n\n[SHOW_ENQUIRY_FORM]`;
+      return `🌸 **Hello from TripNaari!** Safety is our #1 priority. Every group departure has a verified woman trip leader, safety-audited hotels, background-verified drivers, and a 24/7 emergency support system. You are never alone!`;
     } else if (lastMessage.includes("cancel") || lastMessage.includes("refund")) {
-      response = `📜 Our cancellation policy is simple: Cancellations made 30+ days before departure receive a 90% refund. 15-29 days before receive a 50% refund and 50% travel credit. For support, please let us know!\n\n*(Note: Connect Nvidia API to activate live AI answers.)*`;
+      return `📜 Our cancellation policy is simple: Cancellations made 30+ days before departure receive a 90% refund. 15-29 days before receive a 50% refund and 50% travel credit. For support, please let us know!`;
     } else {
-      response = `👋 Hello! I am NaariAI, your TripNaari helper. I can tell you about our women-only group packages, safety standards, and departures. What destination are you interested in?\n\n*(Note: Connect Nvidia API to activate live AI answers.)*`;
+      return `👋 Hello! I am NaariAI, your TripNaari helper. I can tell you about our women-only group packages, safety standards, and departures. What destination are you interested in?`;
     }
   }
-
-  return response;
 }
