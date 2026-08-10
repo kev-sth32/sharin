@@ -14,7 +14,6 @@ interface GalleryClientProps {
 }
 
 export default function GalleryClient({ images }: GalleryClientProps) {
-  const [activeFilter, setActiveFilter] = useState("All");
   const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
 
   // Categorize images dynamically if category doesn't exist
@@ -49,12 +48,7 @@ export default function GalleryClient({ images }: GalleryClientProps) {
     return { ...img, category };
   });
 
-  const categories = ["All", "Destinations", "Adventure", "Moments"];
-
-  const filteredImages =
-    activeFilter === "All"
-      ? processedImages
-      : processedImages.filter((img) => img.category === activeFilter);
+  const filteredImages = processedImages;
 
   const handlePrev = (e: React.MouseEvent) => {
     e.stopPropagation();
@@ -87,23 +81,6 @@ export default function GalleryClient({ images }: GalleryClientProps) {
           <p className="mt-4 text-[15px] md:text-[16px] leading-relaxed text-[#3D4A5E] font-medium">
             Real stories, real connections, and fearless female travelers exploring the world together.
           </p>
-        </div>
-
-        {/* Filter Tabs */}
-        <div className="flex flex-wrap items-center justify-center gap-2 mb-12">
-          {categories.map((cat) => (
-            <button
-              key={cat}
-              onClick={() => setActiveFilter(cat)}
-              className={`text-xs md:text-sm font-bold px-5 py-2.5 rounded-full transition-all duration-300 border ${
-                activeFilter === cat
-                  ? "bg-[#13253D] text-white border-[#13253D] shadow-md scale-105"
-                  : "bg-white text-[#13253D] border-[#F1D9D0] hover:bg-[#FFF0F4] hover:border-[#FF4A7D]/30"
-              }`}
-            >
-              {cat}
-            </button>
-          ))}
         </div>
 
         {/* Grid Layout */}

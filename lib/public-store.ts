@@ -118,13 +118,36 @@ export function getSettings() {
 
   const defaultMarquee = "🎉 Limited Offer: Get ₹2,000 Off on your first booking! Code: SISTERHOOD2000 • Group Discount: Book for 4 or more girls and get extra ₹1,500 off per person! • Book early and secure your slot with just ₹5,000 token amount!";
 
+  const defaultHeroBadge = "Women-Only Travel Experience";
+  const defaultHeroTitle = "Solo on Paper.<br />\n<span class=\"font-serif italic font-normal text-[#FF4A7D]\">Together in Spirit.</span>";
+  const defaultHeroSubtitle = "Discover safety-first small group trips for women. Experience local cultures, form lifetime friendships, and explore the world with our experienced Trip Leaders.";
+  const defaultUrgencyText = "⚡ {count} Naaris enquired last hour";
+  const defaultHeroImages = [
+    "https://images.unsplash.com/photo-1523906834658-6e24ef2386f9?w=1600&q=80",
+    "https://images.unsplash.com/photo-1488646953014-85cb44e25828?w=1600&q=80",
+    "https://images.unsplash.com/photo-1527631746610-bca00a040d60?w=1600&q=80"
+  ];
+
   if (!settings || Array.isArray(settings) || typeof settings !== "object") {
     return {
       marqueeText: defaultMarquee,
       whyChooseBadge: "Why 6000+ women choose TripNaari",
       whyChooseTitle: "Safety is not a tagline.\nIt is accountability.",
       whyChooseDesc: "Public reviews love our safety, some mention operational hiccups. So we fixed it: every touchpoint now has a written policy, escalation, and timeline.",
-      whyChooseReasons: defaultReasons
+      whyChooseReasons: defaultReasons,
+      heroBadge: defaultHeroBadge,
+      heroTitle: defaultHeroTitle,
+      heroSubtitle: defaultHeroSubtitle,
+      urgencyText: defaultUrgencyText,
+      heroImages: defaultHeroImages,
+      heroTitleSize: "Large",
+      heroSubtitleSize: "Medium",
+      pill1Badge: "Most Loved",
+      pill1Title: "Kashmir Tulip • 5D",
+      pill1Desc: "₹21,999 • 8 seats",
+      pill2Badge: "Weekend",
+      pill2Title: "Tirthan 3D • Solo",
+      pill2Desc: "₹9,999 • Fri"
     };
   }
 
@@ -133,7 +156,20 @@ export function getSettings() {
     whyChooseBadge: settings.whyChooseBadge || "Why 6000+ women choose TripNaari",
     whyChooseTitle: settings.whyChooseTitle || "Safety is not a tagline.\nIt is accountability.",
     whyChooseDesc: settings.whyChooseDesc || "Public reviews love our safety, some mention operational hiccups. So we fixed it: every touchpoint now has a written policy, escalation, and timeline.",
-    whyChooseReasons: settings.whyChooseReasons || defaultReasons
+    whyChooseReasons: settings.whyChooseReasons || defaultReasons,
+    heroBadge: settings.heroBadge || defaultHeroBadge,
+    heroTitle: settings.heroTitle || defaultHeroTitle,
+    heroSubtitle: settings.heroSubtitle || defaultHeroSubtitle,
+    urgencyText: settings.urgencyText || defaultUrgencyText,
+    heroImages: settings.heroImages || defaultHeroImages,
+    heroTitleSize: settings.heroTitleSize || "Large",
+    heroSubtitleSize: settings.heroSubtitleSize || "Medium",
+    pill1Badge: settings.pill1Badge || "Most Loved",
+    pill1Title: settings.pill1Title || "Kashmir Tulip • 5D",
+    pill1Desc: settings.pill1Desc || "₹21,999 • 8 seats",
+    pill2Badge: settings.pill2Badge || "Weekend",
+    pill2Title: settings.pill2Title || "Tirthan 3D • Solo",
+    pill2Desc: settings.pill2Desc || "₹9,999 • Fri"
   };
 }
 

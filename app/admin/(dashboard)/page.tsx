@@ -2,11 +2,17 @@ import { getAdminData, getSettings, saveSettings, getTransactions } from "@/lib/
 import { formatINR } from "@/lib/utils";
 import Link from "next/link";
 import AnalyticsCharts from "@/components/admin/AnalyticsCharts";
+import HeroSettingsForm from "@/components/admin/HeroSettingsForm";
 
 export default async function AdminPage() {
   const data = await getAdminData();
   const settings = await getSettings();
   const allTransactions = await getTransactions();
+
+  async function handleUpdateHero(formData: FormData) {
+    "use server";
+    await saveSettings(formData);
+  }
 
   async function handleUpdateMarquee(formData: FormData) {
     "use server";
@@ -101,6 +107,8 @@ export default async function AdminPage() {
               </button>
             </form>
           </div>
+
+          <HeroSettingsForm settings={settings} action={handleUpdateHero} />
 
           <div className="rounded-[20px] bg-white border border-[#F1D9D0] p-6 mt-6">
             <h3 className="font-semibold text-[#13253D] mb-4">Edit Safety Section (Why Choose Grid)</h3>

@@ -410,6 +410,7 @@ export default function TripEditForm({ initial, action }: { initial?: any; actio
           <div className="flex gap-4">
             <label className="flex items-center gap-2 text-xs font-bold text-[#13253D]"><input type="checkbox" name="isFeatured" defaultChecked={initial?.isFeatured} /> Featured?</label>
             <label className="flex items-center gap-2 text-xs font-bold text-[#13253D]"><input type="checkbox" name="isPublished" defaultChecked={initial?.isPublished!==false} /> Published?</label>
+            <label className="flex items-center gap-2 text-xs font-bold text-[#13253D]"><input type="checkbox" name="isInternational" defaultChecked={initial?.isInternational} /> International?</label>
           </div>
         </div>
       </div>

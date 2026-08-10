@@ -114,6 +114,7 @@ export async function saveTrip(formData: FormData) {
     highlights: (formData.get("highlights") as string)?.split(",").map(s=>s.trim()).filter(Boolean) || [],
     isFeatured: formData.get("isFeatured")==="on",
     isPublished: formData.get("isPublished")!=="off" && formData.get("isPublished")!=="false",
+    isInternational: formData.get("isInternational")==="on",
     itineraryChangePolicy: formData.get("itineraryChangePolicy") as string,
     itineraryPdf: formData.get("itineraryPdf") as string || undefined,
     inclusions: inclusionsVal ? JSON.parse(inclusionsVal) : undefined,
@@ -345,13 +346,36 @@ export async function getSettings() {
 
   const defaultMarquee = "🎉 Limited Offer: Get ₹2,000 Off on your first booking! Code: SISTERHOOD2000 • Group Discount: Book for 4 or more girls and get extra ₹1,500 off per person! • Book early and secure your slot with just ₹5,000 token amount!";
 
+  const defaultHeroBadge = "Women-Only Travel Experience";
+  const defaultHeroTitle = "Solo on Paper.<br />\n<span class=\"font-serif italic font-normal text-[#FF4A7D]\">Together in Spirit.</span>";
+  const defaultHeroSubtitle = "Discover safety-first small group trips for women. Experience local cultures, form lifetime friendships, and explore the world with our experienced Trip Leaders.";
+  const defaultUrgencyText = "⚡ {count} Naaris enquired last hour";
+  const defaultHeroImages = [
+    "https://images.unsplash.com/photo-1523906834658-6e24ef2386f9?w=1600&q=80",
+    "https://images.unsplash.com/photo-1488646953014-85cb44e25828?w=1600&q=80",
+    "https://images.unsplash.com/photo-1527631746610-bca00a040d60?w=1600&q=80"
+  ];
+
   if (!settings || Array.isArray(settings) || typeof settings !== "object") {
     return {
       marqueeText: defaultMarquee,
       whyChooseBadge: "Why 6000+ women choose TripNaari",
       whyChooseTitle: "Safety is not a tagline.\nIt is accountability.",
       whyChooseDesc: "Public reviews love our safety, some mention operational hiccups. So we fixed it: every touchpoint now has a written policy, escalation, and timeline.",
-      whyChooseReasons: defaultReasons
+      whyChooseReasons: defaultReasons,
+      heroBadge: defaultHeroBadge,
+      heroTitle: defaultHeroTitle,
+      heroSubtitle: defaultHeroSubtitle,
+      urgencyText: defaultUrgencyText,
+      heroImages: defaultHeroImages,
+      heroTitleSize: "Large",
+      heroSubtitleSize: "Medium",
+      pill1Badge: "Most Loved",
+      pill1Title: "Kashmir Tulip • 5D",
+      pill1Desc: "₹21,999 • 8 seats",
+      pill2Badge: "Weekend",
+      pill2Title: "Tirthan 3D • Solo",
+      pill2Desc: "₹9,999 • Fri"
     };
   }
 
@@ -360,7 +384,20 @@ export async function getSettings() {
     whyChooseBadge: settings.whyChooseBadge || "Why 6000+ women choose TripNaari",
     whyChooseTitle: settings.whyChooseTitle || "Safety is not a tagline.\nIt is accountability.",
     whyChooseDesc: settings.whyChooseDesc || "Public reviews love our safety, some mention operational hiccups. So we fixed it: every touchpoint now has a written policy, escalation, and timeline.",
-    whyChooseReasons: settings.whyChooseReasons || defaultReasons
+    whyChooseReasons: settings.whyChooseReasons || defaultReasons,
+    heroBadge: settings.heroBadge || defaultHeroBadge,
+    heroTitle: settings.heroTitle || defaultHeroTitle,
+    heroSubtitle: settings.heroSubtitle || defaultHeroSubtitle,
+    urgencyText: settings.urgencyText || defaultUrgencyText,
+    heroImages: settings.heroImages || defaultHeroImages,
+    heroTitleSize: settings.heroTitleSize || "Large",
+    heroSubtitleSize: settings.heroSubtitleSize || "Medium",
+    pill1Badge: settings.pill1Badge || "Most Loved",
+    pill1Title: settings.pill1Title || "Kashmir Tulip • 5D",
+    pill1Desc: settings.pill1Desc || "₹21,999 • 8 seats",
+    pill2Badge: settings.pill2Badge || "Weekend",
+    pill2Title: settings.pill2Title || "Tirthan 3D • Solo",
+    pill2Desc: settings.pill2Desc || "₹9,999 • Fri"
   };
 }
 
@@ -383,12 +420,51 @@ export async function saveSettings(formData: FormData) {
     }
   }
 
+  const heroBadge = formData.get("heroBadge") !== null ? (formData.get("heroBadge") as string) : existing.heroBadge;
+  const heroTitle = formData.get("heroTitle") !== null ? (formData.get("heroTitle") as string) : existing.heroTitle;
+  const heroSubtitle = formData.get("heroSubtitle") !== null ? (formData.get("heroSubtitle") as string) : existing.heroSubtitle;
+  const urgencyText = formData.get("urgencyText") !== null ? (formData.get("urgencyText") as string) : existing.urgencyText;
+
+  let heroImages = existing.heroImages;
+  const heroImagesRaw = formData.get("heroImages");
+  if (heroImagesRaw !== null) {
+    try {
+      heroImages = JSON.parse(heroImagesRaw as string);
+    } catch (e) {
+      heroImages = (heroImagesRaw as string).split(",").map((s: string) => s.trim()).filter(Boolean);
+    }
+  }
+
+  const heroTitleSize = formData.get("heroTitleSize") !== null ? (formData.get("heroTitleSize") as string) : existing.heroTitleSize;
+  const heroSubtitleSize = formData.get("heroSubtitleSize") !== null ? (formData.get("heroSubtitleSize") as string) : existing.heroSubtitleSize;
+
+  const pill1Badge = formData.get("pill1Badge") !== null ? (formData.get("pill1Badge") as string) : existing.pill1Badge;
+  const pill1Title = formData.get("pill1Title") !== null ? (formData.get("pill1Title") as string) : existing.pill1Title;
+  const pill1Desc = formData.get("pill1Desc") !== null ? (formData.get("pill1Desc") as string) : existing.pill1Desc;
+
+  const pill2Badge = formData.get("pill2Badge") !== null ? (formData.get("pill2Badge") as string) : existing.pill2Badge;
+  const pill2Title = formData.get("pill2Title") !== null ? (formData.get("pill2Title") as string) : existing.pill2Title;
+  const pill2Desc = formData.get("pill2Desc") !== null ? (formData.get("pill2Desc") as string) : existing.pill2Desc;
+
   writeFile("settings.json", {
     marqueeText,
     whyChooseBadge,
     whyChooseTitle,
     whyChooseDesc,
-    whyChooseReasons
+    whyChooseReasons,
+    heroBadge,
+    heroTitle,
+    heroSubtitle,
+    urgencyText,
+    heroImages,
+    heroTitleSize,
+    heroSubtitleSize,
+    pill1Badge,
+    pill1Title,
+    pill1Desc,
+    pill2Badge,
+    pill2Title,
+    pill2Desc
   });
   return { success: true };
 }

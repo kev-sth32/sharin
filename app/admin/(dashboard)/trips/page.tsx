@@ -27,6 +27,7 @@ export default async function TripsAdmin() {
                 <div className="mt-2 flex gap-2 flex-wrap">
                   <span className={`text-[10px] rounded-full px-2 py-1 border ${t.isFeatured?'bg-[#FFF0F4] border-[#FF4A7D]/30 text-[#FF4A7D]':'bg-[#FFF8F0] border-[#F1D9D0] text-[#3D4A5E]'}`}>{t.isFeatured?'★ Featured':'Not featured'}</span>
                   <span className={`text-[10px] rounded-full px-2 py-1 border ${t.isPublished!==false?'bg-green-50 border-green-200 text-green-700':'bg-red-50 border-red-200 text-red-600'}`}>{t.isPublished!==false?'Published':'Draft'}</span>
+                  <span className={`text-[10px] rounded-full px-2 py-1 border ${t.isInternational?'bg-[#E0F2FE] border-[#38BDF8]/30 text-[#0369A1]':'bg-[#F0FDF4] border-[#86EFAC]/30 text-[#166534]'}`}>{t.isInternational?'🌍 International':'🏠 Domestic'}</span>
                   <span className="text-[10px] rounded-full bg-[#13253D] text-white px-2 py-1">{t.comfortLevel} • {t.difficulty}</span>
                 </div>
                 <div className="mt-2 text-[10px] text-[#3D4A5E] line-clamp-2">{t.shortDescription}</div>

@@ -171,7 +171,7 @@ export default function BookingWidget({
             </button>
 
             {dropdownOpen && (
-              <div className="absolute z-20 top-full left-0 right-0 mt-2 bg-white border border-[#F1D9D0] rounded-2xl shadow-2xl max-h-60 overflow-y-auto divide-y divide-[#F1D9D0]/30 overflow-hidden animate-in fade-in slide-in-from-top-1 duration-200">
+              <div className="absolute z-20 top-full left-0 right-0 mt-2 bg-white border border-[#F1D9D0] rounded-2xl shadow-2xl max-h-64 overflow-y-auto divide-y divide-[#F1D9D0]/30 overflow-hidden animate-in fade-in slide-in-from-top-1 duration-200">
                 {sortedDepartures.map((d) => {
                   const isSelected = selectedBatch?.id === d.id;
                   const isClosed = d.status === "sold_out" || d.status === "cancelled";
@@ -184,17 +184,27 @@ export default function BookingWidget({
                         setSelectedBatch(d);
                         setDropdownOpen(false);
                       }}
-                      className={`w-full text-left px-4 py-4 text-[13px] font-[800] transition-all duration-200 flex justify-between items-center ${
+                      className={`w-full text-left px-4 py-3.5 text-[13px] font-[800] transition-all duration-200 flex justify-between items-center ${
                         isSelected ? "bg-[#FFF0F4]/60 text-[#FF4A7D]" : "text-[#13253D] hover:bg-[#FFF8F0]/30"
                       } ${isClosed ? "opacity-40 cursor-not-allowed bg-gray-50/50" : ""}`}
                     >
-                      <div className="flex items-center gap-2">
-                        <Calendar className={`w-4 h-4 ${isSelected ? "text-[#FF4A7D]" : "text-[#3D4A5E]/40"}`} />
-                        <span>{getBatchLabelNoStatus(d)}</span>
+                      <div className="flex items-center gap-3">
+                        <Calendar className={`w-4.5 h-4.5 shrink-0 ${isSelected ? "text-[#FF4A7D]" : "text-[#3D4A5E]/40"}`} />
+                        <div className="flex flex-col text-left">
+                          <span className="font-bold text-[#13253D]">{getBatchLabelNoStatus(d)}</span>
+                          <span className="text-[11px] text-[#3D4A5E]/70 font-semibold mt-0.5">
+                            Price: <span className="text-[#800F2D]">{formatINR(d.price || priceFrom)}</span>
+                            {d.price && d.price < priceFrom ? (
+                              <span className="ml-2 text-[9px] bg-green-50 text-green-700 border border-green-200 px-1 py-0.2 rounded font-bold uppercase">Off-season Deal</span>
+                            ) : d.price && d.price > priceFrom ? (
+                              <span className="ml-2 text-[9px] bg-[#FFF0F4] text-[#FF4A7D] border border-[#FF4A7D]/10 px-1 py-0.2 rounded font-bold uppercase">Peak Season</span>
+                            ) : null}
+                          </span>
+                        </div>
                       </div>
                       <div className="flex items-center gap-2.5">
                         {getStatusBadge(d.status)}
-                        {isSelected && <span className="w-1.5 h-1.5 rounded-full bg-[#FF4A7D]" />}
+                        {isSelected && <span className="w-1.5 h-1.5 rounded-full bg-[#FF4A7D] shrink-0" />}
                       </div>
                     </button>
                   );

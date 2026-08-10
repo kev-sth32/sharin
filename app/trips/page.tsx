@@ -13,75 +13,69 @@ export default async function TripsPage({ searchParams }: { searchParams: Promis
   const allTrips = getMergedTrips();
   
   let trips = [...allTrips];
-  if (filter === "women-only") trips = trips.filter((t:any)=>t.isWomenOnly);
-  if (filter === "weekend") trips = trips.filter((t:any)=>t.durationDays <= 4);
-  if (filter === "international") trips = trips.filter((t:any)=> t.isInternational);
+  if (filter === "domestic") {
+    trips = trips.filter((t: any) => !t.isInternational);
+  } else if (filter === "international") {
+    trips = trips.filter((t: any) => t.isInternational);
+  }
 
   const totalTripsCount = allTrips.length;
+  const domesticCount = allTrips.filter((t: any) => !t.isInternational).length;
+  const internationalCount = allTrips.filter((t: any) => t.isInternational).length;
 
   return (
     <div className="bg-[#FFF8F0] min-h-screen">
       {/* Centered Page Header Banner */}
-      <section className="relative overflow-hidden bg-gradient-to-b from-[#FFF0F4]/40 to-[#FFF8F0] border-b border-[#F1D9D0]/30 py-16 md:py-24">
+      <section className="relative overflow-hidden bg-gradient-to-b from-[#FFF0F4]/40 to-[#FFF8F0] border-b border-[#F1D9D0]/30 py-10 md:py-14">
         <div className="max-w-[800px] mx-auto px-4 text-center">
-          <div className="inline-flex items-center gap-1.5 rounded-full bg-[#800F2D]/10 px-3 py-1 text-[11px] font-bold uppercase tracking-wider text-[#800F2D] mb-4">
+          <div className="inline-flex items-center gap-1.5 rounded-full bg-[#800F2D]/10 px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wider text-[#800F2D] mb-3">
             ✨ Handcrafted Departures
           </div>
-          <h1 className="font-display font-[800] text-[40px] md:text-[56px] leading-[1.05] text-[#13253D] tracking-tight">
+          <h1 className="font-display font-[800] text-3xl md:text-4xl lg:text-[44px] leading-[1.15] text-[#13253D] tracking-tight">
             All Departures — safe, handcrafted, sisterhood.
           </h1>
-          <p className="mt-4 text-[16px] md:text-[18px] leading-relaxed text-[#3D4A5E] max-w-xl mx-auto">
-            No hidden costs, no scary stays. Each departure has verified stays, background-checked transport, and an female trip leader 24x7.
+          <p className="mt-3 text-sm md:text-[15px] leading-relaxed text-[#3D4A5E] max-w-xl mx-auto">
+            No hidden costs, no scary stays. Each departure has verified stays, background-checked transport, and a female trip leader 24x7.
           </p>
 
           {/* Navigation Filters */}
-          <div className="flex flex-wrap justify-center gap-3 mt-10">
+          <div className="inline-flex bg-white/80 backdrop-blur-sm border border-[#F1D9D0]/60 p-1 rounded-full shadow-[0_4px_20px_-4px_rgba(128,15,45,0.08)] mt-8">
             <Link 
               href="/trips" 
-              className={`rounded-full px-6 py-2.5 text-xs font-bold transition-all duration-200 border ${
+              className={`rounded-full px-5 py-2 text-xs md:text-sm font-bold transition-all duration-200 ${
                 !filter 
-                  ? "bg-[#800F2D] border-transparent text-white shadow-md hover:bg-[#660C24]" 
-                  : "bg-white border-[#F1D9D0] text-[#13253D]/80 hover:bg-[#FFF0F4]/30"
+                  ? "bg-[#800F2D] text-white shadow-sm" 
+                  : "text-[#13253D]/70 hover:text-[#800F2D] hover:bg-[#FFF0F4]/30"
               }`}
             >
               All Trips ({totalTripsCount})
             </Link>
             <Link 
-              href="/trips?filter=women-only" 
-              className={`rounded-full px-6 py-2.5 text-xs font-bold transition-all duration-200 border ${
-                filter === "women-only" 
-                  ? "bg-[#FF4A7D] border-transparent text-white shadow-md hover:bg-[#E03A6A]" 
-                  : "bg-white border-[#F1D9D0] text-[#13253D]/80 hover:bg-[#FFF0F4]/30"
+              href="/trips?filter=domestic" 
+              className={`rounded-full px-5 py-2 text-xs md:text-sm font-bold transition-all duration-200 ${
+                filter === "domestic" 
+                  ? "bg-[#800F2D] text-white shadow-sm" 
+                  : "text-[#13253D]/70 hover:text-[#800F2D] hover:bg-[#FFF0F4]/30"
               }`}
             >
-              Women-Only Group
-            </Link>
-            <Link 
-              href="/trips?filter=weekend" 
-              className={`rounded-full px-6 py-2.5 text-xs font-bold transition-all duration-200 border ${
-                filter === "weekend" 
-                  ? "bg-[#FF4A7D] border-transparent text-white shadow-md hover:bg-[#E03A6A]" 
-                  : "bg-white border-[#F1D9D0] text-[#13253D]/80 hover:bg-[#FFF0F4]/30"
-              }`}
-            >
-              Weekend 3-4D
+              Domestic ({domesticCount})
             </Link>
             <Link 
               href="/trips?filter=international" 
-              className={`rounded-full px-6 py-2.5 text-xs font-bold transition-all duration-200 border ${
+              className={`rounded-full px-5 py-2 text-xs md:text-sm font-bold transition-all duration-200 ${
                 filter === "international" 
-                  ? "bg-[#FF4A7D] border-transparent text-white shadow-md hover:bg-[#E03A6A]" 
-                  : "bg-white border-[#F1D9D0] text-[#13253D]/80 hover:bg-[#FFF0F4]/30"
+                  ? "bg-[#800F2D] text-white shadow-sm" 
+                  : "text-[#13253D]/70 hover:text-[#800F2D] hover:bg-[#FFF0F4]/30"
               }`}
             >
-              International Escapes
+              International ({internationalCount})
             </Link>
           </div>
         </div>
       </section>
 
       {/* Content Layout */}
-      <div className="max-w-[1280px] mx-auto px-4 md:px-8 py-16 space-y-20">
+      <div className="max-w-[1280px] mx-auto px-4 md:px-8 py-12 md:py-16 space-y-16">
         <div>
           {trips.length === 0 ? (
             <div className="rounded-3xl border border-[#F1D9D0] bg-white p-12 text-center space-y-4 shadow-[0_10px_35px_-8px_rgba(19,37,61,0.04)] max-w-lg mx-auto">

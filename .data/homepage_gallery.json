@@ -26,5 +26,13 @@
   {
     "src": "https://images.unsplash.com/photo-1524504388940-b1c1722653e1?w=600&q=80",
     "alt": "Lake and boats"
+  },
+  {
+    "src": "https://www.holidify.com/images/bgImages/INDIA.jpg",
+    "alt": "Homepage gallery photo"
+  },
+  {
+    "src": "https://hblimg.mmtcdn.com/content/hubble/img/ladakh/mmt/destination/m_Destination_Ladakh_l_824_1235.jpg",
+    "alt": "Homepage gallery photo"
   }
 ]

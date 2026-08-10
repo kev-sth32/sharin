@@ -19,60 +19,149 @@ const InstagramIcon = (props: any) => (
   </svg>
 );
 
-export default function Hero() {
-  const [enquiryCount, setEnquiryCount] = useState(24);
+interface HeroProps {
+  settings?: {
+    heroBadge?: string;
+    heroTitle?: string;
+    heroSubtitle?: string;
+    urgencyText?: string;
+    heroImages?: string[];
+    heroTitleSize?: string;
+    heroSubtitleSize?: string;
+    pill1Badge?: string;
+    pill1Title?: string;
+    pill1Desc?: string;
+    pill2Badge?: string;
+    pill2Title?: string;
+    pill2Desc?: string;
+  };
+}
+
+const isVideo = (url: string) => /\.(mp4|webm|ogg)($|\?)/i.test(url);
+
+const defaultHeroBadge = "Women-Only Travel Experience";
+const defaultHeroTitle = "Solo on Paper.<br />\n<span class=\"font-serif italic font-normal text-[#FF4A7D]\">Together in Spirit.</span>";
+const defaultHeroSubtitle = "Discover safety-first small group trips for women. Experience local cultures, form lifetime friendships, and explore the world with our experienced Trip Leaders.";
+const defaultUrgencyText = "⚡ {count} Naaris enquired last hour";
+const defaultHeroImages = [
+  "https://images.unsplash.com/photo-1523906834658-6e24ef2386f9?w=1600&q=80",
+  "https://images.unsplash.com/photo-1488646953014-85cb44e25828?w=1600&q=80",
+  "https://images.unsplash.com/photo-1527631746610-bca00a040d60?w=1600&q=80"
+];
+
+const titleSizeMap: Record<string, string> = {
+  "Small": "text-[18px] sm:text-[22px] md:text-[26px] xl:text-[30px] 2xl:text-[36px]",
+  "Medium": "text-[20px] sm:text-[25px] md:text-[30px] xl:text-[34px] 2xl:text-[40px]",
+  "Large": "text-[22px] sm:text-[28px] md:text-[32px] xl:text-[36px] 2xl:text-[42px]",
+  "Extra Large": "text-[26px] sm:text-[32px] md:text-[38px] xl:text-[42px] 2xl:text-[50px]"
+};
+
+const subtitleSizeMap: Record<string, string> = {
+  "Small": "text-[11px] xl:text-[12px]",
+  "Medium": "text-[12px] xl:text-[13px]",
+  "Large": "text-[13px] xl:text-[15px]"
+};
+
+export default function Hero({ settings }: HeroProps) {
+  // Initialize to a random start count (e.g. between 34 and 48)
+  const [enquiryCount, setEnquiryCount] = useState(() => Math.floor(Math.random() * 15) + 34);
+  const [currentImageIndex, setCurrentImageIndex] = useState(0);
+
+  const heroImages = settings?.heroImages || defaultHeroImages;
+  const badgeText = settings?.heroBadge || defaultHeroBadge;
+  const titleHtml = settings?.heroTitle || defaultHeroTitle;
+  const subtitleText = settings?.heroSubtitle || defaultHeroSubtitle;
+  const urgencyTemplate = settings?.urgencyText || defaultUrgencyText;
+
+  const titleSizeClass = titleSizeMap[settings?.heroTitleSize || "Large"] || titleSizeMap["Large"];
+  const subtitleSizeClass = subtitleSizeMap[settings?.heroSubtitleSize || "Medium"] || subtitleSizeMap["Medium"];
+
+  const pill1Badge = settings?.pill1Badge || "Most Loved";
+  const pill1Title = settings?.pill1Title || "Kashmir Tulip • 5D";
+  const pill1Desc = settings?.pill1Desc || "₹21,999 • 8 seats";
+
+  const pill2Badge = settings?.pill2Badge || "Weekend";
+  const pill2Title = settings?.pill2Title || "Tirthan 3D • Solo";
+  const pill2Desc = settings?.pill2Desc || "₹9,999 • Fri";
 
   useEffect(() => {
     const interval = setInterval(() => {
       setEnquiryCount((prev) => {
-        const choices = [12, 24, 32, 45, 54, 61];
-        const filtered = choices.filter((c) => c !== prev);
-        return filtered[Math.floor(Math.random() * filtered.length)];
+        // Slow natural live fluctuation: randomly adjust by -2, -1, 0, 1, or 2
+        const change = Math.floor(Math.random() * 5) - 2;
+        const nextVal = prev + change;
+        // Keep inside a realistic range (25 - 55)
+        if (nextVal < 25) return 25 + Math.floor(Math.random() * 5);
+        if (nextVal > 55) return 55 - Math.floor(Math.random() * 5);
+        return nextVal;
       });
-    }, 8000);
+    }, 25000); // Updates slowly every 25 seconds
     return () => clearInterval(interval);
   }, []);
+
+  useEffect(() => {
+    if (heroImages.length <= 1) return;
+    const interval = setInterval(() => {
+      setCurrentImageIndex((prev) => (prev + 1) % heroImages.length);
+    }, 5000);
+    return () => clearInterval(interval);
+  }, [heroImages]);
+
+  const formattedUrgency = urgencyTemplate.replace("{count}", enquiryCount.toString());
 
   return (
     <section className="relative bg-[#FFF8F0]">
       {/* Dark maroon/burgundy hero background container */}
       <div className="relative overflow-hidden bg-[#6a0c24] text-white">
         <div className="absolute inset-0">
-          <img
-            src="https://images.unsplash.com/photo-1523906834658-6e24ef2386f9?w=1600&q=80"
-            alt="Women traveling together"
-            className="w-full h-full object-cover opacity-25"
-          />
-          <div className="absolute inset-0 bg-gradient-to-b from-[#4A0516]/90 via-[#6D0C24]/85 to-[#4A0516]/95" />
+          {heroImages.map((imgUrl, idx) => (
+            isVideo(imgUrl) ? (
+              <video
+                key={imgUrl}
+                src={imgUrl}
+                autoPlay
+                loop
+                muted
+                playsInline
+                className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-1000 ${
+                  idx === currentImageIndex ? "opacity-100" : "opacity-0"
+                }`}
+              />
+            ) : (
+              <img
+                key={imgUrl}
+                src={imgUrl}
+                alt={`Women traveling slide ${idx + 1}`}
+                className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-1000 ${
+                  idx === currentImageIndex ? "opacity-100" : "opacity-0"
+                }`}
+              />
+            )
+          ))}
+          <div className="absolute inset-0 bg-black/50" />
         </div>
-
-        {/* Hero Content (Left text, Right quick enquiry form) */}
-        <div className="relative max-w-[1280px] mx-auto px-4 md:px-8 pt-8 pb-16 lg:pt-6 lg:pb-16 xl:pt-10 xl:pb-20 2xl:pt-16 2xl:pb-32">
-          <div className="grid lg:grid-cols-12 gap-10 lg:gap-8 xl:gap-12 items-center lg:pt-2">
-            {/* Left side text */}
-            <div className="lg:col-span-7 text-center lg:text-left space-y-4 md:space-y-5 lg:space-y-6">
-              <div className="inline-flex items-center rounded-full bg-white/10 border border-white/20 px-4 py-1.5 text-[11px] font-bold tracking-widest uppercase text-white/90">
-                Women-Only Travel Experience
+        <div className="relative max-w-[1280px] mx-auto px-4 md:px-8 pt-12 pb-24 lg:pt-16 lg:pb-28 xl:pt-24 xl:pb-36 2xl:pt-32 2xl:pb-48">
+          <div className="grid lg:grid-cols-12 gap-6 items-center lg:pt-2">
+            <div className="lg:col-span-5 text-center lg:text-left space-y-4 lg:pr-2">
+              <div className="inline-flex items-center rounded-full bg-white/10 backdrop-blur-sm border border-white/20 px-3 py-1 text-[8.5px] font-bold tracking-[0.15em] uppercase text-white/90 shadow-sm">
+                {badgeText}
               </div>
-
-              <h1 className="font-display font-[800] tracking-tight leading-[1.05] text-[32px] sm:text-[42px] md:text-[50px] xl:text-[56px] 2xl:text-[68px] text-white text-balance max-w-4xl">
-                Solo on Paper.<br />
-                <span className="font-serif italic font-normal text-[#FF4A7D]">Together in Spirit.</span>
-              </h1>
-
-              <p className="text-[15px] xl:text-[18px] leading-relaxed text-white/80 max-w-[62ch] text-balance">
-                Discover safety-first small group trips for women. Experience local cultures, form lifetime friendships, and explore the world with our experienced Trip Leaders.
+              <h1 
+                className={`font-display font-[800] tracking-tight leading-[1.12] text-white text-balance max-w-4xl drop-shadow-[0_2px_4px_rgba(0,0,0,0.3)] ${titleSizeClass}`}
+                dangerouslySetInnerHTML={{ __html: titleHtml }}
+              />
+              <p className={`leading-relaxed text-white/80 max-w-[46ch] text-balance font-medium drop-shadow-[0_1px_2px_rgba(0,0,0,0.3)] ${subtitleSizeClass}`}>
+                {subtitleText}
               </p>
-
-              <div className="mt-4 lg:mt-6 xl:mt-10 flex flex-col sm:flex-row gap-4 justify-center lg:justify-start items-center">
+              <div className="mt-4 lg:mt-6 flex flex-col sm:flex-row gap-3 justify-center lg:justify-start items-center">
                 <a
                   href="https://chat.whatsapp.com/IdH8AumJHbQ3A8th9VkQts?s=cl&p=a&mlu=1"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="w-full sm:w-auto"
                 >
-                  <Button size="lg" className="w-full sm:w-auto bg-[#FF4A7D] hover:bg-[#E63E6E] text-white rounded-full font-semibold px-8 shadow-[0_8px_25px_-5px_rgba(255,74,125,0.4)] inline-flex items-center justify-center gap-2">
-                    <WhatsAppIcon className="w-5 h-5" />
+                  <Button className="w-full sm:w-auto bg-gradient-to-r from-[#FF4A7D] to-[#FF758F] hover:from-[#E63E6E] hover:to-[#FF4A7D] text-white rounded-full font-bold px-6 text-xs h-10 shadow-[0_4px_15px_-4px_rgba(255,74,125,0.4)] hover:shadow-[0_8px_25px_-5px_rgba(255,74,125,0.55)] inline-flex items-center justify-center gap-1.5 border-none transition-all hover:scale-[1.03]">
+                    <WhatsAppIcon className="w-4 h-4" />
                     Join Community
                   </Button>
                 </a>
@@ -82,64 +171,54 @@ export default function Hero() {
                   rel="noopener noreferrer"
                   className="w-full sm:w-auto"
                 >
-                  <Button variant="outline" size="lg" className="w-full sm:w-auto bg-transparent border-white/30 text-white hover:bg-white/10 hover:border-white rounded-full font-semibold px-8 inline-flex items-center justify-center gap-2">
-                    <InstagramIcon className="w-5 h-5" />
+                  <Button variant="outline" className="w-full sm:w-auto bg-white/5 backdrop-blur-sm border border-white/20 hover:border-white/50 text-white hover:bg-white/10 rounded-full font-bold px-6 text-xs h-10 inline-flex items-center justify-center gap-1.5 transition-all hover:scale-[1.03]">
+                    <InstagramIcon className="w-4 h-4" />
                     Follow on Instagram
                   </Button>
                 </a>
               </div>
             </div>
-
-            {/* Right side Quick Enquiry Widget */}
-            <div className="lg:col-span-5 flex justify-center lg:justify-end">
-              <div className="w-full max-w-[430px] bg-white rounded-[32px] p-5 2xl:p-8 border border-[#F1D9D0]/50 shadow-[0_20px_50px_rgba(0,0,0,0.3)] text-[#13253D]">
-                <div className="text-[11px] font-extrabold uppercase tracking-wider text-[#FF4A7D] leading-tight">
+            <div className="hidden lg:block lg:col-span-3" />
+            <div className="lg:col-span-4 flex justify-center lg:justify-end">
+              <div className="w-full max-w-[320px] bg-gradient-to-br from-white via-white/95 to-[#FFF8F0]/90 rounded-[24px] p-4 md:p-5 border border-white/20 shadow-[0_24px_50px_-12px_rgba(0,0,0,0.22),0_12px_24px_-10px_rgba(255,74,125,0.08)] text-[#13253D] backdrop-blur-md">
+                <div className="text-[9px] font-extrabold uppercase tracking-wider text-[#FF4A7D]/85 leading-tight text-center">
                   Quick Enquiry • 2 Min • 2 Hours Response
                 </div>
-                <h3 className="font-display font-[800] text-[20px] md:text-[22px] 2xl:text-[28px] text-[#13253D] leading-[1.15] mt-2 mb-3 2xl:mb-5">
+                <h3 className="font-display font-[800] text-[15px] md:text-[16px] 2xl:text-[18px] text-[#13253D] leading-[1.15] mt-2 mb-3.5 text-center">
                   Where do you want to go next, Naari?
                 </h3>
-
-                {/* Popular Recommendation Cards */}
-                <div className="grid grid-cols-2 gap-2 mb-3 2xl:mb-5">
+                <div className="grid grid-cols-2 gap-2.5 mb-3.5">
                   <button
                     onClick={() => openEnquiryModal()}
-                    className="flex flex-col text-left p-2.5 lg:p-3 xl:p-3.5 rounded-2xl bg-[#FFF8F0] border border-[#FF4A7D]/10 hover:border-[#FF4A7D]/30 transition-all group/pill"
+                    className="flex flex-col text-left p-2 rounded-xl bg-[#FFF8F0]/60 border border-[#FF4A7D]/5 hover:border-[#FF4A7D]/25 hover:bg-[#FFF0F4]/80 transition-all duration-300 group/pill shadow-[0_2px_8px_rgba(255,74,125,0.02)]"
                   >
-                    <span className="text-[9px] font-extrabold text-[#FF4A7D] uppercase tracking-wider">Most Loved</span>
-                    <span className="text-sm font-extrabold text-[#13253D] mt-1 group-hover/pill:text-[#FF4A7D] transition-colors">Kashmir Tulip • 5D</span>
-                    <span className="text-[11px] text-[#3D4A5E]/80 mt-1 font-semibold">₹21,999 • 8 seats left</span>
+                    <span className="text-[7px] font-extrabold text-[#FF4A7D] uppercase tracking-wider">{pill1Badge}</span>
+                    <span className="text-[11px] font-extrabold text-[#13253D] mt-0.5 group-hover/pill:text-[#FF4A7D] transition-colors">{pill1Title}</span>
+                    <span className="text-[9px] text-[#3D4A5E]/80 mt-0.5 font-semibold">{pill1Desc}</span>
                   </button>
-
                   <button
                     onClick={() => openEnquiryModal()}
-                    className="flex flex-col text-left p-2.5 lg:p-3 xl:p-3.5 rounded-2xl bg-[#FFF8F0] border border-[#FF4A7D]/10 hover:border-[#FF4A7D]/30 transition-all group/pill"
+                    className="flex flex-col text-left p-2 rounded-xl bg-[#FFF8F0]/60 border border-[#FF4A7D]/5 hover:border-[#FF4A7D]/25 hover:bg-[#FFF0F4]/80 transition-all duration-300 group/pill shadow-[0_2px_8px_rgba(255,74,125,0.02)]"
                   >
-                    <span className="text-[9px] font-extrabold text-[#FF4A7D] uppercase tracking-wider">Weekend</span>
-                    <span className="text-sm font-extrabold text-[#13253D] mt-1 group-hover/pill:text-[#FF4A7D] transition-colors">Tirthan 3D • Solo</span>
-                    <span className="text-[11px] text-[#3D4A5E]/80 mt-1 font-semibold">₹9,999 • Fri departure</span>
+                    <span className="text-[7px] font-extrabold text-[#FF4A7D] uppercase tracking-wider">{pill2Badge}</span>
+                    <span className="text-[11px] font-extrabold text-[#13253D] mt-0.5 group-hover/pill:text-[#FF4A7D] transition-colors">{pill2Title}</span>
+                    <span className="text-[9px] text-[#3D4A5E]/80 mt-0.5 font-semibold">{pill2Desc}</span>
                   </button>
                 </div>
-
-                {/* Alert/Live Tag */}
-                <div className="flex items-center justify-between gap-3 bg-[#13253D] text-white rounded-2xl p-3 lg:p-4 mb-3 2xl:mb-5 text-sm font-semibold shadow-sm">
-                  <div className="flex items-center gap-2">
-                    <span className="text-base">⚡</span>
-                    <span>{enquiryCount} Naaris enquired last hour</span>
-                  </div>
-                  <span className="w-2.5 h-2.5 rounded-full bg-[#25D366] animate-pulse shadow-sm" />
+                <div className="flex items-center justify-center gap-1.5 bg-[#FFF0F4]/80 text-[#FF4A7D] border border-[#FF4A7D]/15 rounded-full py-1 px-3.5 mb-3.5 text-[10px] font-bold tracking-wide uppercase shadow-sm w-fit mx-auto animate-fade-in">
+                  <span className="relative flex h-1.5 w-1.5">
+                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#25D366] opacity-75"></span>
+                    <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-[#25D366]"></span>
+                  </span>
+                  <span>{formattedUrgency}</span>
                 </div>
-
-                {/* Action CTA Button */}
                 <button
                   onClick={() => openEnquiryModal()}
-                  className="w-full text-center rounded-full bg-[#FF4A7D] hover:bg-[#E63E6E] text-white font-extrabold text-[15px] py-3 2xl:py-4 transition-all duration-300 shadow-[0_6px_20px_-4px_rgba(255,74,125,0.4)]"
+                  className="w-full text-center rounded-full bg-gradient-to-r from-[#FF4A7D] to-[#FF758F] hover:from-[#E63E6E] hover:to-[#FF4A7D] text-white font-extrabold text-xs py-2.5 transition-all duration-300 hover:scale-[1.02] hover:shadow-[0_8px_25px_-5px_rgba(255,74,125,0.45)] shadow-[0_4px_12px_-4px_rgba(255,74,125,0.3)]"
                 >
                   Check availability →
                 </button>
-
-                {/* Footer Disclosures */}
-                <p className="text-[11px] text-[#3D4A5E]/70 text-center mt-3 lg:mt-4 font-medium leading-relaxed">
+                <p className="text-[9px] text-[#3D4A5E]/70 text-center mt-2.5 font-medium leading-relaxed">
                   No spam, itinerary on WhatsApp. Cancellation policy transparent.
                 </p>
               </div>
@@ -147,8 +226,6 @@ export default function Hero() {
           </div>
         </div>
       </div>
-
-      {/* Floating Stats Bar Container (Centered overlap) */}
       <div className="relative -mt-8 md:-mt-12 lg:-mt-6 xl:-mt-16 z-20 max-w-[1100px] mx-auto px-4 md:px-8">
         <div className="bg-white rounded-3xl shadow-[0_20px_50px_-12px_rgba(19,37,61,0.12)] border border-[#F1D9D0] p-6 md:p-8">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-0 md:gap-4 md:divide-x md:divide-[#F1D9D0]/80">

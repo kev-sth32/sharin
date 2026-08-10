@@ -22,14 +22,16 @@ export async function POST(req: Request) {
     }
 
     // SECURITY: Validate file type
-    const allowedTypes = ["image/jpeg", "image/jpg", "image/png", "image/webp", "image/gif", "application/pdf"];
+    const allowedTypes = [
+      "image/jpeg", "image/jpg", "image/png", "image/webp", "image/gif", "application/pdf"
+    ];
     if (!allowedTypes.includes(file.type)) {
       return NextResponse.json({ success: false, error: "Only JPG, PNG, WebP, GIF, PDF allowed" }, { status: 400 });
     }
 
-    // SECURITY: Validate file size (5MB)
-    if (file.size > 5 * 1024 * 1024) {
-      return NextResponse.json({ success: false, error: "File too large — max 5MB" }, { status: 400 });
+    // SECURITY: Validate file size (20MB)
+    if (file.size > 20 * 1024 * 1024) {
+      return NextResponse.json({ success: false, error: "File too large — max 20MB" }, { status: 400 });
     }
 
     const bytes = await file.arrayBuffer();

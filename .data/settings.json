@@ -1,0 +1,55 @@
+{
+  "marqueeText": "🎉 Limited Offer: Get ₹2,000 Off on your first booking! Code: SISTERHOOD2000 • Group Discount: Book for 4 or more girls and get extra ₹1,500 off per person! • Book early and secure your slot with just ₹5,000 token amount!",
+  "whyChooseBadge": "Why 6000+ women choose TripNaari",
+  "whyChooseTitle": "Safety is not a tagline.\nIt is accountability.",
+  "whyChooseDesc": "Public reviews love our safety, some mention operational hiccups. So we fixed it: every touchpoint now has a written policy, escalation, and timeline.",
+  "whyChooseReasons": [
+    {
+      "icon": "Shield",
+      "title": "Women trip leader 24x7, not just a driver",
+      "desc": "Verified, wilderness first responder trained, stays in same hotel, accountable via escalation card."
+    },
+    {
+      "icon": "Map",
+      "title": "Hotel category revealed at booking, name 7 days before",
+      "desc": "We show you 2 sample properties and exact timeline. No bait-and-switch. If changed, upgrade at our cost."
+    },
+    {
+      "icon": "Wallet",
+      "title": "Transparent inclusion & refund timelines",
+      "desc": "Every trip page lists inclusions, exclusions, cancellation slabs with refund processing days (7-10 days)."
+    },
+    {
+      "icon": "Users",
+      "title": "Community, not just customers",
+      "desc": "Solo travelers, housewives, mothers, grandmothers travel together. Pre-trip icebreaker call."
+    },
+    {
+      "icon": "Clock",
+      "title": "Itinerary change policy in writing",
+      "desc": "Weather, traffic, safety, low group size: alternatives or refund options shared 12 hours prior. Never abandoned."
+    },
+    {
+      "icon": "Heart",
+      "title": "Food, safety needs actually heard",
+      "desc": "Jain, vegan, kid-friendly, medical needs collected in form and acted on. Not just a marketing checkbox."
+    }
+  ],
+  "heroBadge": "Women-Only Travel Experience",
+  "heroTitle": "Solo on Paper.<br />\r\n<span class=\"font-serif italic font-normal text-[#FF4A7D]\">Together in Spirit.</span>",
+  "heroSubtitle": "Discover safety-first small group trips for women. Experience local cultures, form lifetime friendships, and explore the world with our experienced Trip Leaders.",
+  "urgencyText": "⚡ {count} Naaris enquired last hour",
+  "heroImages": [
+    "https://images.unsplash.com/photo-1523906834658-6e24ef2386f9?w=1600&q=80",
+    "https://images.unsplash.com/photo-1488646953014-85cb44e25828?w=1600&q=80",
+    "https://images.unsplash.com/photo-1527631746610-bca00a040d60?w=1600&q=80"
+  ],
+  "heroTitleSize": "Large",
+  "heroSubtitleSize": "Medium",
+  "pill1Badge": "Most Loved",
+  "pill1Title": "Kashmir Tulip • 5D",
+  "pill1Desc": "₹21,999 • 8 seats",
+  "pill2Badge": "Weekend",
+  "pill2Title": "Tirthan 3D • Solo",
+  "pill2Desc": "₹9,999 • Fri"
+}

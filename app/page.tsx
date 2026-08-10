@@ -20,7 +20,7 @@ export default function HomePage() {
 
   return (
     <>
-      <Hero />
+      <Hero settings={settings} />
       
       {/* Moving Marquee Strip */}
       <div className="overflow-hidden border-y border-[#F1D9D0] bg-[#FFF0F4] mt-10 md:mt-12">
