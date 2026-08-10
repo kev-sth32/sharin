@@ -28,6 +28,20 @@ function makeTextStream(text: string) {
   });
 }
 
+function getFilterKeyword(messages: any[]): string | null {
+  if (!messages || !Array.isArray(messages)) return null;
+  const keywords = ["kashmir", "kerala", "meghalaya", "rajasthan", "spiti", "goa", "gokarna", "tirthan", "jibhi", "bali"];
+  for (let i = messages.length - 1; i >= 0; i--) {
+    const content = (messages[i].content || "").toLowerCase();
+    for (const kw of keywords) {
+      if (content.includes(kw)) {
+        return kw;
+      }
+    }
+  }
+  return null;
+}
+
 export async function POST(req: Request) {
   try {
     const body = await req.json();
@@ -64,12 +78,13 @@ export async function POST(req: Request) {
 
     // 3. Construct System Prompt based on user role (Admin vs Customer)
     // Note: The sandbox preview chat passes context.source = "sandbox_testing" to preview the customer chatbot persona
+    const filterKeyword = getFilterKeyword(messages);
     let systemPrompt = "";
     if (role === "admin" && context?.source !== "sandbox_testing") {
       const adminData = await getAdminDataShared();
       systemPrompt = getAdminSystemPrompt(context, adminData);
     } else {
-      systemPrompt = getCustomerSystemPrompt(aiSettings);
+      systemPrompt = getCustomerSystemPrompt(aiSettings, filterKeyword);
     }
 
     // 4. Map client message history to OpenAI/Nvidia compatible format
@@ -235,12 +250,13 @@ export async function POST(req: Request) {
 
 // Fallback Google Gemini Handler (streams token-by-token using SSE)
 async function handleGeminiResponse(messages: any[], role: string, context: any, geminiKey: string, aiSettings: any, conversationId: string) {
+  const filterKeyword = getFilterKeyword(messages);
   let systemPrompt = "";
   if (role === "admin" && context?.source !== "sandbox_testing") {
     const adminData = await getAdminDataShared();
     systemPrompt = getAdminSystemPrompt(context, adminData);
   } else {
-    systemPrompt = getCustomerSystemPrompt(aiSettings);
+    systemPrompt = getCustomerSystemPrompt(aiSettings, filterKeyword);
   }
 
   const formattedContents = messages.map((m: any) => {
@@ -254,7 +270,7 @@ async function handleGeminiResponse(messages: any[], role: string, context: any,
     };
   });
 
-  const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-3.5-flash:streamGenerateContent?alt=sse&key=${geminiKey}`;
+  const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-3.5-flash-lite:streamGenerateContent?alt=sse&key=${geminiKey}`;
   
   let apiResponse;
   const abortCtrl = new AbortController();
@@ -368,20 +384,35 @@ async function handleGeminiResponse(messages: any[], role: string, context: any,
 }
 
 // System Prompt for Public Customers
-function getCustomerSystemPrompt(aiSettings: any) {
+function getCustomerSystemPrompt(aiSettings: any, filterKeyword: string | null = null) {
   const { systemInstruction, customKnowledge, personaTone, includeTrips, includeDepartures, includeFaqs, includePolicies, qaPairs } = aiSettings || {};
 
   let tripsContext = "";
   if (includeTrips !== false) {
-    const activeTrips = getMergedTrips();
-    tripsContext = "\n\n--- ACTIVE TRIP PACKAGES ---\n" + activeTrips.map((t: any) => (
-      `- Trip: ${t.title}\n  Slug: ${t.slug}\n  Duration: ${t.durationDays} Days / ${t.durationNights} Nights\n  Price Starts: ₹${t.priceFrom}\n  Highlights: ${t.highlights?.join(", ") || ""}\n  Brief: ${t.shortDescription}\n  Safety Policy: ${t.itineraryChangePolicy || ""}`
-    )).join("\n\n");
+    let activeTrips = getMergedTrips();
+    if (filterKeyword) {
+      activeTrips = activeTrips.filter((t: any) =>
+        t.title.toLowerCase().includes(filterKeyword) ||
+        t.slug.toLowerCase().includes(filterKeyword)
+      );
+      tripsContext = "\n\n--- ACTIVE TRIP PACKAGES ---\n" + activeTrips.map((t: any) => (
+        `- Trip: ${t.title}\n  Slug: ${t.slug}\n  Duration: ${t.durationDays} Days / ${t.durationNights} Nights\n  Price Starts: ₹${t.priceFrom}\n  Highlights: ${t.highlights?.join(", ") || ""}\n  Brief: ${t.shortDescription}\n  Safety Policy: ${t.itineraryChangePolicy || ""}`
+      )).join("\n\n");
+    } else {
+      tripsContext = "\n\n--- AVAILABLE TRIP PACKAGES (OVERVIEW) ---\n" + activeTrips.map((t: any) => (
+        `- Trip: ${t.title} (${t.durationDays}D/${t.durationNights}N) | Price starts at ₹${t.priceFrom} | Slug: ${t.slug}\n  Brief: ${t.shortDescription}`
+      )).join("\n");
+    }
   }
 
   let departuresContext = "";
   if (includeDepartures !== false) {
-    const departures = getMergedDepartures();
+    let departures = getMergedDepartures();
+    if (filterKeyword) {
+      departures = departures.filter((d: any) =>
+        d.tripSlug.toLowerCase().includes(filterKeyword)
+      );
+    }
     departuresContext = "\n\n--- SCHEDULED DEPARTURES ---\n" + departures.map((d: any) => (
       `- Trip: ${d.tripSlug} (Start: ${d.startDate}, End: ${d.endDate}, Status: ${d.status}, Price: ₹${d.price || "N/A"})`
     )).join("\n");
@@ -389,7 +420,15 @@ function getCustomerSystemPrompt(aiSettings: any) {
 
   let faqsContext = "";
   if (includeFaqs !== false) {
-    const activeFaqs = getMergedFAQs();
+    let activeFaqs = getMergedFAQs();
+    if (filterKeyword) {
+      activeFaqs = activeFaqs.filter((f: any) =>
+        f.question.toLowerCase().includes(filterKeyword) ||
+        f.answer.toLowerCase().includes(filterKeyword)
+      );
+    } else {
+      activeFaqs = activeFaqs.slice(0, 5); // Limit default FAQs to save tokens
+    }
     faqsContext = "\n\n--- FREQUENTLY ASKED QUESTIONS & SAFETY INFO ---\n" + activeFaqs.map((f: any) => (
       `Q: ${f.question}\nA: ${f.answer}`
     )).join("\n\n");
@@ -417,7 +456,7 @@ TripNaari is India's leading travel brand focusing on safe solo and group travel
   }
 
   const basePrompt = systemInstruction || `${personaPrompt}
-
+ 
 YOUR INSTRUCTIONS:
 1. ONLY answer questions using the provided TripNaari information listed below.
 2. If a customer is asking to book a trip or wants a customized itinerary, encourage them to fill out our quick Enquiry/Booking Form. You can output "[SHOW_ENQUIRY_FORM]" at the end of your response to trigger the form interface inside the chat drawer.
@@ -427,7 +466,16 @@ YOUR INSTRUCTIONS:
   // Custom QA Pairs injection
   let qaContext = "";
   if (qaPairs && Array.isArray(qaPairs) && qaPairs.length > 0) {
-    qaContext = "\n\n--- STRUCTURED TRAINING DATA (Q&A) ---\n" + qaPairs.map((p: any) => (
+    let activeQa = qaPairs;
+    if (filterKeyword) {
+      activeQa = activeQa.filter((p: any) =>
+        p.question.toLowerCase().includes(filterKeyword) ||
+        p.answer.toLowerCase().includes(filterKeyword)
+      );
+    } else {
+      activeQa = activeQa.slice(0, 4); // Limit default QAs
+    }
+    qaContext = "\n\n--- STRUCTURED TRAINING DATA (Q&A) ---\n" + activeQa.map((p: any) => (
       `Q: ${p.question}\nA: ${p.answer}`
     )).join("\n\n");
   }
