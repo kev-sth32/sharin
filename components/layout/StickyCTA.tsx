@@ -72,7 +72,7 @@ export default function StickyCTA() {
           <div className="flex items-center gap-1.5 sm:gap-2 shrink-0">
             {/* WhatsApp Icon */}
             <a 
-              href="https://wa.me/919999999999" 
+              href="https://wa.me/919282794457" 
               target="_blank" 
               rel="noopener noreferrer"
               className="flex w-9 h-9 sm:w-10 sm:h-10 md:w-11 md:h-11 rounded-full bg-[#25D366] hover:bg-[#20ba5a] text-white items-center justify-center transition-all hover:scale-105 shrink-0"

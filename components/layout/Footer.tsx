@@ -11,13 +11,15 @@ export default function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-12 gap-10">
           <div className="md:col-span-4">
             <div className="mb-6">
-              <span className="font-display font-[800] text-[26px] tracking-tight text-[#FF4A7D]">
-                TripNaari
-              </span>
-              <p className="text-white/50 text-[13px] mt-1">Travel Fearless, We've Got Your Backpack</p>
+              <img 
+                src="/logo.png" 
+                alt="TripNaari Logo" 
+                className="h-12 md:h-14 w-auto object-contain" 
+              />
+              <p className="text-white/50 text-[13px] mt-2">Travel Fearless, We've Got Your Backpack</p>
             </div>
             <p className="text-[14px] leading-relaxed text-white/60 max-w-sm">
-              Women-oriented travel company & community for safe, handcrafted domestic & international trips. Over 3,000+ travelers, 33K+ Instagram community, Bangalore roots.
+              Women-oriented travel company & community for safe, handcrafted domestic & international trips. Over 6,000+ travelers, 33K+ Instagram community, Bangalore roots.
             </p>
             <div className="mt-6 flex items-center gap-3">
               <Link href="https://instagram.com/tripnaari" target="_blank" className="w-9 h-9 rounded-full bg-white/5 grid place-items-center hover:bg-[#FF4A7D] transition"><Instagram className="w-4 h-4" /></Link>

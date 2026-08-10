@@ -6,12 +6,12 @@ import { Button } from "@/components/ui/button";
 import { tripPackagesSeed } from "@/lib/data";
 import { submitEnquiry } from "@/lib/actions";
 
-function EnquiryFormInner({ source = "homepage", defaultDestination = "" }: { source?: string; defaultDestination?: string }) {
+function EnquiryFormInner({ source = "homepage", defaultDestination = "", defaultDate = "", defaultMessage = "" }: { source?: string; defaultDestination?: string; defaultDate?: string; defaultMessage?: string }) {
   const [status, setStatus] = useState<"idle"|"loading"|"success"|"error">("idle");
   const [errorMsg, setErrorMsg] = useState("");
 
   const searchParams = useSearchParams();
-  const [selectedDate, setSelectedDate] = useState<string | null>(null);
+  const [selectedDate, setSelectedDate] = useState<string | null>(defaultDate || null);
   const [travelMonth, setTravelMonth] = useState("");
   const [destination, setDestination] = useState(defaultDestination || "");
 
@@ -23,7 +23,7 @@ function EnquiryFormInner({ source = "homepage", defaultDestination = "" }: { so
   const [travelers, setTravelers] = useState("1");
   const [budget, setBudget] = useState("<10k");
   const [travelStyle, setTravelStyle] = useState("solo");
-  const [message, setMessage] = useState("");
+  const [message, setMessage] = useState(defaultMessage || "");
   const [consent, setConsent] = useState(false);
 
   const isStep1Valid = name.trim() !== "" && phone.length >= 10 && email.includes("@") && email.includes(".");
@@ -45,6 +45,30 @@ function EnquiryFormInner({ source = "homepage", defaultDestination = "" }: { so
       setDestination(defaultDestination);
     }
   }, [defaultDestination]);
+
+  // Update selectedDate state when defaultDate prop changes
+  useEffect(() => {
+    if (defaultDate) {
+      setSelectedDate(defaultDate);
+      try {
+        const dateObj = new Date(defaultDate);
+        if (!isNaN(dateObj.getTime())) {
+          const monthName = dateObj.toLocaleDateString("en-US", { month: 'short' });
+          const year = dateObj.getFullYear();
+          setTravelMonth(`${monthName} ${year}`);
+        }
+      } catch (e) {
+        console.error("Error parsing defaultDate:", e);
+      }
+    }
+  }, [defaultDate]);
+
+  // Update message state when defaultMessage prop changes
+  useEffect(() => {
+    if (defaultMessage) {
+      setMessage(defaultMessage);
+    }
+  }, [defaultMessage]);
 
   // Extract selected date from URL search parameters or the hash
   useEffect(() => {
@@ -248,13 +272,13 @@ function EnquiryFormInner({ source = "homepage", defaultDestination = "" }: { so
 
       {/* STEP 2: Trip Preferences */}
       <div className={step === 2 ? "grid grid-cols-1 gap-4 animate-in fade-in duration-200" : "hidden"}>
-        <Select
+        <Input
           name="destination"
           label="Dream destination"
           required
+          placeholder="e.g. Kashmir, Kerala, Ladakh"
           value={destination}
           onChange={(e) => setDestination(e.target.value)}
-          options={tripPackagesSeed.map(t=>({value:t.slug, label:t.title}))}
         />
         <Select
           name="travelMonth"
@@ -264,12 +288,12 @@ function EnquiryFormInner({ source = "homepage", defaultDestination = "" }: { so
           onChange={(e) => setTravelMonth(e.target.value)}
           options={monthsOptions}
         />
-        <Select 
+        <Input 
           name="travelers" 
-          label="Travelers" 
+          label="Number of travellers" 
+          placeholder="e.g. 1, 2, 4+"
           value={travelers}
           onChange={(e) => setTravelers(e.target.value)}
-          options={[{value:"1", label:"1 - solo"}, {value:"2", label:"2 - friends"}, {value:"3", label:"3"}, {value:"4", label:"4+"}]} 
         />
         <div className="flex gap-3 mt-2">
           <button 
@@ -353,7 +377,7 @@ function EnquiryFormInner({ source = "homepage", defaultDestination = "" }: { so
   );
 }
 
-export default function EnquiryForm(props: { source?: string; defaultDestination?: string }) {
+export default function EnquiryForm(props: { source?: string; defaultDestination?: string; defaultDate?: string; defaultMessage?: string }) {
   return (
     <Suspense fallback={
       <div className="p-8 text-center text-sm text-[#13253D]/60 bg-white rounded-[24px] border border-[#F1D9D0]">

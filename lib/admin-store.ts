@@ -288,6 +288,7 @@ export async function saveTrip(formData: FormData) {
   const exclusionsVal = formData.get("exclusions") as string;
   const itineraryVal = formData.get("itinerary") as string;
   const hotelsVal = formData.get("hotels") as string;
+  const cancellationSlabsVal = formData.get("cancellationSlabs") as string;
 
   const tripData: any = {
     slug,
@@ -304,6 +305,7 @@ export async function saveTrip(formData: FormData) {
     difficulty: formData.get("difficulty") as string,
     comfortLevel: formData.get("comfortLevel") as string,
     heroImage: formData.get("heroImage") as string,
+    gallery: formData.get("gallery") ? JSON.parse(formData.get("gallery") as string) : undefined,
     highlights: (formData.get("highlights") as string)?.split(",").map(s=>s.trim()).filter(Boolean) || [],
     isFeatured: formData.get("isFeatured")==="on",
     isPublished: formData.get("isPublished")!=="off" && formData.get("isPublished")!=="false",
@@ -313,6 +315,20 @@ export async function saveTrip(formData: FormData) {
     exclusions: exclusionsVal ? JSON.parse(exclusionsVal) : undefined,
     itinerary: itineraryVal ? JSON.parse(itineraryVal) : undefined,
     hotels: hotelsVal ? JSON.parse(hotelsVal) : undefined,
+    
+    // Custom editable details fields
+    packingDisclaimer: formData.get("packingDisclaimer") as string || undefined,
+    packingItems: formData.get("packingItems") ? (formData.get("packingItems") as string).split("\n").map(s=>s.trim()).filter(Boolean) : undefined,
+    momentsGallery: formData.get("momentsGallery") ? (() => {
+      const val = formData.get("momentsGallery") as string;
+      if (val.startsWith("[")) {
+        try { return JSON.parse(val); } catch { return []; }
+      }
+      return val.split("\n").map(s=>s.trim()).filter(Boolean);
+    })() : undefined,
+    cancellationSlabs: cancellationSlabsVal ? JSON.parse(cancellationSlabsVal) : undefined,
+    cancellationSpecialNotes: formData.get("cancellationSpecialNotes") as string || undefined,
+    
     ratingAvg: "4.9",
     ratingCount: 0,
   };
@@ -512,17 +528,63 @@ export async function saveDeparture(formData: FormData) {
 
 export async function getSettings() {
   const settings = readFile("settings.json", []);
+
+  const defaultReasons = [
+    { icon: "Shield", title: "Women trip leader 24x7, not just a driver", desc: "Verified, wilderness first responder trained, stays in same hotel, accountable via escalation card." },
+    { icon: "Map", title: "Hotel category revealed at booking, name 7 days before", desc: "We show you 2 sample properties and exact timeline. No bait-and-switch. If changed, upgrade at our cost." },
+    { icon: "Wallet", title: "Transparent inclusion & refund timelines", desc: "Every trip page lists inclusions, exclusions, cancellation slabs with refund processing days (7-10 days)." },
+    { icon: "Users", title: "Community, not just customers", desc: "Solo travelers, housewives, mothers, grandmothers travel together. Pre-trip icebreaker call." },
+    { icon: "Clock", title: "Itinerary change policy in writing", desc: "Weather, traffic, safety, low group size: alternatives or refund options shared 12 hours prior. Never abandoned." },
+    { icon: "Heart", title: "Food, safety needs actually heard", desc: "Jain, vegan, kid-friendly, medical needs collected in form and acted on. Not just a marketing checkbox." }
+  ];
+
+  const defaultMarquee = "🎉 Limited Offer: Get ₹2,000 Off on your first booking! Code: SISTERHOOD2000 • Group Discount: Book for 4 or more girls and get extra ₹1,500 off per person! • Book early and secure your slot with just ₹5,000 token amount!";
+
   if (!settings || Array.isArray(settings) || typeof settings !== "object") {
     return {
-      marqueeText: "🎉 Limited Offer: Get ₹2,000 Off on your first booking! Code: SISTERHOOD2000 • Group Discount: Book for 4 or more girls and get extra ₹1,500 off per person! • Book early and secure your slot with just ₹5,000 token amount!"
+      marqueeText: defaultMarquee,
+      whyChooseBadge: "Why 6000+ women choose TripNaari",
+      whyChooseTitle: "Safety is not a tagline.\nIt is accountability.",
+      whyChooseDesc: "Public reviews love our safety, some mention operational hiccups. So we fixed it: every touchpoint now has a written policy, escalation, and timeline.",
+      whyChooseReasons: defaultReasons
     };
   }
-  return settings;
+
+  return {
+    marqueeText: settings.marqueeText || defaultMarquee,
+    whyChooseBadge: settings.whyChooseBadge || "Why 6000+ women choose TripNaari",
+    whyChooseTitle: settings.whyChooseTitle || "Safety is not a tagline.\nIt is accountability.",
+    whyChooseDesc: settings.whyChooseDesc || "Public reviews love our safety, some mention operational hiccups. So we fixed it: every touchpoint now has a written policy, escalation, and timeline.",
+    whyChooseReasons: settings.whyChooseReasons || defaultReasons
+  };
 }
 
 export async function saveSettings(formData: FormData) {
-  const marqueeText = formData.get("marqueeText") as string;
-  writeFile("settings.json", { marqueeText });
+  const existing = await getSettings();
+
+  const marqueeText = formData.get("marqueeText") !== null ? (formData.get("marqueeText") as string) : existing.marqueeText;
+  const whyChooseBadge = formData.get("whyChooseBadge") !== null ? (formData.get("whyChooseBadge") as string) : existing.whyChooseBadge;
+  const whyChooseTitle = formData.get("whyChooseTitle") !== null ? (formData.get("whyChooseTitle") as string) : existing.whyChooseTitle;
+  const whyChooseDesc = formData.get("whyChooseDesc") !== null ? (formData.get("whyChooseDesc") as string) : existing.whyChooseDesc;
+  
+  let whyChooseReasons = existing.whyChooseReasons;
+  if (formData.get("card_title_0") !== null) {
+    whyChooseReasons = [];
+    for (let i = 0; i < 6; i++) {
+      const icon = formData.get(`card_icon_${i}`) as string;
+      const title = formData.get(`card_title_${i}`) as string;
+      const desc = formData.get(`card_desc_${i}`) as string;
+      whyChooseReasons.push({ icon, title, desc });
+    }
+  }
+
+  writeFile("settings.json", {
+    marqueeText,
+    whyChooseBadge,
+    whyChooseTitle,
+    whyChooseDesc,
+    whyChooseReasons
+  });
   return { success: true };
 }
 

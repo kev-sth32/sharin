@@ -92,7 +92,7 @@ export default function FAQSection({ faqs = faqsSeed }: { faqs?: FAQ[] }) {
                       setSelectedCategory(cat.id);
                       setOpen(null);
                     }}
-                    className={`flex items-center gap-2.5 px-4.5 py-3 rounded-2xl text-xs font-bold transition-all shrink-0 ${
+                    className={`flex items-center gap-2.5 px-5 py-3 rounded-2xl text-xs font-bold transition-all shrink-0 ${
                       isSelected
                         ? "bg-[#FF4A7D] text-white shadow-sm hover:bg-[#ff3b71]"
                         : "bg-white text-[#13253D] border border-[#F1D9D0] hover:bg-[#FFF0F4]/40 hover:border-[#FF4A7D]/30"

@@ -18,10 +18,12 @@ export const tripPackagesSeed = [
     isWomenOnly: true,
     isFeatured: true,
     isFamilyFriendly: true,
-    heroImage: "https://images.unsplash.com/photo-1595815771613-e38f95959446?w=1200&q=80",
+    heroImage: "https://images.unsplash.com/photo-1771761597326-a1a418653554?w=1200&q=80",
     gallery: [
-      "https://images.unsplash.com/photo-1595815771613-e38f95959446?w=1200&q=80",
-      "https://images.unsplash.com/photo-1526772661823-3f88f33771cd?w=1200&q=80",
+      "https://images.unsplash.com/photo-1750846338152-cc2e60bd6fdd?w=800&q=80",
+      "https://images.unsplash.com/photo-1771098524443-a8384b118ca5?w=800&q=80",
+      "https://images.unsplash.com/photo-1670684960824-64378aa634c6?w=800&q=80",
+      "https://images.unsplash.com/photo-1731083704547-024b82e8bfef?w=800&q=80"
     ],
     highlights: ["Tulip Garden VIP Entry", "1N Houseboat Stay", "Women Trip Leader 24x7", "Kahwa & Wazwan Experience"],
     ratingAvg: "4.9",
@@ -45,8 +47,13 @@ export const tripPackagesSeed = [
     comfortLevel: "premium",
     isWomenOnly: true,
     isFeatured: true,
-    heroImage: "https://images.unsplash.com/photo-1602216056096-3b40cc0c9944?w=1200&q=80",
-    gallery: [],
+    heroImage: "https://images.unsplash.com/photo-1742106855258-2d7dd403f84a?w=1200&q=80",
+    gallery: [
+      "https://images.unsplash.com/photo-1593693397690-362cb9666fc2?w=800&q=80",
+      "https://images.unsplash.com/photo-1742106854691-014b06968f74?w=800&q=80",
+      "https://images.unsplash.com/photo-1742106856193-5cc3424ac450?w=800&q=80",
+      "https://images.unsplash.com/photo-1742106854508-3b9172e52545?w=800&q=80"
+    ],
     highlights: ["Women-led Houseboat", "Ayurveda Session", "Tea Trail Trek", "Spice Market with Guide"],
     ratingAvg: "4.8",
     ratingCount: 189,
@@ -69,8 +76,13 @@ export const tripPackagesSeed = [
     comfortLevel: "comfort",
     isWomenOnly: true,
     isFeatured: true,
-    heroImage: "https://images.unsplash.com/photo-1533105079780-92b9be482077?w=1200&q=80",
-    gallery: [],
+    heroImage: "https://images.unsplash.com/photo-1505761671935-60b3a7427bad?w=1200&q=80",
+    gallery: [
+      "https://images.unsplash.com/photo-1544735716-392fe2489ffa?w=800&q=80",
+      "https://images.unsplash.com/photo-1506744038136-46273834b3fb?w=800&q=80",
+      "https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?w=800&q=80",
+      "https://images.unsplash.com/photo-1518495973542-4542c06a5843?w=800&q=80"
+    ],
     highlights: ["Dawki Crystal Boat", "Double Decker Trek with Local Women", "Homestay Experience"],
     ratingAvg: "4.9",
     ratingCount: 156,
@@ -94,7 +106,12 @@ export const tripPackagesSeed = [
     isWomenOnly: true,
     isFeatured: true,
     heroImage: "https://images.unsplash.com/photo-1477587458883-47145ed94245?w=1200&q=80",
-    gallery: [],
+    gallery: [
+      "https://images.unsplash.com/photo-1599661046289-e31897846e41?w=800&q=80",
+      "https://images.unsplash.com/photo-1504608524841-42fe6f032b4b?w=800&q=80",
+      "https://images.unsplash.com/photo-1590001155093-a3c66ab0c3ff?w=800&q=80",
+      "https://images.unsplash.com/photo-1524504388940-b1c1722653e1?w=800&q=80"
+    ],
     highlights: ["Women Artisan Workshop", "Private Desert Zone", "Folk Night"],
     ratingAvg: "4.8",
     ratingCount: 203,
@@ -118,7 +135,12 @@ export const tripPackagesSeed = [
     isWomenOnly: true,
     isFeatured: false,
     heroImage: "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=1200&q=80",
-    gallery: [],
+    gallery: [
+      "https://images.unsplash.com/photo-1501785888041-af3ef285b470?w=800&q=80",
+      "https://images.unsplash.com/photo-1595815771613-e38f95959446?w=800&q=80",
+      "https://images.unsplash.com/photo-1526772661823-3f88f33771cd?w=800&q=80",
+      "https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?w=800&q=80"
+    ],
     highlights: ["Comics Village", "Key Monastery Private Prayer", "Women-led Kitchen"],
     ratingAvg: "4.9",
     ratingCount: 98,
@@ -142,7 +164,12 @@ export const tripPackagesSeed = [
     isWomenOnly: true,
     isFeatured: true,
     heroImage: "https://images.unsplash.com/photo-1512343879784-a960bf40e7f2?w=1200&q=80",
-    gallery: [],
+    gallery: [
+      "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=800&q=80",
+      "https://images.unsplash.com/photo-1506929562872-bb421503ef21?w=800&q=80",
+      "https://images.unsplash.com/photo-1519046904884-53103b34b206?w=800&q=80",
+      "https://images.unsplash.com/photo-1473116763269-255415b9ff22?w=800&q=80"
+    ],
     highlights: ["Surf Lesson Women Instructor", "Beach Villa Women-Only Floor", "Brunch Trail"],
     ratingAvg: "4.7",
     ratingCount: 342,
@@ -166,7 +193,12 @@ export const tripPackagesSeed = [
     isWomenOnly: true,
     isFeatured: true,
     heroImage: "https://images.unsplash.com/photo-1501785888041-af3ef285b470?w=1200&q=80",
-    gallery: [],
+    gallery: [
+      "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=800&q=80",
+      "https://images.unsplash.com/photo-1595815771613-e38f95959446?w=800&q=80",
+      "https://images.unsplash.com/photo-1526772661823-3f88f33771cd?w=800&q=80",
+      "https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?w=800&q=80"
+    ],
     highlights: ["Waterfall Hike", "Homestay Auntie Cooking", "No City Stress"],
     ratingAvg: "4.8",
     ratingCount: 167,
@@ -190,8 +222,13 @@ export const tripPackagesSeed = [
     isWomenOnly: true,
     isFeatured: true,
     isFamilyFriendly: false,
-    heroImage: "https://images.unsplash.com/photo-1533105079780-92b9be482077?w=1200&q=80",
-    gallery: [],
+    heroImage: "https://images.unsplash.com/photo-1537996194471-e657df975ab4?w=1200&q=80",
+    gallery: [
+      "https://images.unsplash.com/photo-1537953773315-2213cd2709e2?w=800&q=80",
+      "https://images.unsplash.com/photo-1524504388940-b1c1722653e1?w=800&q=80",
+      "https://images.unsplash.com/photo-1519046904884-53103b34b206?w=800&q=80",
+      "https://images.unsplash.com/photo-1539367628448-4bc5c9d171c8?w=800&q=80"
+    ],
     highlights: ["Priestess Purification", "Co-work Villa", "Beach Club"],
     ratingAvg: "4.9",
     ratingCount: 88,

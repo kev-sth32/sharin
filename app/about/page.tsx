@@ -20,7 +20,7 @@ export default function AboutPage() {
             TripNaari was born when our founder saw her own mother postpone a Kashmir dream for 20 years because “who will go with you?”. What started as a simple Instagram page `@tripnaari` to share real journeys has grown into a vibrant family of over 33K+ women.
           </p>
           <p>
-            We've now guided over 3,000+ women on safe, empowering, and life-changing departures—from solo first-timers and busy professionals to housewives, mothers, daughters, and adventurous grandmothers.
+            We've now guided over 6,000+ women on safe, empowering, and life-changing departures—from solo first-timers and busy professionals to housewives, mothers, daughters, and adventurous grandmothers.
           </p>
           <p>
             We believe in complete transparency. Our itineraries share exact hotel category previews, inclusions, exclusions, written refund commitments, and a real, active escalation matrix so that you're always fully informed.
@@ -36,7 +36,7 @@ export default function AboutPage() {
         {/* Stats Grid */}
         <div className="mt-12 grid grid-cols-1 md:grid-cols-3 gap-6">
           <div className="rounded-3xl bg-white border border-[#F1D9D0] p-6 shadow-[0_10px_30px_-10px_rgba(19,37,61,0.06)]">
-            <div className="font-display font-[800] text-[24px] text-[#FF4A7D]">3000+</div>
+            <div className="font-display font-[800] text-[24px] text-[#FF4A7D]">6000+</div>
             <div className="text-[14px] font-bold text-[#13253D] mt-1">Women Travelled</div>
             <p className="text-[12px] text-[#3D4A5E] mt-2">Explored the Himalayas, South India, Deserts, and International escapes.</p>
           </div>

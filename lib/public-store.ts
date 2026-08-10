@@ -106,12 +106,35 @@ export function getMergedDepartures() {
 
 export function getSettings() {
   const settings = readFile("settings.json", []);
+
+  const defaultReasons = [
+    { icon: "Shield", title: "Women trip leader 24x7, not just a driver", desc: "Verified, wilderness first responder trained, stays in same hotel, accountable via escalation card." },
+    { icon: "Map", title: "Hotel category revealed at booking, name 7 days before", desc: "We show you 2 sample properties and exact timeline. No bait-and-switch. If changed, upgrade at our cost." },
+    { icon: "Wallet", title: "Transparent inclusion & refund timelines", desc: "Every trip page lists inclusions, exclusions, cancellation slabs with refund processing days (7-10 days)." },
+    { icon: "Users", title: "Community, not just customers", desc: "Solo travelers, housewives, mothers, grandmothers travel together. Pre-trip icebreaker call." },
+    { icon: "Clock", title: "Itinerary change policy in writing", desc: "Weather, traffic, safety, low group size: alternatives or refund options shared 12 hours prior. Never abandoned." },
+    { icon: "Heart", title: "Food, safety needs actually heard", desc: "Jain, vegan, kid-friendly, medical needs collected in form and acted on. Not just a marketing checkbox." }
+  ];
+
+  const defaultMarquee = "🎉 Limited Offer: Get ₹2,000 Off on your first booking! Code: SISTERHOOD2000 • Group Discount: Book for 4 or more girls and get extra ₹1,500 off per person! • Book early and secure your slot with just ₹5,000 token amount!";
+
   if (!settings || Array.isArray(settings) || typeof settings !== "object") {
     return {
-      marqueeText: "🎉 Limited Offer: Get ₹2,000 Off on your first booking! Code: SISTERHOOD2000 • Group Discount: Book for 4 or more girls and get extra ₹1,500 off per person! • Book early and secure your slot with just ₹5,000 token amount!"
+      marqueeText: defaultMarquee,
+      whyChooseBadge: "Why 6000+ women choose TripNaari",
+      whyChooseTitle: "Safety is not a tagline.\nIt is accountability.",
+      whyChooseDesc: "Public reviews love our safety, some mention operational hiccups. So we fixed it: every touchpoint now has a written policy, escalation, and timeline.",
+      whyChooseReasons: defaultReasons
     };
   }
-  return settings;
+
+  return {
+    marqueeText: settings.marqueeText || defaultMarquee,
+    whyChooseBadge: settings.whyChooseBadge || "Why 6000+ women choose TripNaari",
+    whyChooseTitle: settings.whyChooseTitle || "Safety is not a tagline.\nIt is accountability.",
+    whyChooseDesc: settings.whyChooseDesc || "Public reviews love our safety, some mention operational hiccups. So we fixed it: every touchpoint now has a written policy, escalation, and timeline.",
+    whyChooseReasons: settings.whyChooseReasons || defaultReasons
+  };
 }
 
 export function getHomepageGallery() {
@@ -165,10 +188,35 @@ export function getMergedPolicies() {
     const seed = [
       {
         slug: "cancellation-refund",
-        title: "Cancellation & Refund Policy - Transparent & Time-bound",
-        version: "2.1",
-        updated: "15 Jan 2026",
-        body: `## Our philosophy\nWe keep policies human. Life happens. We'd rather give you credit you can use with a sister than hold money.\n\n## Slabs\n- 30+ days before departure: 90% refund to source + 10% retained as processing\n- 15-29 days: 50% refund + 50% credit valid 12 months, transferable to another Naari\n- 7-14 days: 30% refund + 50% credit\n- Less than 7 days: No refund but 70% credit, transferable\n- Less than 48 hours / No-show: No refund, credit case-by-case for emergency with proof\n\n## Timeline\nRefund processed in 7-10 working days to original payment method. Credit issued instantly via code emailed+WhatsApp.\n\n## If TripNaari cancels\nIf we cancel due to safety, political unrest, weather, low group size below 6 — you get choice: move to next date with free upgrade, or 100% refund + 10% credit as apology.\n\n## Hotel change\nIf hotel name shared 7 days before changes after, upgrade at our cost OR 50% of one night refund if same category but different property.\n\n## How to request\nUse Refund form on contact page, or email refunds@tripnaari.com with booking ID. We acknowledge in 24 hours, resolve in 5 days.\n\n## Version history\nv2.1 updated Jan 2026 — credits transferable added after feedback from housewives community.`
+        title: "Booking & Cancellation Policy",
+        version: "2.2",
+        updated: "10 Aug 2026",
+        body: `Please carefully review our timeline-based cancellation schedule and refund distribution metrics detailed below before finalizing your slot registration.
+
+--------------------------------------------------------------------------------
+CANCELLATION TIMELINE WINDOW & REFUND TERMS
+--------------------------------------------------------------------------------
+
+1. 30 Days or more before departure date
+   * Refund: 100% Refund
+   * Terms: Full amount refunded back to source account. No hidden penalties.
+
+2. Between 15 to 30 Days before departure date
+   * Refund: 50% Refund
+   * Terms: Half package cost refunded or 80% dynamic rollover credit voucher provided.
+
+3. Between 7 to 14 Days before departure date
+   * Refund: 25% Refund
+   * Terms: Quarterly package cost returned. Operational logistics fees apply.
+
+4. Less than 7 Days before departure date
+   * Refund: No Refund (0%)
+   * Terms: Strictly non-refundable due to advance mountain vehicle and hotel bookings.
+
+--------------------------------------------------------------------------------
+SPECIAL POLICY NOTES
+--------------------------------------------------------------------------------
+Permit application processing tokens, special high altitude entry clearances, and customized border transit passes are fully non-refundable once initiated by state regulators. In instances of unexpected road blockages, landslides, natural emergencies, or severe snowfall restrictions, preventing entry past critical checkpoints, alternate valley exploration circuits will be systematically organized by TripNaari coordinators; direct payment cash disbursements cannot be processed under state-leased environmental restrictions.`
       },
       {
         slug: "safety-promise",

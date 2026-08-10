@@ -1,7 +1,7 @@
 "use client";
 import { useState, useTransition } from "react";
 import ImageUpload from "./ImageUpload";
-import { Loader2, Plus, Trash2, Calendar, Hotel as HotelIcon, CheckCircle, XCircle } from "lucide-react";
+import { Loader2, Plus, Trash2, Calendar, Hotel as HotelIcon, CheckCircle, XCircle, Upload } from "lucide-react";
 
 export default function TripEditForm({ initial, action }: { initial?: any; action: (fd: FormData)=>Promise<any> }) {
   const [heroImage, setHeroImage] = useState(initial?.heroImage || "");
@@ -39,6 +39,128 @@ export default function TripEditForm({ initial, action }: { initial?: any; actio
   const [exclusionsText, setExclusionsText] = useState(
     initial?.exclusions ? initial.exclusions.join("\n") : ""
   );
+
+  const [packingDisclaimer, setPackingDisclaimer] = useState(initial?.packingDisclaimer || "");
+  const [packingItemsText, setPackingItemsText] = useState(
+    initial?.packingItems ? initial.packingItems.join("\n") : ""
+  );
+  const [momentsGallery, setMomentsGallery] = useState<string[]>(
+    initial?.momentsGallery && Array.isArray(initial.momentsGallery)
+      ? initial.momentsGallery
+      : []
+  );
+  const [uploadingIndex, setUploadingIndex] = useState<number | null>(null);
+
+  const [gallery, setGallery] = useState<string[]>(
+    initial?.gallery && Array.isArray(initial.gallery)
+      ? initial.gallery
+      : []
+  );
+  const [uploadingGalleryIdx, setUploadingGalleryIdx] = useState<number | null>(null);
+
+  const updateGalleryUrl = (index: number, url: string) => {
+    const updated = [...gallery];
+    while (updated.length <= index) {
+      updated.push("");
+    }
+    updated[index] = url;
+    setGallery(updated);
+  };
+
+  const removeGalleryImage = (index: number) => {
+    const updated = [...gallery];
+    updated[index] = "";
+    setGallery(updated);
+  };
+
+  const handleGalleryUpload = async (index: number, e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    setUploadingGalleryIdx(index);
+    const formData = new FormData();
+    formData.append("file", file);
+
+    try {
+      const res = await fetch("/api/admin/upload", { method: "POST", body: formData });
+      const data = await res.json();
+      if (data.success) {
+        updateGalleryUrl(index, data.url);
+      } else {
+        alert("Upload failed: " + data.error);
+      }
+    } catch (err) {
+      alert("Error uploading image");
+    } finally {
+      setUploadingGalleryIdx(null);
+    }
+  };
+
+  const updateMomentUrl = (index: number, url: string) => {
+    const updated = [...momentsGallery];
+    while (updated.length <= index) {
+      updated.push("");
+    }
+    updated[index] = url;
+    setMomentsGallery(updated);
+  };
+
+  const removeMoment = (index: number) => {
+    const updated = [...momentsGallery];
+    updated[index] = "";
+    setMomentsGallery(updated);
+  };
+
+  const handleMomentUpload = async (index: number, e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    setUploadingIndex(index);
+    const formData = new FormData();
+    formData.append("file", file);
+
+    try {
+      const res = await fetch("/api/admin/upload", { method: "POST", body: formData });
+      const data = await res.json();
+      if (data.success) {
+        updateMomentUrl(index, data.url);
+      } else {
+        alert("Upload failed: " + data.error);
+      }
+    } catch (err) {
+      alert("Error uploading image");
+    } finally {
+      setUploadingIndex(null);
+    }
+  };
+
+  const [cancellationSpecialNotes, setCancellationSpecialNotes] = useState(initial?.cancellationSpecialNotes || "");
+  const [cancellationSlabs, setCancellationSlabs] = useState<any[]>(
+    initial?.cancellationSlabs || [
+      { window: "30 Days or more before departure date", refund: "100% Refund", terms: "Full amount refunded back to source account. No hidden penalties." },
+      { window: "Between 15 to 30 Days before departure date", refund: "50% Refund", terms: "Half package cost refunded or 80% dynamic rollover credit voucher provided." },
+      { window: "Between 7 to 14 Days before departure date", refund: "25% Refund", terms: "Quarterly package cost returned. Operational logistics fees apply." },
+      { window: "Less than 7 Days before departure date", refund: "No Refund (0%)", terms: "Strictly non-refundable due to advance mountain vehicle and hotel bookings." }
+    ]
+  );
+
+  const updateCancellationSlab = (index: number, key: string, value: string) => {
+    const updated = [...cancellationSlabs];
+    updated[index] = { ...updated[index], [key]: value };
+    setCancellationSlabs(updated);
+  };
+
+  const addCancellationSlab = () => {
+    setCancellationSlabs([
+      ...cancellationSlabs,
+      { window: "", refund: "", terms: "" }
+    ]);
+  };
+
+  const removeCancellationSlab = (index: number) => {
+    if (cancellationSlabs.length <= 1) return;
+    setCancellationSlabs(cancellationSlabs.filter((_, i) => i !== index));
+  };
 
   const getInitialItinerary = () => {
     if (initial?.itinerary && initial.itinerary.length > 0) {
@@ -131,6 +253,9 @@ export default function TripEditForm({ initial, action }: { initial?: any; actio
     formData.set("exclusions", JSON.stringify(exclusionsArr));
     formData.set("itinerary", JSON.stringify(itinerary));
     formData.set("hotels", JSON.stringify(hotels));
+    formData.set("cancellationSlabs", JSON.stringify(cancellationSlabs));
+    formData.set("momentsGallery", JSON.stringify(momentsGallery.filter(Boolean)));
+    formData.set("gallery", JSON.stringify(gallery.filter(Boolean)));
     
     startTransition(async () => {
       try {
@@ -186,6 +311,74 @@ export default function TripEditForm({ initial, action }: { initial?: any; actio
             <input name="heroImage" value={heroImage} onChange={e=>setHeroImage(e.target.value)} placeholder="https://... or /uploads/..." className="w-full mt-1 rounded-xl border px-3 py-2 text-sm" />
             {heroImage && <img src={heroImage} alt="hero" className="mt-2 w-full h-48 object-cover rounded-xl" />}
             <div className="mt-2"><ImageUpload label="Upload Hero Photo" onUploaded={setHeroImage} /></div>
+          </div>
+
+          {/* Destination Gallery Photos */}
+          <div className="md:col-span-2 rounded-2xl border border-[#F1D9D0] bg-[#FFF8F0]/30 p-5 space-y-4">
+            <div className="flex items-center justify-between">
+              <h3 className="font-display font-bold text-sm text-[#13253D]">🖼️ Destination Gallery Photos (Grid Gallery - Max 5)</h3>
+              <span className="text-[10px] text-[#3D4A5E]/60 font-semibold">Upload or paste URLs for up to 5 additional gallery images</span>
+            </div>
+            
+            <div className="grid grid-cols-2 sm:grid-cols-5 gap-3">
+              {[0, 1, 2, 3, 4].map((idx) => {
+                const url = gallery[idx] || "";
+                return (
+                  <div key={idx} className="relative rounded-xl border border-[#F1D9D0] bg-white p-2.5 space-y-2 flex flex-col justify-between shadow-sm min-h-[120px]">
+                    <div className="flex items-center justify-between">
+                      <span className="text-[9px] font-bold text-[#13253D]/40">IMAGE #{idx + 1}</span>
+                      {url && (
+                        <button 
+                          type="button" 
+                          onClick={() => removeGalleryImage(idx)} 
+                          className="text-[#800F2D] hover:text-red-700 transition-colors p-0.5"
+                          title="Remove Photo"
+                        >
+                          <Trash2 className="w-3.5 h-3.5" />
+                        </button>
+                      )}
+                    </div>
+
+                    {url ? (
+                      <div className="space-y-1.5">
+                        <img src={url} alt={`Gallery ${idx + 1}`} className="w-full h-12 object-cover rounded-lg border" />
+                        <input 
+                          type="text" 
+                          value={url} 
+                          onChange={e => updateGalleryUrl(idx, e.target.value)} 
+                          placeholder="Image URL" 
+                          className="w-full text-[9px] px-1.5 py-0.5 rounded border"
+                        />
+                      </div>
+                    ) : (
+                      <div className="flex flex-col items-center justify-center py-2.5 border border-dashed border-[#F1D9D0] rounded-lg bg-[#FFF8F0]/40 flex-1">
+                        {uploadingGalleryIdx === idx ? (
+                          <div className="text-[9px] text-[#FF4A7D] animate-pulse">Uploading...</div>
+                        ) : (
+                          <label className="cursor-pointer flex flex-col items-center justify-center space-y-0.5">
+                            <Upload className="w-3.5 h-3.5 text-[#FF4A7D]" />
+                            <span className="text-[8px] font-bold text-[#FF4A7D]">Upload</span>
+                            <input 
+                              type="file" 
+                              accept="image/*" 
+                              onChange={e => handleGalleryUpload(idx, e)} 
+                              className="hidden" 
+                            />
+                          </label>
+                        )}
+                        <span className="text-[7px] text-[#3D4A5E]/40 my-0.5">or</span>
+                        <input 
+                          type="text" 
+                          placeholder="URL..." 
+                          onChange={e => updateGalleryUrl(idx, e.target.value)} 
+                          className="w-11/12 text-[8px] px-1 py-0.5 rounded border text-center"
+                        />
+                      </div>
+                    )}
+                  </div>
+                );
+              })}
+            </div>
           </div>
 
           <div className="md:col-span-2">
@@ -421,6 +614,180 @@ export default function TripEditForm({ initial, action }: { initial?: any; actio
               </div>
             </div>
           ))}
+        </div>
+      </div>
+
+      {/* 5. Additional Dynamic Details */}
+      <div className="space-y-6">
+        <h2 className="font-display font-bold text-xl text-[#13253D] border-b border-[#F1D9D0]/50 pb-2">5. Additional Details (Packing, Moments, Cancellation)</h2>
+        
+        <div className="grid md:grid-cols-2 gap-6">
+          {/* Packing section */}
+          <div className="rounded-2xl border border-[#F1D9D0] bg-[#FFF8F0]/30 p-5 space-y-4">
+            <h3 className="font-display font-bold text-[#13253D]">🎒 Packing Checklist</h3>
+            <div>
+              <label className="text-[10px] font-bold uppercase text-[#3D4A5E]">Packing Disclaimer/Info</label>
+              <input 
+                type="text" 
+                name="packingDisclaimer"
+                value={packingDisclaimer}
+                onChange={e => setPackingDisclaimer(e.target.value)}
+                placeholder="e.g. Weather conditions in mountainous regions can drop rapidly..."
+                className="w-full mt-1 rounded-xl border px-3 py-2 text-sm bg-white"
+              />
+            </div>
+            <div>
+              <label className="text-[10px] font-bold uppercase text-[#3D4A5E]">Packing Items (One per line)</label>
+              <textarea 
+                name="packingItems"
+                rows={5}
+                value={packingItemsText}
+                onChange={e => setPackingItemsText(e.target.value)}
+                placeholder="Heavy thermal innerwear&#10;Insulated winter jacket&#10;Sturdy trekking shoes"
+                className="w-full mt-1 rounded-xl border px-3 py-2 text-sm bg-white"
+              />
+            </div>
+          </div>
+
+          {/* Moments Gallery section */}
+          <div className="rounded-2xl border border-[#F1D9D0] bg-[#FFF8F0]/30 p-5 space-y-4">
+            <h3 className="font-display font-bold text-[#13253D]">📸 Moments Gallery (Previous Trips)</h3>
+            <p className="text-[10px] text-[#3D4A5E]/70">Upload or paste URLs for up to 4 moments photos of previous trips.</p>
+            
+            <div className="grid grid-cols-2 gap-4">
+              {[0, 1, 2, 3].map((idx) => {
+                const url = momentsGallery[idx] || "";
+                return (
+                  <div key={idx} className="relative rounded-xl border border-[#F1D9D0] bg-white p-3 space-y-2 flex flex-col justify-between shadow-sm min-h-[140px]">
+                    <div className="flex items-center justify-between">
+                      <span className="text-[10px] font-bold text-[#13253D]/50 uppercase">Moment #{idx + 1}</span>
+                      {url && (
+                        <button 
+                          type="button" 
+                          onClick={() => removeMoment(idx)} 
+                          className="text-[#800F2D] hover:text-red-700 transition-colors p-1"
+                          title="Remove Photo"
+                        >
+                          <Trash2 className="w-3.5 h-3.5" />
+                        </button>
+                      )}
+                    </div>
+
+                    {url ? (
+                      <div className="space-y-2">
+                        <img src={url} alt={`Moment ${idx + 1}`} className="w-full h-16 object-cover rounded-lg border" />
+                        <input 
+                          type="text" 
+                          value={url} 
+                          onChange={e => updateMomentUrl(idx, e.target.value)} 
+                          placeholder="Image URL" 
+                          className="w-full text-[10px] px-2 py-1 rounded border"
+                        />
+                      </div>
+                    ) : (
+                      <div className="flex flex-col items-center justify-center py-4 border border-dashed border-[#F1D9D0] rounded-lg bg-[#FFF8F0]/40">
+                        {uploadingIndex === idx ? (
+                          <div className="text-[10px] text-[#FF4A7D] animate-pulse">Uploading...</div>
+                        ) : (
+                          <label className="cursor-pointer flex flex-col items-center justify-center space-y-1">
+                            <Upload className="w-4 h-4 text-[#FF4A7D]" />
+                            <span className="text-[9px] font-bold text-[#FF4A7D]">Upload Photo</span>
+                            <input 
+                              type="file" 
+                              accept="image/*" 
+                              onChange={e => handleMomentUpload(idx, e)} 
+                              className="hidden" 
+                            />
+                          </label>
+                        )}
+                        <span className="text-[8px] text-[#3D4A5E]/40 my-1">or</span>
+                        <input 
+                          type="text" 
+                          placeholder="Paste image URL..." 
+                          onChange={e => updateMomentUrl(idx, e.target.value)} 
+                          className="w-11/12 text-[9px] px-1.5 py-0.5 rounded border text-center"
+                        />
+                      </div>
+                    )}
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        </div>
+
+        {/* Cancellation slabs */}
+        <div className="rounded-2xl border border-[#F1D9D0] bg-[#FFF8F0]/30 p-5 space-y-4">
+          <div className="flex justify-between items-center">
+            <h3 className="font-display font-bold text-[#13253D]">📋 Timeline Cancellation Slabs</h3>
+            <button 
+              type="button" 
+              onClick={addCancellationSlab}
+              className="flex items-center gap-1 text-[11px] font-bold bg-[#FF4A7D]/10 hover:bg-[#FF4A7D]/25 text-[#FF4A7D] rounded-full px-2.5 py-1 transition-colors"
+            >
+              <Plus className="w-3 h-3" /> Add Slab
+            </button>
+          </div>
+
+          <div className="space-y-3">
+            {cancellationSlabs.map((slab, index) => (
+              <div key={index} className="grid grid-cols-1 md:grid-cols-12 gap-3 items-start border-b border-[#F1D9D0]/30 pb-3">
+                <div className="md:col-span-3">
+                  <label className="text-[9px] font-bold uppercase text-[#3D4A5E]">Timeline Window</label>
+                  <input 
+                    type="text" 
+                    value={slab.window}
+                    onChange={e => updateCancellationSlab(index, "window", e.target.value)}
+                    placeholder="e.g. 30 Days or more before departure"
+                    className="w-full mt-0.5 rounded-lg border px-2.5 py-1.5 text-xs bg-white"
+                  />
+                </div>
+                <div className="md:col-span-2">
+                  <label className="text-[9px] font-bold uppercase text-[#3D4A5E]">Refund %</label>
+                  <input 
+                    type="text" 
+                    value={slab.refund}
+                    onChange={e => updateCancellationSlab(index, "refund", e.target.value)}
+                    placeholder="e.g. 100% Refund"
+                    className="w-full mt-0.5 rounded-lg border px-2.5 py-1.5 text-xs bg-white text-center"
+                  />
+                </div>
+                <div className="md:col-span-6">
+                  <label className="text-[9px] font-bold uppercase text-[#3D4A5E]">Applicable terms / Notes</label>
+                  <input 
+                    type="text" 
+                    value={slab.terms}
+                    onChange={e => updateCancellationSlab(index, "terms", e.target.value)}
+                    placeholder="e.g. Full amount refunded back to source..."
+                    className="w-full mt-0.5 rounded-lg border px-2.5 py-1.5 text-xs bg-white"
+                  />
+                </div>
+                <div className="md:col-span-1 pt-4 text-right">
+                  {cancellationSlabs.length > 1 && (
+                    <button 
+                      type="button" 
+                      onClick={() => removeCancellationSlab(index)}
+                      className="text-[#800F2D] hover:text-red-700 p-1"
+                    >
+                      <Trash2 className="w-3.5 h-3.5 mx-auto" />
+                    </button>
+                  )}
+                </div>
+              </div>
+            ))}
+          </div>
+
+          <div className="pt-2">
+            <label className="text-[10px] font-bold uppercase text-[#3D4A5E]">Special Policy Notes / Warnings</label>
+            <textarea 
+              name="cancellationSpecialNotes"
+              rows={3}
+              value={cancellationSpecialNotes}
+              onChange={e => setCancellationSpecialNotes(e.target.value)}
+              placeholder="Permit application processing tokens and high-altitude clearances are non-refundable once initiated..."
+              className="w-full mt-1 rounded-xl border px-3 py-2 text-sm bg-white"
+            />
+          </div>
         </div>
       </div>
 

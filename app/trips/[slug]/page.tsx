@@ -4,8 +4,92 @@ import { formatINR, locationMap } from "@/lib/utils";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import EnquiryForm from "@/components/forms/EnquiryForm";
+import BookingWidget from "@/components/trip/BookingWidget";
 import Link from "next/link";
-import { Clock, Users, MapPin, ShieldCheck, Check, X, AlertTriangle, Hotel, Utensils, Bus, Star } from "lucide-react";
+import { Clock, Users, MapPin, ShieldCheck, Check, X, AlertTriangle, Hotel, Utensils, Bus, Star, Briefcase, Camera, FileText, Tag } from "lucide-react";
+import SafeImage from "@/components/trip/SafeImage";
+
+const getGalleryImages = (trip: any) => {
+  const dest = (trip.destinationSlug || "").toLowerCase();
+  
+  // Custom gallery if provided
+  const customGallery = trip.gallery && trip.gallery.length > 0 ? trip.gallery : [];
+  
+  // Combine hero image and gallery, filter duplicates
+  let images = Array.from(new Set([trip.heroImage, ...customGallery].filter(Boolean)));
+  
+  // Fallbacks for each destination to reach at least 5 images
+  const fallbacks: Record<string, string[]> = {
+    kashmir: [
+      "https://images.unsplash.com/photo-1750846338152-cc2e60bd6fdd?w=800&q=80",
+      "https://images.unsplash.com/photo-1771098524443-a8384b118ca5?w=800&q=80",
+      "https://images.unsplash.com/photo-1771761597326-a1a418653554?w=800&q=80",
+      "https://images.unsplash.com/photo-1670684960824-64378aa634c6?w=800&q=80",
+      "https://images.unsplash.com/photo-1731083704547-024b82e8bfef?w=800&q=80"
+    ],
+    kerala: [
+      "https://images.unsplash.com/photo-1742106855258-2d7dd403f84a?w=800&q=80",
+      "https://images.unsplash.com/photo-1593693397690-362cb9666fc2?w=800&q=80",
+      "https://images.unsplash.com/photo-1742106854691-014b06968f74?w=800&q=80",
+      "https://images.unsplash.com/photo-1742106856193-5cc3424ac450?w=800&q=80",
+      "https://images.unsplash.com/photo-1742106854508-3b9172e52545?w=800&q=80"
+    ],
+    goa: [
+      "https://images.unsplash.com/photo-1512343879784-a960bf40e7f2?w=800&q=80",
+      "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=800&q=80",
+      "https://images.unsplash.com/photo-1506929562872-bb421503ef21?w=800&q=80",
+      "https://images.unsplash.com/photo-1519046904884-53103b34b206?w=800&q=80",
+      "https://images.unsplash.com/photo-1473116763269-255415b9ff22?w=800&q=80"
+    ],
+    himachal: [
+      "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=800&q=80",
+      "https://images.unsplash.com/photo-1501785888041-af3ef285b470?w=800&q=80",
+      "https://images.unsplash.com/photo-1595815771613-e38f95959446?w=800&q=80",
+      "https://images.unsplash.com/photo-1526772661823-3f88f33771cd?w=800&q=80",
+      "https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?w=800&q=80"
+    ],
+    meghalaya: [
+      "https://images.unsplash.com/photo-1505761671935-60b3a7427bad?w=800&q=80",
+      "https://images.unsplash.com/photo-1544735716-392fe2489ffa?w=800&q=80",
+      "https://images.unsplash.com/photo-1506744038136-46273834b3fb?w=800&q=80",
+      "https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?w=800&q=80",
+      "https://images.unsplash.com/photo-1518495973542-4542c06a5843?w=800&q=80"
+    ],
+    rajasthan: [
+      "https://images.unsplash.com/photo-1477587458883-47145ed94245?w=800&q=80",
+      "https://images.unsplash.com/photo-1599661046289-e31897846e41?w=800&q=80",
+      "https://images.unsplash.com/photo-1504608524841-42fe6f032b4b?w=800&q=80",
+      "https://images.unsplash.com/photo-1590001155093-a3c66ab0c3ff?w=800&q=80",
+      "https://images.unsplash.com/photo-1524504388940-b1c1722653e1?w=800&q=80"
+    ],
+    international: [
+      "https://images.unsplash.com/photo-1537996194471-e657df975ab4?w=800&q=80",
+      "https://images.unsplash.com/photo-1537953773315-2213cd2709e2?w=800&q=80",
+      "https://images.unsplash.com/photo-1524504388940-b1c1722653e1?w=800&q=80",
+      "https://images.unsplash.com/photo-1519046904884-53103b34b206?w=800&q=80",
+      "https://images.unsplash.com/photo-1539367628448-4bc5c9d171c8?w=800&q=80"
+    ],
+    bali: [
+      "https://images.unsplash.com/photo-1537996194471-e657df975ab4?w=800&q=80",
+      "https://images.unsplash.com/photo-1537953773315-2213cd2709e2?w=800&q=80",
+      "https://images.unsplash.com/photo-1524504388940-b1c1722653e1?w=800&q=80",
+      "https://images.unsplash.com/photo-1519046904884-53103b34b206?w=800&q=80",
+      "https://images.unsplash.com/photo-1539367628448-4bc5c9d171c8?w=800&q=80"
+    ]
+  };
+
+  const matchedKey = Object.keys(fallbacks).find((k) => dest.includes(k)) || "kashmir";
+  const list = fallbacks[matchedKey];
+  
+  // Fill up with fallbacks up to 5 unique images
+  for (let i = 0; i < list.length && images.length < 5; i++) {
+    if (!images.includes(list[i])) {
+      images.push(list[i]);
+    }
+  }
+  
+  return images.slice(0, 5);
+};
 
 const getInclusionIcon = (text: string) => {
   const t = text.toLowerCase();
@@ -14,6 +98,119 @@ const getInclusionIcon = (text: string) => {
   if (t.includes("transport") || t.includes("vehicle") || t.includes("bus") || t.includes("tempo") || t.includes("car") || t.includes("cab") || t.includes("flight") || t.includes("train")) return Bus;
   if (t.includes("leader") || t.includes("guide") || t.includes("first aid") || t.includes("safety") || t.includes("audited") || t.includes("support")) return ShieldCheck;
   return MapPin;
+};
+
+const getPackingList = (destinationSlug: string) => {
+  const dest = (destinationSlug || "").toLowerCase();
+  if (dest.includes("kashmir") || dest.includes("himachal") || dest.includes("spiti") || dest.includes("ladakh") || dest.includes("meghalaya") || dest.includes("arunachal")) {
+    return {
+      disclaimer: "Weather conditions in mountainous regions can drop rapidly. Packing in effective layers is highly recommended:",
+      items: [
+        "Heavy thermal innerwear (2-3 premium pairs)",
+        "Insulated winter jacket / Heavy puffer down coat",
+        "Comfortable fleece jackets or thick wool cardigans",
+        "Sturdy sports/trekking shoes with solid rubber grips",
+        "Woolen beanies, thick gloves, and infinity scarves",
+        "High SPF protection sunscreen and moisturizing balms",
+        "Personal reusable flask bottle for hot water mix",
+        "Photocopies of Govt ID Proofs + Passport Photos",
+      ]
+    };
+  }
+  if (dest.includes("goa") || dest.includes("kerala") || dest.includes("bali") || dest.includes("international")) {
+    return {
+      disclaimer: "Tropical and coastal climates require breathable clothing and sun protection. Packing checklist:",
+      items: [
+        "Light, breathable cotton or linen clothing",
+        "Swimwear / sarong / beach cover-ups",
+        "Comfortable walking sandals and light sneakers",
+        "Wide-brimmed sun hat or cap",
+        "High-quality UV sunglasses",
+        "High SPF sunscreen and moisturizing aloe gel",
+        "Insect repellent cream or spray",
+        "Reusable water bottle & dry bag for island trips",
+      ]
+    };
+  }
+  return {
+    disclaimer: "Standard packing items for comfortable group travel:",
+    items: [
+      "Comfortable walking shoes & casual sandals",
+      "Light jackets or shrugs for air-conditioned travel/breeze",
+      "Personal medications & basic first-aid items",
+      "Sunscreen, sunglasses, and cap",
+      "Reusable water bottle",
+      "Sanitizer & wet wipes",
+      "Mobile power bank & chargers",
+      "Photocopies of Govt ID Proofs",
+    ]
+  };
+};
+
+const getMoments = (destinationSlug: string, gallery?: string[]) => {
+  const dest = (destinationSlug || "").toLowerCase();
+  
+  // Clean custom gallery
+  const customGallery = (gallery || []).filter(Boolean);
+  if (customGallery.length >= 4) {
+    return customGallery.slice(0, 4);
+  }
+
+  const fallbackImages: Record<string, string[]> = {
+    kashmir: [
+      "https://images.unsplash.com/photo-1750846338152-cc2e60bd6fdd?w=600&q=80",
+      "https://images.unsplash.com/photo-1771098524443-a8384b118ca5?w=600&q=80",
+      "https://images.unsplash.com/photo-1670684960824-64378aa634c6?w=600&q=80",
+      "https://images.unsplash.com/photo-1731083704547-024b82e8bfef?w=600&q=80",
+    ],
+    kerala: [
+      "https://images.unsplash.com/photo-1742106855258-2d7dd403f84a?w=600&q=80",
+      "https://images.unsplash.com/photo-1593693397690-362cb9666fc2?w=600&q=80",
+      "https://images.unsplash.com/photo-1742106854691-014b06968f74?w=600&q=80",
+      "https://images.unsplash.com/photo-1742106856193-5cc3424ac450?w=600&q=80",
+    ],
+    goa: [
+      "https://images.unsplash.com/photo-1512343879784-a960bf40e7f2?w=600&q=80",
+      "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=600&q=80",
+      "https://images.unsplash.com/photo-1506929562872-bb421503ef21?w=600&q=80",
+      "https://images.unsplash.com/photo-1519046904884-53103b34b206?w=600&q=80",
+    ],
+    himachal: [
+      "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=600&q=80",
+      "https://images.unsplash.com/photo-1501785888041-af3ef285b470?w=600&q=80",
+      "https://images.unsplash.com/photo-1595815771613-e38f95959446?w=600&q=80",
+      "https://images.unsplash.com/photo-1526772661823-3f88f33771cd?w=600&q=80",
+    ],
+    meghalaya: [
+      "https://images.unsplash.com/photo-1505761671935-60b3a7427bad?w=600&q=80",
+      "https://images.unsplash.com/photo-1544735716-392fe2489ffa?w=600&q=80",
+      "https://images.unsplash.com/photo-1506744038136-46273834b3fb?w=600&q=80",
+      "https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?w=600&q=80",
+    ],
+    rajasthan: [
+      "https://images.unsplash.com/photo-1477587458883-47145ed94245?w=600&q=80",
+      "https://images.unsplash.com/photo-1599661046289-e31897846e41?w=600&q=80",
+      "https://images.unsplash.com/photo-1504608524841-42fe6f032b4b?w=600&q=80",
+      "https://images.unsplash.com/photo-1590001155093-a3c66ab0c3ff?w=600&q=80",
+    ],
+    international: [
+      "https://images.unsplash.com/photo-1537996194471-e657df975ab4?w=600&q=80",
+      "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=600&q=80",
+      "https://images.unsplash.com/photo-1537953773315-2213cd2709e2?w=600&q=80",
+      "https://images.unsplash.com/photo-1524504388940-b1c1722653e1?w=600&q=80",
+    ],
+    bali: [
+      "https://images.unsplash.com/photo-1537996194471-e657df975ab4?w=600&q=80",
+      "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=600&q=80",
+      "https://images.unsplash.com/photo-1537953773315-2213cd2709e2?w=600&q=80",
+      "https://images.unsplash.com/photo-1524504388940-b1c1722653e1?w=600&q=80",
+    ],
+  };
+
+  const matchedKey = Object.keys(fallbackImages).find((k) => dest.includes(k)) || "kashmir";
+  const list = fallbackImages[matchedKey];
+  const merged = Array.from(new Set([...customGallery, ...list]));
+  return merged.slice(0, 4);
 };
 
 export async function generateStaticParams() {
@@ -77,41 +274,90 @@ export default async function TripDetail({ params }: { params: Promise<{ slug: s
 
   const hotels = trip.hotels && trip.hotels.length > 0 ? trip.hotels : defaultHotels;
 
+  const packingInfo = {
+    disclaimer: trip.packingDisclaimer || getPackingList(trip.destinationSlug || "").disclaimer,
+    items: trip.packingItems && trip.packingItems.length > 0 ? trip.packingItems : getPackingList(trip.destinationSlug || "").items,
+  };
+
+  const momentsList = trip.momentsGallery && trip.momentsGallery.length > 0 ? trip.momentsGallery : getMoments(trip.destinationSlug || "", trip.gallery);
+
+  const defaultSlabs = [
+    { window: "30 Days or more before departure date", refund: "100% Refund", terms: "Full amount refunded back to source account. No hidden penalties." },
+    { window: "Between 15 to 30 Days before departure date", refund: "50% Refund", terms: "Half package cost refunded or 80% dynamic rollover credit voucher provided." },
+    { window: "Between 7 to 14 Days before departure date", refund: "25% Refund", terms: "Quarterly package cost returned. Operational logistics fees apply." },
+    { window: "Less than 7 Days before departure date", refund: "No Refund (0%)", terms: "Strictly non-refundable due to advance mountain vehicle and hotel bookings." }
+  ];
+  const cancellationSlabs = trip.cancellationSlabs && trip.cancellationSlabs.length > 0 ? trip.cancellationSlabs : defaultSlabs;
+
+  const defaultSpecialNotes = "Permit application processing tokens, special high altitude entry clearances, and customized border transit passes are fully non-refundable once initiated by state regulators. In instances of unexpected road blockages, landslides, natural emergencies, or severe snowfall restrictions, preventing entry past critical checkpoints, alternate valley exploration circuits will be systematically organized by TripNaari coordinators; direct payment cash disbursements cannot be processed under state-leased environmental restrictions.";
+  const cancellationSpecialNotes = trip.cancellationSpecialNotes || defaultSpecialNotes;
+
+  const galleryImages = getGalleryImages(trip);
+  const durationLabel = `${trip.durationDays} Days / ${trip.durationNights} Nights`;
+  const routeLabel = trip.destinationSlug ? (locationMap[trip.destinationSlug] || "India").split(",")[0] : "India";
+  const paceLabel = trip.difficulty === "easy" ? "Easy Pace" : trip.difficulty === "moderate" ? "Moderate Pace" : "Adventure Pace";
+
   return (
     <div className="bg-[#FFF8F0] min-h-screen">
-      {/* Cover Banner */}
-      <div className="relative h-[55vh] md:h-[65vh] overflow-hidden bg-[#6a0c24] text-white">
-        <img 
-          src={trip.heroImage} 
-          alt={trip.title} 
-          className="absolute inset-0 w-full h-full object-cover opacity-35" 
-        />
-        <div className="absolute inset-0 bg-gradient-to-t from-[#4A0516] via-[#6D0C24]/60 to-transparent" />
-        <div className="absolute bottom-0 left-0 right-0 max-w-[1280px] mx-auto px-4 md:px-8 pb-10">
-          <div className="flex flex-wrap gap-2 mb-4">
-            <Badge variant="pink" className="bg-[#FF4A7D] text-white border-none text-[10px] font-bold px-3 py-1 shadow-sm">
-              Women-only
-            </Badge>
-            <Badge variant="outline" className="bg-white/10 text-white border-white/20 backdrop-blur-sm text-[10px] font-bold px-3 py-1">
-              <Clock className="w-3 h-3 mr-1" /> {trip.durationDays}D/{trip.durationNights}N
-            </Badge>
-            <Badge variant="outline" className="bg-white/10 text-white border-white/20 backdrop-blur-sm text-[10px] font-bold px-3 py-1">
-              <Users className="w-3 h-3 mr-1" /> {trip.groupSizeMin}-{trip.groupSizeMax} women
-            </Badge>
+      
+      {/* Clean Modern Header Section */}
+      <div className="max-w-[1280px] mx-auto px-4 md:px-8 pt-8 pb-2">
+        <div className="flex flex-wrap gap-2 items-center mb-3">
+          <Badge variant="outline" className="bg-white border-[#F1D9D0] text-[#13253D]/80 text-[11px] font-bold px-3 py-1.5 rounded-full shadow-sm flex items-center gap-1">
+            <Clock className="w-3.5 h-3.5 text-[#FF4A7D]" />
+            <span>{durationLabel}</span>
+          </Badge>
+          <Badge variant="outline" className="bg-white border-[#F1D9D0] text-[#13253D]/80 text-[11px] font-bold px-3 py-1.5 rounded-full shadow-sm flex items-center gap-1">
+            <MapPin className="w-3.5 h-3.5 text-[#FF4A7D]" />
+            <span>{routeLabel}</span>
+          </Badge>
+          <Badge variant="outline" className="bg-[#FFF0F4] border-[#FF4A7D]/20 text-[#FF4A7D] text-[11px] font-bold px-3 py-1.5 rounded-full shadow-sm flex items-center gap-1">
+            <Tag className="w-3.5 h-3.5" />
+            <span>{paceLabel}</span>
+          </Badge>
+        </div>
+
+        <h1 className="font-display font-[800] text-3xl md:text-5xl text-[#13253D] tracking-tight text-balance">
+          {trip.title}
+        </h1>
+        
+        <div className="mt-3 flex flex-wrap items-center gap-3">
+          <span className="inline-flex items-center gap-1 bg-[#FF8A2B]/10 text-[#FF8A2B] rounded-full px-3 py-1 text-xs font-bold shadow-sm">
+            <Star className="w-3.5 h-3.5 fill-[#FF8A2B] text-[#FF8A2B]" />
+            <span>{trip.ratingAvg}</span>
+            <span className="text-[#13253D]/50 font-normal">({trip.ratingCount || 120} reviews)</span>
+          </span>
+          <span className="text-[#3D4A5E]/60 text-[11px] font-bold tracking-wider uppercase">
+            Verified Stays • Women Drivers • Refund Transparent
+          </span>
+        </div>
+
+        {/* Asymmetric Gallery Grid */}
+        <div className="mt-6 grid grid-cols-1 lg:grid-cols-5 gap-4">
+          {/* Left Column - 1 Large Highlight Image */}
+          <div className="lg:col-span-3">
+            <SafeImage 
+              src={galleryImages[0]} 
+              alt={`${trip.title} Main View`} 
+              containerClassName="overflow-hidden rounded-[24px] border border-[#F1D9D0]/50 h-full aspect-[16/10] lg:aspect-auto lg:h-[450px] shadow-sm relative group bg-[#FFF8F0]"
+              imageClassName="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+            />
           </div>
-          <h1 className="font-display font-[800] text-[32px] md:text-[52px] leading-[1.05] text-white max-w-3xl text-balance">
-            {trip.title}
-          </h1>
-          <p className="mt-4 text-white/80 max-w-2xl text-[15px] md:text-[16px] leading-relaxed">
-            {trip.shortDescription}
-          </p>
-          <div className="mt-4 flex flex-wrap items-center gap-3 gap-y-2">
-            <span className="inline-flex items-center gap-1 bg-white text-[#13253D] rounded-full px-3 py-1 text-xs font-bold shadow-sm">
-              <Star className="w-3 h-3 fill-[#FF8A2B] text-[#FF8A2B]" /> {trip.ratingAvg} ({trip.ratingCount})
-            </span>
-            <span className="text-white/70 text-[12px] font-semibold tracking-wide uppercase">
-              Verified Stays • Women Drivers • Refund Transparent
-            </span>
+
+          {/* Right Column - 2x2 Grid of 4 Smaller Images */}
+          <div className="lg:col-span-2 grid grid-cols-2 gap-4">
+            {[0, 1, 2, 3].map((idx) => {
+              const imgUrl = galleryImages[idx + 1];
+              return (
+                <SafeImage 
+                  key={idx}
+                  src={imgUrl} 
+                  alt={`${trip.title} Detail View ${idx + 1}`} 
+                  containerClassName="overflow-hidden rounded-[24px] border border-[#F1D9D0]/50 aspect-[4/3] lg:h-[217px] shadow-sm relative group bg-[#FFF8F0]"
+                  imageClassName="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+                />
+              );
+            })}
           </div>
         </div>
       </div>
@@ -119,152 +365,15 @@ export default async function TripDetail({ params }: { params: Promise<{ slug: s
       <div className="max-w-[1280px] mx-auto px-4 md:px-8 py-12 grid lg:grid-cols-12 gap-10">
         <div className="lg:col-span-8 space-y-10 min-w-0">
           
-          {/* Price Overview Card */}
-          <div className="rounded-3xl bg-white border border-[#F1D9D0] p-6 md:p-8 flex flex-wrap items-center justify-between gap-6 shadow-[0_10px_35px_-8px_rgba(19,37,61,0.05)]">
-            <div>
-              <div className="text-[11px] uppercase tracking-widest font-bold text-[#13253D]/50">Starts from</div>
-              <div className="flex flex-wrap items-baseline gap-3 mt-1">
-                <span className="text-3xl font-[800] text-[#13253D]">{formatINR(trip.priceFrom)}</span>
-                {trip.priceOriginal && (
-                  <span className="line-through text-lg text-[#13253D]/40">{formatINR(trip.priceOriginal)}</span>
-                )}
-                <span className="rounded-full bg-[#FF4A7D] text-white text-[11px] font-bold px-3 py-1 shadow-sm">
-                  Save ₹{trip.priceOriginal ? trip.priceOriginal - trip.priceFrom : 0}
-                </span>
-              </div>
-              <div className="text-[12px] text-[#3D4A5E] mt-2 font-medium">Per person, twin sharing • EMI options • No hidden fees</div>
-            </div>
-            <Link href="#enquiry">
-              <Button size="lg" className="bg-[#FF4A7D] hover:bg-[#E63E6E] text-white rounded-full font-bold px-8 shadow-md">
-                Check dates →
-              </Button>
-            </Link>
-          </div>
-
-          {/* Group Departures Card */}
-          <div className="rounded-3xl bg-white border border-[#F1D9D0] p-6 md:p-8 shadow-[0_10px_35px_-8px_rgba(19,37,61,0.05)]">
-            <h2 className="font-display font-[800] text-xl md:text-2xl text-[#13253D] mb-6">Upcoming Group Departures</h2>
-            {/* Mobile departures list (visible on mobile, hidden on tablet/desktop) */}
-            <div className="md:hidden space-y-4">
-              {tripDepartures.map((d: any) => {
-                const startDateFormatted = new Date(d.startDate).toLocaleDateString("en-IN", { day: 'numeric', month: 'short' });
-                const endDateFormatted = new Date(d.endDate).toLocaleDateString("en-IN", { day: 'numeric', month: 'short', year: 'numeric' });
-                return (
-                  <div key={d.id} className="rounded-2xl border border-[#F1D9D0] bg-[#FFF8F0]/30 p-4 space-y-3.5 shadow-sm">
-                    <div className="flex justify-between items-start gap-2">
-                      <div>
-                        <span className="block font-bold text-sm text-[#13253D]">{startDateFormatted} — {endDateFormatted}</span>
-                        {d.isGuaranteed && (
-                          <span className="mt-1.5 inline-flex items-center gap-0.5 rounded bg-green-50 px-2 py-0.5 text-[9px] font-bold text-green-700 border border-green-200 uppercase tracking-wide">
-                            Guaranteed Departure
-                          </span>
-                        )}
-                      </div>
-                      <span className={`rounded-full px-2.5 py-0.5 text-[9px] font-bold tracking-wide uppercase ${
-                        d.status === "filling_fast" ? "bg-[#FFF0F4] text-[#FF4A7D]" :
-                        d.status === "sold_out" ? "bg-gray-100 text-gray-500" :
-                        d.status === "cancelled" ? "bg-red-50 text-red-600" :
-                        "bg-green-50 text-green-700"
-                      }`}>{d.status.replace("_", " ")}</span>
-                    </div>
-
-                    <div className="flex justify-between items-center text-xs text-[#3D4A5E]">
-                      <div>
-                        <span className="font-semibold text-[#13253D]/50 block uppercase text-[10px]">Seats Booked</span>
-                        <span className="font-bold text-sm text-[#13253D]">{d.seatsBooked} / {d.seatsTotal}</span>
-                      </div>
-                      <div className="text-right">
-                        <span className="font-semibold text-[#13253D]/50 block uppercase text-[10px]">Price</span>
-                        <span className="font-[800] text-sm text-[#13253D]">{formatINR(d.price || trip.priceFrom)}</span>
-                      </div>
-                    </div>
-
-                    <div className="pt-2 border-t border-[#F1D9D0]/50 flex justify-end">
-                      {d.status === "sold_out" || d.status === "cancelled" ? (
-                        <span className="rounded-full bg-gray-100 text-gray-400 px-5 py-2 text-xs font-bold cursor-not-allowed">
-                          Closed
-                        </span>
-                      ) : (
-                        <Link href={`?date=${d.startDate}#enquiry`} className="w-full text-center rounded-full bg-[#13253D] hover:bg-[#FF4A7D] text-white px-5 py-2 text-xs font-bold transition-colors shadow-sm">
-                          Enquire →
-                        </Link>
-                      )}
-                    </div>
-                  </div>
-                );
-              })}
-              {tripDepartures.length === 0 && (
-                <div className="py-6 text-center text-[#3D4A5E] text-sm font-medium">
-                  No scheduled departures at the moment. Please request your preferred dates.
-                </div>
-              )}
-            </div>
-
-            {/* Desktop departures table (hidden on mobile, visible on desktop) */}
-            <div className="hidden md:block overflow-x-auto">
-              <table className="w-full text-sm">
-                <thead>
-                  <tr className="border-b border-[#F1D9D0]/70 text-left text-xs uppercase text-[#3D4A5E]/70">
-                    <th className="pb-3 pr-4 font-bold tracking-wider">Dates</th>
-                    <th className="pb-3 px-4 font-bold tracking-wider text-center">Status</th>
-                    <th className="pb-3 px-4 font-bold tracking-wider text-center">Seats Booked</th>
-                    <th className="pb-3 px-4 font-bold tracking-wider text-right">Price</th>
-                    <th className="pb-3 pl-4 font-bold tracking-wider text-right">Action</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-[#F1D9D0]/40">
-                  {tripDepartures.map((d: any) => {
-                    const startDateFormatted = new Date(d.startDate).toLocaleDateString("en-IN", { day: 'numeric', month: 'short' });
-                    const endDateFormatted = new Date(d.endDate).toLocaleDateString("en-IN", { day: 'numeric', month: 'short', year: 'numeric' });
-                    return (
-                      <tr key={d.id} className="text-[13px] text-[#13253D]">
-                        <td className="py-4 pr-4 font-medium">
-                          <span className="block font-bold text-sm text-[#13253D]">{startDateFormatted} — {endDateFormatted}</span>
-                          {d.isGuaranteed && (
-                            <span className="mt-1 inline-flex items-center gap-0.5 rounded bg-green-50 px-2 py-0.5 text-[10px] font-bold text-green-700 border border-green-200 uppercase tracking-wide">
-                              Guaranteed Departure
-                            </span>
-                          )}
-                        </td>
-                        <td className="py-4 px-4 text-center">
-                          <span className={`rounded-full px-3 py-1 text-[10px] font-bold tracking-wide uppercase ${
-                            d.status === "filling_fast" ? "bg-[#FFF0F4] text-[#FF4A7D]" :
-                            d.status === "sold_out" ? "bg-gray-100 text-gray-500" :
-                            d.status === "cancelled" ? "bg-red-50 text-red-600" :
-                            "bg-green-50 text-green-700"
-                          }`}>{d.status.replace("_", " ")}</span>
-                        </td>
-                        <td className="py-4 px-4 text-center font-semibold text-sm">
-                          {d.seatsBooked} / {d.seatsTotal}
-                        </td>
-                        <td className="py-4 px-4 font-bold text-right text-sm text-[#13253D]">
-                          {formatINR(d.price || trip.priceFrom)}
-                        </td>
-                        <td className="py-4 pl-4 text-right">
-                          {d.status === "sold_out" || d.status === "cancelled" ? (
-                            <span className="inline-block rounded-full bg-gray-100 text-gray-400 px-4 py-2 text-xs font-bold cursor-not-allowed">
-                              Closed
-                            </span>
-                          ) : (
-                            <Link href={`?date=${d.startDate}#enquiry`} className="inline-block rounded-full bg-[#13253D] hover:bg-[#FF4A7D] text-white px-5 py-2 text-xs font-bold transition-colors shadow-sm">
-                              Enquire →
-                            </Link>
-                          )}
-                        </td>
-                      </tr>
-                    );
-                  })}
-                  {tripDepartures.length === 0 && (
-                    <tr>
-                      <td colSpan={5} className="py-8 text-center text-[#3D4A5E] text-sm font-medium">
-                        No scheduled departures at the moment. Please request your preferred dates.
-                      </td>
-                    </tr>
-                  )}
-                </tbody>
-              </table>
-            </div>
-          </div>
+          {/* Booking Widget replacing old departures/pricing cards */}
+          <BookingWidget
+            priceFrom={trip.priceFrom}
+            priceOriginal={trip.priceOriginal}
+            departures={tripDepartures}
+            tripSlug={trip.slug}
+            tripTitle={trip.title}
+            itineraryPdf={trip.itineraryPdf}
+          />
 
           {/* Highlights */}
           <div className="space-y-4">
@@ -300,9 +409,12 @@ export default async function TripDetail({ params }: { params: Promise<{ slug: s
                   </a>
                 )}
               </div>
-              <div className="space-y-6">
+              <div className="relative border-l-2 border-dashed border-[#FF4A7D]/30 ml-6 pl-8 space-y-8 py-2">
                 {itinerary.map((d: any) => (
-                  <div key={d.day} className="rounded-3xl bg-white border border-[#F1D9D0] p-6 flex gap-5 shadow-[0_10px_35px_-8px_rgba(19,37,61,0.04)]">
+                  <div key={d.day} className="relative rounded-3xl bg-white border border-[#F1D9D0] p-6 flex gap-5 shadow-[0_10px_35px_-8px_rgba(19,37,61,0.04)]">
+                    {/* Timeline Node dot */}
+                    <div className="absolute -left-[41px] top-[40px] w-4 h-4 rounded-full bg-[#FF4A7D] border-4 border-white shadow-sm" />
+                    
                     <div className="w-12 h-12 rounded-2xl bg-[#FF4A7D] text-white flex items-center justify-center font-bold text-base shrink-0 shadow-sm">
                       D{d.day}
                     </div>
@@ -360,6 +472,115 @@ export default async function TripDetail({ params }: { params: Promise<{ slug: s
                     </li>
                   ))}
                 </ul>
+              </div>
+            </div>
+
+            {/* Things to Pack */}
+            <div className="rounded-3xl bg-white border border-[#F1D9D0] p-6 md:p-8 shadow-[0_10px_35px_-8px_rgba(19,37,61,0.04)] space-y-5">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-xl bg-[#FF4A7D]/10 flex items-center justify-center text-[#FF4A7D]">
+                  <Briefcase className="w-5 h-5" />
+                </div>
+                <h3 className="font-display font-[800] text-xl text-[#13253D]">
+                  Things to Pack
+                </h3>
+              </div>
+              <p className="text-xs text-[#3D4A5E] leading-relaxed">
+                {packingInfo.disclaimer}
+              </p>
+              <div className="grid sm:grid-cols-2 gap-4 bg-[#FFF8F0]/30 rounded-2xl border border-[#F1D9D0]/50 p-5">
+                {packingInfo.items.map((item: string, index: number) => (
+                  <div key={index} className="flex items-start gap-3 text-[13px] text-[#3D4A5E] font-semibold">
+                    <span className="flex items-center justify-center w-5 h-5 rounded-full bg-[#FF4A7D]/10 text-[#FF4A7D] shrink-0 mt-0.5">
+                      <Check className="w-3 h-3 stroke-[3]" />
+                    </span>
+                    <span>{item}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Moments From Our Previous Trips */}
+            <div className="space-y-5">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-xl bg-[#FF4A7D]/10 flex items-center justify-center text-[#FF4A7D]">
+                  <Camera className="w-5 h-5" />
+                </div>
+                <h3 className="font-display font-[800] text-xl text-[#13253D]">
+                  Moments From Our Previous Trips
+                </h3>
+              </div>
+              <p className="text-xs text-[#3D4A5E]">
+                Here is a glimpse of the laughs, sisterhood bonds, and adventures shared by our previous travel communities across these scenic trails.
+              </p>
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                {[0, 1, 2, 3].map((idx) => {
+                  const img = momentsList[idx];
+                  return (
+                    <SafeImage 
+                      key={idx}
+                      src={img} 
+                      alt={`Sisterhood Moment ${idx + 1}`} 
+                      containerClassName="overflow-hidden rounded-2xl border border-[#F1D9D0] aspect-square shadow-sm group bg-[#FFF8F0]"
+                      imageClassName="w-full h-full object-cover transition-transform duration-300 group-hover:scale-110"
+                    />
+                  );
+                })}
+              </div>
+            </div>
+
+            {/* Booking & Cancellation Policy */}
+            <div className="rounded-3xl bg-white border border-[#F1D9D0] p-6 md:p-8 shadow-[0_10px_35px_-8px_rgba(19,37,61,0.04)] space-y-6">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-xl bg-[#FF4A7D]/10 flex items-center justify-center text-[#FF4A7D]">
+                  <FileText className="w-5 h-5" />
+                </div>
+                <div>
+                  <h3 className="font-display font-[800] text-xl text-[#13253D]">
+                    Booking & Cancellation Policy
+                  </h3>
+                  <p className="text-xs text-[#3D4A5E] mt-1">
+                    Please carefully review our timeline-based cancellation schedule and refund distribution metrics detailed below before finalizing your slot registration.
+                  </p>
+                </div>
+              </div>
+
+              {/* Policy Table */}
+              <div className="overflow-x-auto rounded-2xl border border-[#F1D9D0]">
+                <table className="w-full text-left text-xs border-collapse">
+                  <thead>
+                    <tr className="bg-[#FFF8F0] border-b border-[#F1D9D0] text-[#13253D] font-bold">
+                      <th className="p-3">Cancellation Timeline Window</th>
+                      <th className="p-3 text-center">Refund Percentage</th>
+                      <th className="p-3">Applicable Deduction / Policy Terms</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-[#F1D9D0]/50 text-[#3D4A5E]">
+                    {cancellationSlabs.map((slab: any, idx: number) => (
+                      <tr key={idx} className="hover:bg-[#FFF8F0]/10">
+                        <td className="p-3 font-semibold text-[#13253D]">{slab.window}</td>
+                        <td className={`p-3 text-center font-bold ${
+                          slab.refund.includes("100%") || slab.refund.includes("90%") ? "text-green-600" :
+                          slab.refund.includes("50%") ? "text-[#FF8A2B]" :
+                          slab.refund.includes("25%") || slab.refund.includes("30%") ? "text-[#FF4A7D]" :
+                          "text-red-500"
+                        }`}>{slab.refund}</td>
+                        <td className="p-3">{slab.terms}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+
+              {/* Special Policy Notes */}
+              <div className="rounded-2xl bg-[#FFF0F4] border border-[#FF4A7D]/10 p-5 space-y-2">
+                <div className="flex items-center gap-2 text-xs font-bold text-[#800F2D]">
+                  <span>⚠️</span>
+                  <span>Special Policy Notes</span>
+                </div>
+                <p className="text-[11px] leading-relaxed text-[#800F2D]/90">
+                  {cancellationSpecialNotes}
+                </p>
               </div>
             </div>
 

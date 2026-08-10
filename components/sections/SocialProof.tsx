@@ -1,6 +1,6 @@
 import { ShieldCheck, BadgeCheck, Heart } from "lucide-react";
 const Instagram = (props: any) => (
-  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}><rect width="20" height="20" x="2" y="2" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" x2="17.51" y1="6.5" y2="6.5"/></svg>
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}><rect width="20" height="20" x="2" y="2" rx="5" ry="5" /><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z" /><line x1="17.5" x2="17.51" y1="6.5" y2="6.5" /></svg>
 );
 
 export default function SocialProof() {
@@ -30,8 +30,8 @@ export default function SocialProof() {
           <div className="hidden md:flex items-center gap-2">
             <span className="text-[11px] uppercase tracking-widest font-bold text-[#13253D]/40">As seen in love of</span>
             <div className="flex -space-x-2 ml-2">
-              {[1,2,3,4,5].map(i=>(
-                <img key={i} src={`https://i.pravatar.cc/100?img=${10+i}`} alt="traveler" className="w-8 h-8 rounded-full border-2 border-white object-cover" />
+              {[1, 2, 3, 4, 5].map(i => (
+                <img key={i} src={`https://i.pravatar.cc/100?img=${10 + i}`} alt="traveler" className="w-8 h-8 rounded-full border-2 border-white object-cover" />
               ))}
               <div className="w-8 h-8 rounded-full bg-[#13253D] text-white grid place-items-center text-[10px] font-bold border-2 border-white">+3k</div>
             </div>

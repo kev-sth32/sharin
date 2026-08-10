@@ -22,7 +22,7 @@ export const metadata: Metadata = {
     default: "TripNaari - Women-First Travel | Travel Fearless, We've Got Your Backpack",
     template: "%s | TripNaari",
   },
-  description: "Women-oriented travel company & community for safe, handcrafted domestic & international trips. 3000+ women, verified stays, women trip leaders 24x7. Bangalore based, MSME & Startup India recognised.",
+  description: "Women-oriented travel company & community for safe, handcrafted domestic & international trips. 6000+ women, verified stays, women trip leaders 24x7. Bangalore based, MSME & Startup India recognised.",
   keywords: ["women travel", "solo women travel India", "women only tours", "TripNaari", "safe travel for women", "Kashmir women trip", "Kerala women trip"],
   metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || "https://tripnaari.com"),
   openGraph: {

@@ -25,3 +25,4 @@ export default async function PolicyPage({ params }: { params: Promise<{ slug: s
     </div>
   );
 }
+

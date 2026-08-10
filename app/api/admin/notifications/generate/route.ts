@@ -128,7 +128,7 @@ Output ONLY the raw JSON array. Do not include markdown codeblocks (like \`\`\`j
 // Generate high-quality template ideas in demo mode
 function generateDemoNotificationIdeas(prompt: string, tone: string, trips: any[]): any[] {
   const p = prompt.toLowerCase();
-  
+
   // Find matching trip or fallback to random
   let matchedTrip = trips[0] || { title: "Kashmir Blossom Sisterhood", slug: "kashmir-blossom-sisterhood" };
   for (const t of trips) {
@@ -215,7 +215,7 @@ function generateDemoNotificationIdeas(prompt: string, tone: string, trips: any[
     },
     {
       title: `✨ Find Your Sisterhood Community`,
-      message: `Over 3000+ women have backpacked fearless with TripNaari. Tap to join the chat and plan your next destination!`,
+      message: `Over  women have backpacked fearless with TripNaari. Tap to join the chat and plan your next destination!`,
       url: "/",
     },
   ];

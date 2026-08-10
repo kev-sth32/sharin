@@ -13,6 +13,11 @@ export default async function AdminPage() {
     await saveSettings(formData);
   }
 
+  async function handleUpdateWhyChoose(formData: FormData) {
+    "use server";
+    await saveSettings(formData);
+  }
+
   return (
     <div>
       <div className="flex justify-between items-start gap-4">
@@ -93,6 +98,96 @@ export default async function AdminPage() {
                 className="rounded-full bg-[#13253D] hover:bg-[#FF4A7D] text-white px-4 py-2 text-xs font-bold transition-all shadow-sm"
               >
                 Update Offers Text
+              </button>
+            </form>
+          </div>
+
+          <div className="rounded-[20px] bg-white border border-[#F1D9D0] p-6 mt-6">
+            <h3 className="font-semibold text-[#13253D] mb-4">Edit Safety Section (Why Choose Grid)</h3>
+            <form action={handleUpdateWhyChoose} className="space-y-6">
+              <div className="grid md:grid-cols-2 gap-4">
+                <div>
+                  <label className="text-xs font-bold uppercase text-[#13253D]">Section Badge</label>
+                  <input 
+                    type="text"
+                    name="whyChooseBadge" 
+                    defaultValue={settings.whyChooseBadge} 
+                    className="w-full mt-1 rounded-xl border px-3 py-2 text-sm text-[#13253D] font-medium" 
+                  />
+                </div>
+                <div>
+                  <label className="text-xs font-bold uppercase text-[#13253D]">Section Title (Use newlines for breaks)</label>
+                  <textarea 
+                    name="whyChooseTitle" 
+                    defaultValue={settings.whyChooseTitle} 
+                    rows={2}
+                    className="w-full mt-1 rounded-xl border px-3 py-2 text-sm text-[#13253D] font-medium" 
+                  />
+                </div>
+              </div>
+
+              <div>
+                <label className="text-xs font-bold uppercase text-[#13253D]">Section Description</label>
+                <textarea 
+                  name="whyChooseDesc" 
+                  defaultValue={settings.whyChooseDesc} 
+                  rows={2}
+                  className="w-full mt-1.5 rounded-xl border px-3 py-2 text-sm text-[#13253D] font-medium" 
+                />
+              </div>
+
+              <div className="border-t border-[#F1D9D0] pt-4">
+                <h4 className="text-xs font-bold uppercase text-[#FF4A7D] mb-4">Grid Cards (Exactly 6 cards)</h4>
+                <div className="grid md:grid-cols-2 gap-6">
+                  {settings.whyChooseReasons?.map((r: any, idx: number) => (
+                    <div key={idx} className="rounded-xl border border-[#F1D9D0] p-4 bg-[#FFF8F0]/30 space-y-3">
+                      <div className="flex justify-between items-center">
+                        <span className="text-xs font-extrabold text-[#13253D] uppercase">Card #{idx + 1}</span>
+                        <div className="flex items-center gap-1.5">
+                          <label className="text-[10px] font-bold text-[#3D4A5E]">Icon:</label>
+                          <select 
+                            name={`card_icon_${idx}`} 
+                            defaultValue={r.icon}
+                            className="text-xs rounded border px-2 py-1 bg-white text-[#13253D] font-semibold"
+                          >
+                            <option value="Shield">🛡️ Shield</option>
+                            <option value="Heart">❤️ Heart</option>
+                            <option value="Users">👥 Users</option>
+                            <option value="Map">🗺️ Map</option>
+                            <option value="Clock">🕒 Clock</option>
+                            <option value="Wallet">💳 Wallet</option>
+                          </select>
+                        </div>
+                      </div>
+
+                      <div>
+                        <input 
+                          type="text"
+                          name={`card_title_${idx}`} 
+                          defaultValue={r.title} 
+                          placeholder="Card Title"
+                          className="w-full rounded-lg border px-3 py-1.5 text-xs text-[#13253D] font-bold" 
+                        />
+                      </div>
+                      <div>
+                        <textarea 
+                          name={`card_desc_${idx}`} 
+                          defaultValue={r.desc} 
+                          placeholder="Card Description"
+                          rows={2}
+                          className="w-full rounded-lg border px-3 py-1.5 text-xs text-[#3D4A5E] font-medium" 
+                        />
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              <button 
+                type="submit" 
+                className="rounded-full bg-[#13253D] hover:bg-[#FF4A7D] text-white px-5 py-2.5 text-xs font-bold transition-all shadow-sm"
+              >
+                Save Safety Grid
               </button>
             </form>
           </div>
