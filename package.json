@@ -5,11 +5,12 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
+    "build:zip": "powershell -ExecutionPolicy Bypass -File ./build-zip.ps1",
     "start": "next start",
     "lint": "eslint",
     "db:generate": "drizzle-kit generate",
     "db:push": "drizzle-kit push",
-    "db:studio": "drizzle-kit studio"
+    "db:studio": "drizzle-  kit studio"
   },
   "dependencies": {
     "clsx": "^2.1.1",

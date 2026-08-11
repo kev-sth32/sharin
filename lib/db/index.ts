@@ -1,9 +1,9 @@
-import { drizzle as drizzleMysql } from "drizzle-orm/mysql2";
-import mysql from "mysql2/promise";
+import { drizzle } from "drizzle-orm/node-postgres";
+import { Pool } from "pg";
 import * as schema from "./schema";
 
 let db: any;
-let pool: mysql.Pool | null = null;
+let pool: Pool | null = null;
 
 function getDb() {
   if (db) return db;
@@ -12,24 +12,24 @@ function getDb() {
 
   if (connectionString) {
     try {
-      pool = mysql.createPool({ uri: connectionString });
-      db = drizzleMysql(pool, { schema, mode: "default" });
-      console.log("[TripNaari DB] Connected to MySQL");
+      pool = new Pool({ connectionString });
+      db = drizzle(pool, { schema });
+      console.log("[TripNaari DB] Connected to PostgreSQL");
       return db;
     } catch (e) {
-      console.warn("[TripNaari DB] MySQL connection failed, falling back to mock", e);
+      console.warn("[TripNaari DB] PostgreSQL connection failed, falling back to mock", e);
     }
   }
 
-  // Fallback mock DB - logs queries but doesn't persist to MySQL (for demo / no DB_URL)
-  console.log("[TripNaari DB] Using in-memory fallback (set DATABASE_URL for real MySQL)");
+  // Fallback mock DB - logs queries but doesn't persist (for demo / no DATABASE_URL)
+  console.log("[TripNaari DB] Using in-memory fallback (set DATABASE_URL for real PostgreSQL)");
   db = {
     _isMock: true,
     query: {},
     // mock insert that returns success
     insert: () => ({
       values: () => ({
-        returning: async () => [{ id: Math.floor(Math.random()*10000) }],
+        returning: async () => [{ id: Math.floor(Math.random() * 10000) }],
       }),
     }),
     select: () => ({
