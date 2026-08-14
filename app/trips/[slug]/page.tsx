@@ -397,17 +397,6 @@ export default async function TripDetail({ params }: { params: Promise<{ slug: s
                   <h2 className="font-display font-[800] text-2xl text-[#13253D]">Day-wise sisterhood plan</h2>
                   <p className="text-sm text-[#3D4A5E] mt-2">Hotel names confirmed 7 days before. If weather/safety requires change, alternatives provided 12 hours prior.</p>
                 </div>
-                {trip.itineraryPdf && (
-                  <a 
-                    href={trip.itineraryPdf} 
-                    download 
-                    target="_blank" 
-                    rel="noopener noreferrer" 
-                    className="inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-[#FF4A7D] to-[#FF758F] hover:from-[#E63E6E] hover:to-[#FF4A7D] text-white px-5 py-2.5 text-xs font-bold transition-all shadow-[0_4px_10px_rgba(255,74,125,0.2)] hover:scale-105 transform duration-200"
-                  >
-                    📥 Download PDF Itinerary
-                  </a>
-                )}
               </div>
               <div className="relative border-l-2 border-dashed border-[#FF4A7D]/30 ml-6 pl-8 space-y-8 py-2">
                 {itinerary.map((d: any) => (

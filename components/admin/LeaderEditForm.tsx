@@ -14,7 +14,10 @@ export default function LeaderEditForm({ initial, action }: { initial?: any; act
     startTransition(async () => {
       try {
         await action(formData);
-      } catch (err) {
+      } catch (err: any) {
+        if (err?.message === "NEXT_REDIRECT" || err?.digest?.startsWith("NEXT_REDIRECT")) {
+          throw err;
+        }
         console.error("Save leader failed:", err);
         alert("An error occurred. Please try again.");
       }

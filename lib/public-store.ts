@@ -39,25 +39,36 @@ export function getAllTripsForAdmin() {
 
 export function getMergedTestimonials() {
   const overrides = readFile("testimonials_overrides.json", []);
-  const all = [
-    ...testimonialsSeed.map((t:any,i:number)=>({ id: 1000+i, isApproved: true, isFeatured: true, ...t })),
-    ...overrides
-  ];
-  return all.filter((t:any)=>t.isApproved!==false);
+  const mergedSeed = testimonialsSeed.map((t: any, i: number) => {
+    const id = 1000 + i;
+    const over = overrides.find((o: any) => o.id === id);
+    if (over?.isDeleted) return null;
+    return over ? { ...t, ...over } : { id, isApproved: true, isFeatured: true, ...t };
+  }).filter(Boolean);
+
+  const custom = overrides.filter((o: any) => o.id >= 2000 || o.id < 1000);
+  const all = [...mergedSeed, ...custom];
+  return all.filter((t: any) => t.isApproved !== false);
 }
 
 export function getMergedLeaders() {
   const overrides = readFile("leaders_overrides.json", []);
   const custom = readFile("leaders_custom.json", []);
   return [
-    ...tripLeadersSeed.map((l:any)=>{ const over = overrides.find((o:any)=>o.slug===l.slug); return over?{...l,...over}:l; }),
+    ...tripLeadersSeed.map((l:any)=>{ 
+      const over = overrides.find((o:any)=>o.slug===l.slug); 
+      if (over?.isDeleted) return null;
+      return over?{...l,...over}:l; 
+    }).filter(Boolean),
     ...custom
   ];
 }
 
 export function getCustomBlogs() {
   const custom = readFile("blogs_custom.json", []);
-  return [...blogSeed, ...custom];
+  const deleted = readFile("blogs_deleted.json", []);
+  const all = [...blogSeed, ...custom];
+  return all.filter((b: any) => !deleted.includes(b.slug));
 }
 
 export function getMergedBlogs() {
@@ -289,6 +300,7 @@ export function getAISettings() {
   const fp = path.join(dataDir, "ai_settings.json");
   const fallback = {
     nvidiaApiKey: "",
+    geminiApiKey: "",
     modelName: "meta/llama-3.1-70b-instruct",
     welcomeMessage: "Namaste! 🙏 Welcome to TripNaari. I am NaariAI, your travel companion. I can help you find safe women-only packages, check active departures, and answer any queries you have. What destinations are you dreaming of?",
     systemInstruction: `You are "NaariAI", the official women's safety & group travel assistant for TripNaari.

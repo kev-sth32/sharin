@@ -19,6 +19,8 @@ export interface TripCardProps {
     ratingAvg?: string;
     ratingCount?: number;
     groupSizeMax?: number;
+    locationLabel?: string;
+    badgeText?: string;
   };
 }
 
@@ -27,8 +29,11 @@ export interface TripCardProps {
 
 export default function TripCard({ trip }: TripCardProps) {
 
-  const locationName = trip.destinationSlug ? (locationMap[trip.destinationSlug] || "India") : "India";
-  const isPopular = trip.isFeatured; // Let's use isFeatured to determine "Popular" vs "Selling Fast"
+  const locationName = (trip as any).locationLabel || (trip.destinationSlug ? (locationMap[trip.destinationSlug] || "India") : "India");
+  const badgeText = (trip as any).badgeText;
+  const showBadge = badgeText !== "none";
+  const displayBadgeText = badgeText || (trip.isFeatured ? "Popular" : "Selling Fast");
+  const isPopular = displayBadgeText.toLowerCase() === "popular";
 
   return (
     <Link href={`/trips/${trip.slug}`} className="group block rounded-3xl bg-white border border-[#F1D9D0] overflow-hidden shadow-[0_10px_35px_-8px_rgba(19,37,61,0.06)] hover:shadow-[0_20px_50px_-10px_rgba(255,74,125,0.12)] transition-all duration-300 hover:-translate-y-1">
@@ -38,17 +43,13 @@ export default function TripCard({ trip }: TripCardProps) {
           alt={trip.title} 
           className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" 
         />
-        <div className="absolute top-4 left-4 flex gap-2">
-          {isPopular ? (
+        {showBadge && (
+          <div className="absolute top-4 left-4 flex gap-2">
             <Badge variant="pink" className="bg-[#FF4A7D] text-white border-none text-[10px] font-extrabold uppercase tracking-wider px-3 py-1 shadow-sm">
-              Popular
+              {displayBadgeText}
             </Badge>
-          ) : (
-            <Badge variant="plum" className="bg-[#FF8A2B] text-white border-none text-[10px] font-extrabold uppercase tracking-wider px-3 py-1 shadow-sm">
-              Selling Fast
-            </Badge>
-          )}
-        </div>
+          </div>
+        )}
       </div>
 
       <div className="p-6 space-y-4">

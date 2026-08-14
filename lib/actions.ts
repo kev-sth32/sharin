@@ -40,11 +40,11 @@ export async function submitEnquiry(formData: FormData) {
     name: formData.get("name") as string,
     email: formData.get("email") as string,
     phone: formData.get("phone") as string,
-    destination: formData.get("destination") as string,
-    travelMonth: formData.get("travelMonth") as string,
-    travelers: formData.get("travelers") as string,
-    travelStyle: formData.get("travelStyle") as string,
-    budget: formData.get("budget") as string,
+    destination: (formData.get("destination") as string) || "General",
+    travelMonth: (formData.get("travelMonth") as string) || "Flexible",
+    travelers: formData.get("travelers") ? Number(formData.get("travelers")) : 1,
+    travelStyle: (formData.get("travelStyle") as string) || undefined,
+    budget: (formData.get("budget") as string) || undefined,
     message,
     consent: formData.get("consent") === "on" || formData.get("consent") === "true",
   };
@@ -73,11 +73,11 @@ export async function submitCustomTrip(formData: FormData) {
     groupType: formData.get("groupType") as string,
     comfortLevel: formData.get("comfortLevel") as string,
     activities: (formData.getAll("activities") as string[]) || [],
-    safetyNeeds: formData.get("safetyNeeds") as string,
+    safetyNeeds: (formData.get("safetyNeeds") as string) || undefined,
     kidFriendly: formData.get("kidFriendly") === "on",
-    foodPreferences: formData.get("foodPreferences") as string,
-    budget: formData.get("budget") as string,
-    message: formData.get("message") as string,
+    foodPreferences: (formData.get("foodPreferences") as string) || undefined,
+    budget: (formData.get("budget") as string) || undefined,
+    message: (formData.get("message") as string) || undefined,
   };
 
   const parsed = customTripSchema.safeParse(raw);
@@ -91,7 +91,7 @@ export async function submitCustomTrip(formData: FormData) {
 export async function submitNewsletter(formData: FormData) {
   const raw = {
     email: formData.get("email") as string,
-    name: formData.get("name") as string,
+    name: (formData.get("name") as string) || undefined,
   };
   const parsed = newsletterSchema.safeParse(raw);
   if (!parsed.success) return { success: false, errors: parsed.error.flatten() };
@@ -104,7 +104,7 @@ export async function submitContact(formData: FormData) {
   const raw = {
     name: formData.get("name") as string,
     email: formData.get("email") as string,
-    phone: formData.get("phone") as string,
+    phone: (formData.get("phone") as string) || undefined,
     category: formData.get("category") as string,
     subject: formData.get("subject") as string,
     message: formData.get("message") as string,
@@ -119,7 +119,7 @@ export async function submitContact(formData: FormData) {
 
 export async function submitRefund(formData: FormData) {
   const raw = {
-    bookingId: formData.get("bookingId") as string,
+    bookingId: (formData.get("bookingId") as string) || undefined,
     email: formData.get("email") as string,
     phone: formData.get("phone") as string,
     reason: formData.get("reason") as string,
@@ -181,5 +181,75 @@ export async function unlockTripDetails(formData: FormData) {
   await sendNotificationEmail("Trip Details Unlock", leadEntry);
 
   return { success: true };
+}
+
+export async function updateSupportStatus(id: number, status: "unread" | "resolved", notes?: string) {
+  ensureDataDir();
+  const fp = path.join(dataDir, "contacts.json");
+  if (!fs.existsSync(fp)) return { success: false, error: "File not found" };
+  try {
+    let arr = JSON.parse(fs.readFileSync(fp, "utf-8"));
+    arr = arr.map((c: any) => c.id === id ? { ...c, status, notes, updatedAt: new Date().toISOString() } : c);
+    fs.writeFileSync(fp, JSON.stringify(arr, null, 2));
+    return { success: true };
+  } catch (e: any) {
+    return { success: false, error: e.message };
+  }
+}
+
+export async function deleteSupportMessage(id: number) {
+  ensureDataDir();
+  const fp = path.join(dataDir, "contacts.json");
+  if (!fs.existsSync(fp)) return { success: false, error: "File not found" };
+  try {
+    let arr = JSON.parse(fs.readFileSync(fp, "utf-8"));
+    arr = arr.filter((c: any) => c.id !== id);
+    fs.writeFileSync(fp, JSON.stringify(arr, null, 2));
+    return { success: true };
+  } catch (e: any) {
+    return { success: false, error: e.message };
+  }
+}
+
+export async function updateRefundStatus(id: number, status: "pending" | "approved" | "rejected", notes?: string) {
+  ensureDataDir();
+  const fp = path.join(dataDir, "refunds.json");
+  if (!fs.existsSync(fp)) return { success: false, error: "File not found" };
+  try {
+    let arr = JSON.parse(fs.readFileSync(fp, "utf-8"));
+    arr = arr.map((r: any) => r.id === id ? { ...r, status, notes, updatedAt: new Date().toISOString() } : r);
+    fs.writeFileSync(fp, JSON.stringify(arr, null, 2));
+    return { success: true };
+  } catch (e: any) {
+    return { success: false, error: e.message };
+  }
+}
+
+export async function deleteRefundRequest(id: number) {
+  ensureDataDir();
+  const fp = path.join(dataDir, "refunds.json");
+  if (!fs.existsSync(fp)) return { success: false, error: "File not found" };
+  try {
+    let arr = JSON.parse(fs.readFileSync(fp, "utf-8"));
+    arr = arr.filter((r: any) => r.id !== id);
+    fs.writeFileSync(fp, JSON.stringify(arr, null, 2));
+    return { success: true };
+  } catch (e: any) {
+    return { success: false, error: e.message };
+  }
+}
+
+export async function deleteNewsletterSubscriber(id: number) {
+  ensureDataDir();
+  const fp = path.join(dataDir, "newsletter.json");
+  if (!fs.existsSync(fp)) return { success: false, error: "File not found" };
+  try {
+    let arr = JSON.parse(fs.readFileSync(fp, "utf-8"));
+    arr = arr.filter((n: any) => n.id !== id);
+    fs.writeFileSync(fp, JSON.stringify(arr, null, 2));
+    return { success: true };
+  } catch (e: any) {
+    return { success: false, error: e.message };
+  }
 }
 

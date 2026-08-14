@@ -53,16 +53,8 @@ export async function POST(req: Request) {
     // SECURITY: Trim and limit length
     const cleanPassword = password.trim().slice(0, 200);
 
-    const validPasswords = [
-      process.env.ADMIN_PASSWORD || "change_me_secure",
-      "TripNaari2026!",
-      "admin123", // Remove in production - demo only
-    ];
-
-    const validIds = ["admin", "tripnaari"];
-
-    const isValid = validPasswords.includes(cleanPassword) || 
-                    validIds.includes(cleanPassword.toLowerCase());
+    const correctPassword = process.env.ADMIN_PASSWORD || "Qwerty@2053";
+    const isValid = cleanPassword === correctPassword;
 
     recordAttempt(ip, isValid);
 
@@ -77,7 +69,7 @@ export async function POST(req: Request) {
     res.cookies.set("tripnaari_admin", "authenticated", {
       httpOnly: true, // SECURITY: Not accessible via JS
       sameSite: "lax", // CSRF protection
-      secure: process.env.NODE_ENV === "production", // HTTPS only in prod
+      secure: req.headers.get("x-forwarded-proto") === "https" || req.url.startsWith("https:"), // HTTPS only when served over HTTPS
       path: "/",
       maxAge: 60 * 60 * 8, // 8 hours
     });

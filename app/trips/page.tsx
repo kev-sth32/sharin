@@ -103,6 +103,8 @@ export default async function TripsPage({ searchParams }: { searchParams: Promis
                     isFeatured: trip.isFeatured,
                     groupSizeMax: trip.groupSizeMax,
                     destinationSlug: trip.destinationSlug,
+                    locationLabel: trip.locationLabel,
+                    badgeText: trip.badgeText,
                   }} 
                 />
               ))}

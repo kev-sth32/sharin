@@ -41,6 +41,7 @@ interface QAPair {
 
 interface AISettings {
   nvidiaApiKey: string;
+  geminiApiKey: string;
   modelName: string;
   welcomeMessage: string;
   systemInstruction: string;
@@ -119,6 +120,7 @@ export default function AISettingsManager({ initialSettings, dbCounts = { trips:
     qaPairs: initialSettings.qaPairs || []
   });
   const [showKey, setShowKey] = useState(false);
+  const [showGeminiKey, setShowGeminiKey] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
   const [saveSuccess, setSaveSuccess] = useState(false);
   const [saveError, setSaveError] = useState("");
@@ -538,6 +540,46 @@ export default function AISettingsManager({ initialSettings, dbCounts = { trips:
                   <Activity className="w-4 h-4 text-blue-500 shrink-0 mt-0.5" />
                   <p>
                     Hosted on NVIDIA NIM Inference Microservices. Key is masked and cached locally. Fallbacks to Google Gemini-3.5-Flash if key is inactive or offline.
+                  </p>
+                </div>
+              </div>
+ 
+              {/* Google Gemini API Key */}
+              <div className="space-y-2">
+                <div className="flex justify-between items-center">
+                  <label className="text-[11px] font-bold text-[#13253D]/70 uppercase tracking-wide flex items-center gap-1.5">
+                    Google Gemini API Key
+                  </label>
+                  <button
+                    type="button"
+                    onClick={() => setShowGeminiKey(!showGeminiKey)}
+                    className="text-xs text-[#FF4A7D] hover:text-[#E63E6E] font-extrabold transition flex items-center gap-1"
+                  >
+                    {showGeminiKey ? (
+                      <><EyeOff className="w-3.5 h-3.5" /><span>Hide Mask</span></>
+                    ) : (
+                      <><Eye className="w-3.5 h-3.5" /><span>Reveal Key</span></>
+                    )}
+                  </button>
+                </div>
+                
+                <input
+                  type="text"
+                  name="gemini_key_spec_input_nocache"
+                  autoComplete="new-password"
+                  value={settings.geminiApiKey}
+                  onChange={e => handleInputChange("geminiApiKey", e.target.value)}
+                  placeholder="AIzaSy..."
+                  className="w-full rounded-xl border border-[#F1D9D0] px-4 py-3 text-xs bg-[#FFF8F0]/20 font-mono outline-none focus:border-[#FF4A7D] focus:ring-1 focus:ring-[#FF4A7D]/20 transition-all shadow-sm"
+                  style={{
+                    WebkitTextSecurity: showGeminiKey ? "none" : "disc",
+                    textSecurity: showGeminiKey ? "none" : "disc"
+                  } as any}
+                />
+                <div className="flex gap-2 p-3 bg-pink-50/50 border border-pink-100 rounded-xl text-[10px] text-slate-600 leading-normal">
+                  <Sparkles className="w-4 h-4 text-pink-500 shrink-0 mt-0.5" />
+                  <p>
+                    Used as the active fallback model. Key is masked and cached in ai_settings.json. Defaults to process.env.GEMINI_API_KEY if left empty.
                   </p>
                 </div>
               </div>

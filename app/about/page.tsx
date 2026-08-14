@@ -10,26 +10,42 @@ export default function AboutPage() {
             Our Story
           </div>
           <h1 className="font-display font-[800] text-[36px] md:text-[52px] leading-[1.05] text-[#13253D]">
-            We started because women deserve trips, not lectures.
+            TripNaari — Where Women Choose Themselves
           </h1>
         </div>
 
         {/* Story Text */}
         <div className="space-y-6 text-[16px] md:text-[17px] leading-relaxed text-[#3D4A5E] border-b border-[#F1D9D0]/50 pb-12">
           <p>
-            TripNaari was born when our founder saw her own mother postpone a Kashmir dream for 20 years because “who will go with you?”. What started as a simple Instagram page `@tripnaari` to share real journeys has grown into a vibrant family of over 33K+ women.
+            Six years ago, TripNaari began with a simple observation.
           </p>
           <p>
-            We've now guided over 6,000+ women on safe, empowering, and life-changing departures—from solo first-timers and busy professionals to housewives, mothers, daughters, and adventurous grandmothers.
+            So many women dreamed of travelling, yet their dreams remained packed away in the corners of their lives. They wanted to see the mountains, walk through new cities, watch the sunrise by the sea, visit temples, forests, and hidden villages — but something always stood in the way.
+          </p>
+          
+          <ul className="space-y-2 pl-4 border-l-2 border-[#FF4A7D]/40 text-[#4A5568] italic my-4">
+            <li>• A companion who was never free.</li>
+            <li>• A family that was not yet convinced.</li>
+            <li>• A fear of travelling alone.</li>
+            <li>• Or the quiet belief that their own dreams could wait a little longer.</li>
+          </ul>
+
+          <p>
+            Again and again, we heard the same words:
+          </p>
+
+          <blockquote className="border-l-4 border-[#FF4A7D] pl-4 my-6 text-[20px] font-display font-medium italic text-[#13253D]">
+            “I want to travel… but I have no one to go with.”
+          </blockquote>
+
+          <p>
+            And behind those words was an even deeper truth: many women were waiting for someone else before choosing themselves.
+          </p>
+          <p className="font-bold text-[#13253D]">
+            TripNaari was born to change that.
           </p>
           <p>
-            We believe in complete transparency. Our itineraries share exact hotel category previews, inclusions, exclusions, written refund commitments, and a real, active escalation matrix so that you're always fully informed.
-          </p>
-          <p>
-            Every single trip is handcrafted: women-led stays, local female artisans, background-checked transport drivers, and an experienced female trip leader who stays with the group from pickup to drop.
-          </p>
-          <p className="font-display font-bold text-[18px] text-[#800F2D] pt-2">
-            Travel fearless, Naari. We’ve got your back and your backpack.
+            We did not start as a travel company with big offices or grand plans. We started with a small group of women, one carefully planned journey, and a belief that travel becomes extraordinary when women feel safe, supported, and free to choose themselves.
           </p>
         </div>
 
@@ -55,4 +71,3 @@ export default function AboutPage() {
     </div>
   );
 }
-

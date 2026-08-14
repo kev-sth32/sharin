@@ -8,19 +8,19 @@ import AIAssistant from "@/components/admin/AIAssistant";
 import { Menu, X } from "lucide-react";
 
 const nav = [
-  { href: "/admin", label: "Dashboard", icon: "📊" },
-  { href: "/admin/leads", label: "Leads & CRM", icon: "💬" },
-  { href: "/admin/trips", label: "Trip Packages", icon: "🎒" },
-  { href: "/admin/departures", label: "Departures", icon: "📅" },
-  { href: "/admin/testimonials", label: "Testimonials", icon: "⭐" },
-  { href: "/admin/leaders", label: "Trip Leaders", icon: "👩‍✈️" },
-  { href: "/admin/blogs", label: "Blogs / Resources", icon: "📝" },
-  { href: "/admin/faqs", label: "FAQs", icon: "❓" },
-  { href: "/admin/policies", label: "Policies", icon: "📜" },
-  { href: "/admin/gallery", label: "Gallery", icon: "🖼️" },
-  { href: "/admin/contacts", label: "Contacts & Refunds", icon: "📥" },
-  { href: "/admin/finance", label: "Finance Tracker", icon: "💵" },
-  { href: "/admin/ai-settings", label: "AI Settings", icon: "🤖" },
+  { href: "/admin24639", label: "Dashboard", icon: "📊" },
+  { href: "/admin24639/leads", label: "Leads & CRM", icon: "💬" },
+  { href: "/admin24639/trips", label: "Trip Packages", icon: "🎒" },
+  { href: "/admin24639/departures", label: "Departures", icon: "📅" },
+  { href: "/admin24639/testimonials", label: "Testimonials", icon: "⭐" },
+  { href: "/admin24639/leaders", label: "Trip Leaders", icon: "👩‍✈️" },
+  { href: "/admin24639/blogs", label: "Blogs / Resources", icon: "📝" },
+  { href: "/admin24639/faqs", label: "FAQs", icon: "❓" },
+  { href: "/admin24639/policies", label: "Policies", icon: "📜" },
+  { href: "/admin24639/gallery", label: "Gallery", icon: "🖼️" },
+  { href: "/admin24639/contacts", label: "Contacts & Refunds", icon: "📥" },
+  { href: "/admin24639/finance", label: "Finance Tracker", icon: "💵" },
+  { href: "/admin24639/ai-settings", label: "AI Settings", icon: "🤖" },
 ];
 
 export default function AdminLayoutClient({ children }: { children: React.ReactNode }) {
@@ -51,7 +51,7 @@ export default function AdminLayoutClient({ children }: { children: React.ReactN
       >
         {/* Sidebar Header */}
         <div className="p-6 border-b border-white/10 flex items-center justify-between">
-          <Link href="/admin" className="flex items-center gap-2.5">
+          <Link href="/admin24639" className="flex items-center gap-2.5">
             <div className="w-9 h-9 rounded-xl bg-[#FF4A7D] grid place-items-center font-black">TN</div>
             <div>
               <div className="font-bold leading-none">TripNaari</div>
@@ -116,7 +116,7 @@ export default function AdminLayoutClient({ children }: { children: React.ReactN
             >
               <Menu className="w-5.5 h-5.5" />
             </button>
-            <Link href="/admin" className="font-bold text-sm tracking-wide">TripNaari Admin</Link>
+            <Link href="/admin24639" className="font-bold text-sm tracking-wide">TripNaari Admin</Link>
           </div>
           <div className="flex gap-2 items-center">
             <Link href="/" className="text-[11px] bg-white/10 rounded-full px-3 py-1.5 hover:bg-white/15 transition">Site</Link>

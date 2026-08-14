@@ -2,7 +2,7 @@ import { Check } from "lucide-react";
 
 export default function SafetyPromise() {
   const points = [
-    { title: "100% Female Tour Leaders", desc: "Every trip is led by an experienced, certified female leader who ensures safety and coordinates everything." },
+    { title: "100% Expert Tour Leaders", desc: "Every trip is led by an experienced, certified leader who ensures safety and coordinates everything." },
     { title: "Handpicked Safe Accommodation", desc: "Stays are audited for security, locks, location, and verified by solo-traveler reviews beforehand." },
     { title: "Solo-Traveler Friendly Environment", desc: "No single supplements or awkwardness; we pair you with co-travelers or offer private options seamlessly." },
     { title: "Curated Immersive Experiences", desc: "Skip generic sight-seeing and dive deep into local food, craft workshops, and authentic sisterhood connections." },
@@ -16,8 +16,8 @@ export default function SafetyPromise() {
           <div className="lg:col-span-5 flex justify-center">
             <div className="relative w-full max-w-[400px] aspect-[3/4] overflow-hidden rounded-[32px] shadow-xl">
               <img 
-                src="https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?w=800&q=80" 
-                alt="Road to mountains" 
+                src="/uploads/sisterhood-circle.jpg" 
+                alt="TripNaari Sisterhood of Exploration" 
                 className="w-full h-full object-cover"
               />
             </div>

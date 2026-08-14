@@ -101,6 +101,8 @@ export async function saveTrip(formData: FormData) {
     shortDescription: formData.get("shortDescription") as string,
     longDescription: formData.get("longDescription") as string,
     destinationSlug: formData.get("destinationSlug") as string,
+    locationLabel: formData.get("locationLabel") as string || undefined,
+    badgeText: formData.get("badgeText") as string || undefined,
     durationDays: Number(formData.get("durationDays")),
     durationNights: Number(formData.get("durationNights")),
     priceFrom: Number(formData.get("priceFrom")),
@@ -166,13 +168,61 @@ export async function addTestimonial(data: any) {
 }
 export async function approveTestimonial(id: number) {
   const overrides = readFile("testimonials_overrides.json", []);
-  const updated = overrides.map((t: any) => t.id === id ? { ...t, isApproved: !t.isApproved, isFeatured: !t.isApproved } : t);
-  writeFile("testimonials_overrides.json", updated);
+  const idx = overrides.findIndex((t: any) => t.id === id);
+  if (idx >= 0) {
+    overrides[idx] = { ...overrides[idx], isApproved: !overrides[idx].isApproved, isFeatured: overrides[idx].isApproved };
+  } else {
+    const seedIndex = id - 1000;
+    if (seedIndex >= 0 && seedIndex < testimonialsSeed.length) {
+      const seedItem = testimonialsSeed[seedIndex];
+      overrides.push({
+        id,
+        ...seedItem,
+        isApproved: false,
+        isFeatured: false
+      });
+    }
+  }
+  writeFile("testimonials_overrides.json", overrides);
   return { success: true };
 }
 export async function deleteTestimonial(id: number) {
   const overrides = readFile("testimonials_overrides.json", []);
-  writeFile("testimonials_overrides.json", overrides.filter((t:any)=>t.id!==id));
+  const idx = overrides.findIndex((t: any) => t.id === id);
+  if (idx >= 0) {
+    overrides[idx] = { ...overrides[idx], isDeleted: true };
+  } else {
+    const seedIndex = id - 1000;
+    if (seedIndex >= 0 && seedIndex < testimonialsSeed.length) {
+      const seedItem = testimonialsSeed[seedIndex];
+      overrides.push({
+        id,
+        ...seedItem,
+        isDeleted: true
+      });
+    }
+  }
+  writeFile("testimonials_overrides.json", overrides);
+  return { success: true };
+}
+export async function updateTestimonial(id: number, data: any) {
+  const overrides = readFile("testimonials_overrides.json", []);
+  const idx = overrides.findIndex((t: any) => t.id === id);
+  if (idx >= 0) {
+    overrides[idx] = { ...overrides[idx], ...data, updatedAt: new Date().toISOString() };
+  } else {
+    const seedIndex = id - 1000;
+    if (seedIndex >= 0 && seedIndex < testimonialsSeed.length) {
+      const seedItem = testimonialsSeed[seedIndex];
+      overrides.push({
+        id,
+        ...seedItem,
+        ...data,
+        updatedAt: new Date().toISOString()
+      });
+    }
+  }
+  writeFile("testimonials_overrides.json", overrides);
   return { success: true };
 }
 
@@ -215,22 +265,86 @@ export async function saveLeader(formData: FormData) {
     const idx = custom.findIndex((l:any)=>l.slug===slug);
     if (idx>=0) custom[idx] = { ...custom[idx], ...data };
     else custom.push(data);
-    writeFile("leaders_custom.json", custom);
   }
   return { success: true };
 }
 
-// ===== Blogs =====
-export async function createBlogPost(data: { title: string; slug: string; excerpt: string; content: string; category: string; heroImage?: string }) {
-  const blogs = readFile("blogs_custom.json", []);
-  const slug = data.slug.toLowerCase().replace(/[^a-z0-9]+/g,"-");
-  blogs.push({ id: Date.now(), isPublished: true, publishedAt: new Date().toISOString(), ...data, slug });
-  writeFile("blogs_custom.json", blogs);
+export async function deleteLeader(slug: string) {
+  const custom = readFile("leaders_custom.json", []);
+  const filteredCustom = custom.filter((l: any) => l.slug !== slug);
+  if (filteredCustom.length !== custom.length) {
+    writeFile("leaders_custom.json", filteredCustom);
+    return { success: true };
+  }
+  const overrides = readFile("leaders_overrides.json", []);
+  const idx = overrides.findIndex((o: any) => o.slug === slug);
+  if (idx >= 0) {
+    overrides[idx] = { ...overrides[idx], isDeleted: true };
+  } else {
+    overrides.push({ slug, isDeleted: true });
+  }
+  writeFile("leaders_overrides.json", overrides);
   return { success: true };
 }
+
+// ===== Blogs =====
+export async function saveBlogPost(formData: FormData) {
+  const idStr = formData.get("id") as string;
+  const id = idStr ? Number(idStr) : Date.now();
+  const title = formData.get("title") as string;
+  const slug = (formData.get("slug") as string || title).toLowerCase().replace(/[^a-z0-9]+/g,"-");
+  const category = formData.get("category") as string || "General";
+  const excerpt = formData.get("excerpt") as string || "";
+  const content = formData.get("content") as string || "";
+  const heroImage = formData.get("heroImage") as string || "";
+  const isPublished = formData.get("isPublished") !== "false" && formData.get("isPublished") !== "off";
+
+  const blogData = {
+    id,
+    title,
+    slug,
+    category,
+    excerpt,
+    content,
+    heroImage,
+    isPublished,
+    publishedAt: new Date().toISOString()
+  };
+
+  const blogs = readFile("blogs_custom.json", []);
+  // Match by ID or Slug to avoid duplicates on edit
+  const idx = blogs.findIndex((b: any) => b.id === id || b.slug === slug);
+  if (idx >= 0) {
+    blogs[idx] = { ...blogs[idx], ...blogData };
+  } else {
+    blogs.push(blogData);
+  }
+  writeFile("blogs_custom.json", blogs);
+  
+  // If it was in the deleted list, remove it from there
+  const deleted = readFile("blogs_deleted.json", []);
+  const filteredDeleted = deleted.filter((s: string) => s !== slug);
+  if (filteredDeleted.length !== deleted.length) {
+    writeFile("blogs_deleted.json", filteredDeleted);
+  }
+
+  return { success: true };
+}
+
 export async function deleteBlog(slug: string) {
   const blogs = readFile("blogs_custom.json", []);
-  writeFile("blogs_custom.json", blogs.filter((b:any)=>b.slug!==slug));
+  const filtered = blogs.filter((b: any) => b.slug !== slug);
+  if (filtered.length !== blogs.length) {
+    writeFile("blogs_custom.json", filtered);
+    return { success: true };
+  }
+
+  // If it's a seed blog, track it in the deleted list
+  const deleted = readFile("blogs_deleted.json", []);
+  if (!deleted.includes(slug)) {
+    deleted.push(slug);
+    writeFile("blogs_deleted.json", deleted);
+  }
   return { success: true };
 }
 
@@ -604,6 +718,7 @@ export async function savePolicy(slug: string, title: string, body: string, vers
 export async function getAISettings() {
   const fallback = {
     nvidiaApiKey: "",
+    geminiApiKey: "",
     modelName: "meta/llama-3.1-70b-instruct",
     welcomeMessage: "Namaste! 🙏 Welcome to TripNaari. I am NaariAI, your travel companion. I can help you find safe women-only packages, check active departures, and answer any queries you have. What destinations are you dreaming of?",
     systemInstruction: `You are "NaariAI", the official women's safety & group travel assistant for TripNaari.

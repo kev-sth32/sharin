@@ -260,7 +260,10 @@ export default function TripEditForm({ initial, action }: { initial?: any; actio
     startTransition(async () => {
       try {
         await action(formData);
-      } catch (err) {
+      } catch (err: any) {
+        if (err?.message === "NEXT_REDIRECT" || err?.digest?.startsWith("NEXT_REDIRECT")) {
+          throw err;
+        }
         console.error("Save trip failed:", err);
         alert("An error occurred. Please try again.");
       }
@@ -280,6 +283,14 @@ export default function TripEditForm({ initial, action }: { initial?: any; actio
           <div>
             <label className="text-xs font-bold uppercase text-[#13253D]">Destination Slug</label>
             <input name="destinationSlug" defaultValue={initial?.destinationSlug||"kashmir"} className="w-full mt-1 rounded-xl border px-3 py-2 text-sm" placeholder="kashmir" />
+          </div>
+          <div>
+            <label className="text-xs font-bold uppercase text-[#13253D]">Location Display Label (Map Pin)</label>
+            <input name="locationLabel" defaultValue={initial?.locationLabel||""} className="w-full mt-1 rounded-xl border px-3 py-2 text-sm" placeholder="e.g. Sikkim, India (falls back to destination slug)" />
+          </div>
+          <div>
+            <label className="text-xs font-bold uppercase text-[#13253D]">Badge Text (e.g. Popular, Selling Fast, or 'none' to hide)</label>
+            <input name="badgeText" defaultValue={initial?.badgeText||""} className="w-full mt-1 rounded-xl border px-3 py-2 text-sm" placeholder="e.g. Popular, Selling Fast, or 'none'" />
           </div>
           <div className="md:col-span-2">
             <label className="text-xs font-bold uppercase text-[#13253D]">Title</label>

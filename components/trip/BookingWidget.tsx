@@ -92,19 +92,16 @@ export default function BookingWidget({
   };
 
   const handleDownloadPdf = () => {
-    if (itineraryPdf) {
-      window.open(itineraryPdf, "_blank");
-    } else {
-      // If there is no PDF, open the enquiry modal with a pre-filled request message
-      const eventDetail = {
-        destination: tripSlug,
-        date: selectedBatch ? selectedBatch.startDate : "",
-        message: `Hi, please send me the PDF itinerary brochure for ${tripTitle}.`,
-      };
-      window.dispatchEvent(
-        new CustomEvent("open-enquiry-modal", { detail: eventDetail })
-      );
-    }
+    const eventDetail = {
+      destination: tripSlug,
+      date: selectedBatch ? selectedBatch.startDate : "",
+      message: `Requested PDF brochure for ${tripTitle}.`,
+      itineraryPdf: itineraryPdf || "/uploads/itinerary-placeholder.pdf",
+      mode: "download",
+    };
+    window.dispatchEvent(
+      new CustomEvent("open-enquiry-modal", { detail: eventDetail })
+    );
   };
 
   // Determine price based on selected batch

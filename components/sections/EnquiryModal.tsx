@@ -8,6 +8,8 @@ export default function EnquiryModal() {
   const [defaultDest, setDefaultDest] = useState("");
   const [defaultDate, setDefaultDate] = useState("");
   const [defaultMessage, setDefaultMessage] = useState("");
+  const [pdfUrl, setPdfUrl] = useState("");
+  const [mode, setMode] = useState("");
 
   useEffect(() => {
     const handleOpen = (e: Event) => {
@@ -26,6 +28,16 @@ export default function EnquiryModal() {
         setDefaultMessage(customEvent.detail.message);
       } else {
         setDefaultMessage("");
+      }
+      if (customEvent.detail && customEvent.detail.itineraryPdf) {
+        setPdfUrl(customEvent.detail.itineraryPdf);
+      } else {
+        setPdfUrl("");
+      }
+      if (customEvent.detail && customEvent.detail.mode) {
+        setMode(customEvent.detail.mode);
+      } else {
+        setMode("");
       }
       setIsOpen(true);
       document.body.style.overflow = "hidden";
@@ -58,13 +70,20 @@ export default function EnquiryModal() {
         <button 
            onClick={handleClose}
            className="absolute top-4 right-4 w-10 h-10 rounded-full bg-[#FFF8F0] border border-[#F1D9D0] flex items-center justify-center text-[#13253D] hover:text-[#FF4A7D] transition-colors z-20"
-        >
+         >
           <X className="w-5 h-5" />
         </button>
 
         {/* Form Container */}
         <div className="p-1 sm:p-2">
-          <EnquiryForm source="modal" defaultDestination={defaultDest} defaultDate={defaultDate} defaultMessage={defaultMessage} />
+          <EnquiryForm 
+            source="modal" 
+            defaultDestination={defaultDest} 
+            defaultDate={defaultDate} 
+            defaultMessage={defaultMessage} 
+            pdfUrl={pdfUrl}
+            mode={mode}
+          />
         </div>
       </div>
     </div>

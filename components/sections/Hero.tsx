@@ -123,18 +123,16 @@ export default function Hero({ settings }: HeroProps) {
                 loop
                 muted
                 playsInline
-                className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-1000 ${
-                  idx === currentImageIndex ? "opacity-100" : "opacity-0"
-                }`}
+                className={`absolute inset-0 w-full h-full object-cover object-top transition-opacity duration-1000 ${idx === currentImageIndex ? "opacity-100" : "opacity-0"
+                  }`}
               />
             ) : (
               <img
                 key={imgUrl}
                 src={imgUrl}
                 alt={`Women traveling slide ${idx + 1}`}
-                className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-1000 ${
-                  idx === currentImageIndex ? "opacity-100" : "opacity-0"
-                }`}
+                className={`absolute inset-0 w-full h-full object-cover object-top transition-opacity duration-1000 ${idx === currentImageIndex ? "opacity-100" : "opacity-0"
+                  }`}
               />
             )
           ))}
@@ -146,7 +144,7 @@ export default function Hero({ settings }: HeroProps) {
               <div className="inline-flex items-center rounded-full bg-white/10 backdrop-blur-sm border border-white/20 px-3 py-1 text-[8.5px] font-bold tracking-[0.15em] uppercase text-white/90 shadow-sm">
                 {badgeText}
               </div>
-              <h1 
+              <h1
                 className={`font-display font-[800] tracking-tight leading-[1.12] text-white text-balance max-w-4xl drop-shadow-[0_2px_4px_rgba(0,0,0,0.3)] ${titleSizeClass}`}
                 dangerouslySetInnerHTML={{ __html: titleHtml }}
               />

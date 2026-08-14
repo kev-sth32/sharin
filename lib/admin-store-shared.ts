@@ -187,14 +187,30 @@ export async function getAdminDataShared() {
     ...tripsCustom
   ];
 
-  const testimonials = [...testimonialsSeed.map((t: any, i: number)=>({ id: 1000+i, isApproved: true, ...t })), ...testimonialsOverrides];
+  const testimonials = [
+    ...testimonialsSeed.map((t: any, i: number) => {
+      const id = 1000 + i;
+      const over = testimonialsOverrides.find((o: any) => o.id === id);
+      if (over?.isDeleted) return null;
+      return over ? { ...t, ...over } : { id, isApproved: true, isFeatured: true, ...t };
+    }).filter(Boolean),
+    ...testimonialsOverrides.filter((o: any) => (o.id >= 2000 || o.id < 1000) && !o.isDeleted)
+  ];
   const tripLeaders = [
     ...tripLeadersSeed.map((l: any) => {
       const over = leadersOverrides.find((o: any) => o.slug === l.slug);
+      if (over?.isDeleted) return null;
       return over ? { ...l, ...over } : l;
-    }),
+    }).filter(Boolean),
     ...leadersCustom
   ];
+
+  const customBlogs = readFile("blogs_custom.json", []);
+  const deletedBlogs = readFile("blogs_deleted.json", []);
+  const mergedBlogs = [
+    ...blogSeed.map((b: any, i: number) => ({ id: 10000 + i, isPublished: true, ...b })),
+    ...customBlogs
+  ].filter((b: any) => !deletedBlogs.includes(b.slug));
 
   return {
     stats: {
@@ -217,7 +233,7 @@ export async function getAdminDataShared() {
     departures,
     transactions,
     faqs: faqsSeed,
-    blogs: blogSeed,
+    blogs: mergedBlogs,
     tripsOverrides,
     tripsCustom
   };

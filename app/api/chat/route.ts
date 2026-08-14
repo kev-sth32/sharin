@@ -65,9 +65,9 @@ export async function POST(req: Request) {
     const isCustomer = role === "customer";
 
     // 2. Fallback to Gemini or return error if API Key is missing/default
-    const geminiKey = process.env.GEMINI_API_KEY;
+    const geminiKey = aiSettings.geminiApiKey || process.env.GEMINI_API_KEY;
     const hasNvidiaKey = apiKey && apiKey !== "your_key_here" && apiKey !== "re_xxxxxxxxxxxxxxxx";
-    const hasGeminiKey = geminiKey && geminiKey !== "your_key_here" && geminiKey !== "re_xxxxxxxxxxxxxxxx";
+    const hasGeminiKey = geminiKey && geminiKey !== "your_key_here" && geminiKey !== "re_xxxxxxxxxxxxxxxx" && geminiKey !== "";
 
     if (!hasNvidiaKey) {
       if (hasGeminiKey) {
@@ -107,7 +107,7 @@ export async function POST(req: Request) {
     
     let apiResponse;
     const abortCtrl = new AbortController();
-    const timeoutId = setTimeout(() => abortCtrl.abort(), 6000);
+    const timeoutId = setTimeout(() => abortCtrl.abort(), 15000);
 
     try {
       apiResponse = await fetch(apiUrl, {
@@ -270,7 +270,7 @@ async function handleGeminiResponse(messages: any[], role: string, context: any,
     };
   });
 
-  const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-3.5-flash-lite:streamGenerateContent?alt=sse&key=${geminiKey}`;
+  const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:streamGenerateContent?alt=sse&key=${geminiKey}`;
   
   let apiResponse;
   const abortCtrl = new AbortController();
