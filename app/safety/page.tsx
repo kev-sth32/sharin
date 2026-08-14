@@ -1,4 +1,4 @@
-import { MessageSquare, ShieldCheck, Heart, FileText, AlertTriangle, CheckCircle2 } from "lucide-react";
+import { MessageSquare, ShieldCheck, Heart, FileText, CheckCircle2 } from "lucide-react";
 
 export const metadata = { title: "Safety Promise - TripNaari Women-First Accountability" };
 
@@ -261,23 +261,6 @@ export default function SafetyPage() {
 
         </div>
 
-        {/* Detour Alert banner */}
-        <div className="mt-12 rounded-3xl border border-[#FF8A2B]/20 bg-[#FFF6EF] p-5 md:p-6 flex flex-col sm:flex-row gap-4 items-start sm:items-center">
-          <div className="flex items-center gap-3 shrink-0">
-            <AlertTriangle className="w-6 h-6 text-[#FF8A2B]" />
-            <strong className="text-[#13253D] font-bold sm:hidden">Low group size policy</strong>
-          </div>
-          <div className="text-[14px] leading-relaxed text-[#3D4A5E]">
-            <strong className="text-[#13253D] hidden sm:block mb-1">Low group size policy</strong>
-            If a group size drops below 6, we offer 3 choices:
-            <ul className="list-disc pl-5 mt-2 mb-2 space-y-1 font-medium">
-              <li>Move to the next date with a free upgrade</li>
-              <li>Supplement max 10% extra to travel with a smaller group size</li>
-              <li>Get a 100% full refund</li>
-            </ul>
-            <span className="font-bold text-[#13253D] block mt-2">We never cancel a confirmed date without your explicit consent.</span>
-          </div>
-        </div>
 
       </div>
     </div>

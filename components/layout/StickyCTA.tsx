@@ -56,14 +56,13 @@ export default function StickyCTA() {
   return (
     <div className={`fixed bottom-0 left-0 right-0 z-[60] transition-transform duration-300 ${show ? "translate-y-0" : "translate-y-full"}`}>
       <div className="mx-auto max-w-[1280px] px-4 pb-[max(16px,env(safe-area-inset-bottom))] md:px-8">
-        <div className="rounded-[24px] bg-[#13253D] text-white p-4 md:p-3 flex items-center justify-between gap-4 shadow-[0_16px_48px_rgba(19,37,61,0.4)] border border-white/10">
-          <div className="flex items-center gap-3 min-w-0">
+        <div className="rounded-[24px] bg-[#13253D] text-white p-3 md:p-3 flex items-center justify-between gap-3 md:gap-4 shadow-[0_16px_48px_rgba(19,37,61,0.4)] border border-white/10">
+          <div className="flex items-center gap-2.5 min-w-0">
             <div className="hidden md:flex w-10 h-10 rounded-full bg-[#FF4A7D] items-center justify-center font-bold shrink-0">TN</div>
             <div className="leading-tight min-w-0">
-              <div className="font-semibold text-[11px] sm:text-[13px] md:text-[15px] truncate sm:whitespace-normal">
-                {/* On very small screen widths (below 380px), show a shorter text to fit the 4 buttons inline */}
-                <span className="inline min-[380px]:hidden">Need help?</span>
-                <span className="hidden min-[380px]:inline md:hidden">Need help? Get free consult in 2h</span>
+              <div className="font-semibold text-[12px] sm:text-[14px] md:text-[15px] truncate sm:whitespace-normal">
+                <span className="inline sm:hidden">Need help?</span>
+                <span className="hidden sm:inline md:hidden">Need help? Get free consult in 2h</span>
                 <span className="hidden md:inline">Not sure which trip? Get free consult in 2 hours</span>
               </div>
               <div className="text-[12px] text-white/60 hidden md:block">33K+ women community • Verified stays • Women trip leader 24x7 • Transparent refunds</div>
@@ -78,7 +77,7 @@ export default function StickyCTA() {
               className="flex w-9 h-9 sm:w-10 sm:h-10 md:w-11 md:h-11 rounded-full bg-[#25D366] hover:bg-[#20ba5a] text-white items-center justify-center transition-all hover:scale-105 shrink-0"
               title="Chat on WhatsApp"
             >
-              <WhatsAppIcon className="w-4.5 h-4.5 sm:w-5 sm:h-5 text-white" />
+              <WhatsAppIcon className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
             </a>
 
             {/* Enquire Button */}
