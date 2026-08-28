@@ -5,7 +5,7 @@ import { sendInstagramDm, sendWhatsAppMessage } from "@/lib/ai-crm";
 import { generateTripQuotation, runSalesDripEngine } from "@/lib/sales-engine";
 
 // Mock memory store when database is in fallback mode
-let mockConversations = [
+let mockConversations: any[] = [
   {
     id: 101,
     channel: "instagram",
@@ -16,6 +16,9 @@ let mockConversations = [
     mode: "ai",
     status: "active",
     dripStep: 0,
+    internalNotes: [
+      { id: 1, author: "Sneha Kapur", text: "Customer asked for women solo discount. Advised July batch.", createdAt: new Date(Date.now() - 1000 * 60 * 60).toISOString() }
+    ],
     lastMessageText: "Hi! Can you tell me more about the Ladakh Women Special trip for July?",
     lastMessageAt: new Date(Date.now() - 1000 * 60 * 15).toISOString(),
     unreadCount: 1,
@@ -38,8 +41,11 @@ let mockConversations = [
     customerName: "Ananya Roy",
     assignedAgent: "Rahul Sharma",
     mode: "human",
-    status: "escalated",
+    status: "payment_pending",
     dripStep: 1,
+    internalNotes: [
+      { id: 2, author: "Rahul Sharma", text: "Sent quote link for ₹99,996 for group of 4. Follow up by 5 PM.", createdAt: new Date(Date.now() - 1000 * 60 * 30).toISOString() }
+    ],
     lastMessageText: "I want to speak with a human agent about custom booking for 4 girls.",
     lastMessageAt: new Date(Date.now() - 1000 * 60 * 5).toISOString(),
     unreadCount: 2,
@@ -79,7 +85,7 @@ export async function GET(req: NextRequest) {
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
-    const { action, conversationId, mode, messageText, agentName, quoteInput } = body;
+    const { action, conversationId, mode, status, messageText, noteText, agentName, quoteInput, broadcastPayload } = body;
     const db = dbInstance();
 
     // Action 1: Toggle Mode (AI vs Human Takeover)
@@ -98,7 +104,23 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ success: true, mode });
     }
 
-    // Action 2: Assign Lead to Agent
+    // Action 2: Update Lead Lifecycle Pipeline Stage
+    if (action === "update_status") {
+      if (db._isMock) {
+        const target = mockConversations.find(c => c.id === conversationId);
+        if (target) target.status = status;
+        return NextResponse.json({ success: true, status });
+      }
+
+      await db
+        .update(schema.crmConversations)
+        .set({ status })
+        .where(eq(schema.crmConversations.id, conversationId));
+
+      return NextResponse.json({ success: true, status });
+    }
+
+    // Action 3: Assign Lead to Agent
     if (action === "assign_agent") {
       if (db._isMock) {
         const target = mockConversations.find(c => c.id === conversationId);
@@ -114,7 +136,47 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ success: true, assignedAgent: agentName });
     }
 
-    // Action 3: Generate & Send Formal Quotation Link
+    // Action 4: Add Private Internal Team Note
+    if (action === "add_internal_note") {
+      if (!noteText || !conversationId) {
+        return NextResponse.json({ error: "Missing note text or conversationId" }, { status: 400 });
+      }
+
+      const newNote = {
+        id: Date.now(),
+        author: agentName || "Admin Support",
+        text: noteText,
+        createdAt: new Date().toISOString()
+      };
+
+      if (db._isMock) {
+        const target = mockConversations.find(c => c.id === conversationId);
+        if (target) {
+          if (!target.internalNotes) target.internalNotes = [];
+          target.internalNotes.push(newNote);
+        }
+        return NextResponse.json({ success: true, note: newNote });
+      }
+
+      const [conv] = await db
+        .select()
+        .from(schema.crmConversations)
+        .where(eq(schema.crmConversations.id, conversationId));
+
+      if (conv) {
+        const existingNotes = Array.isArray(conv.internalNotes) ? conv.internalNotes : [];
+        const updatedNotes = [...existingNotes, newNote];
+
+        await db
+          .update(schema.crmConversations)
+          .set({ internalNotes: updatedNotes })
+          .where(eq(schema.crmConversations.id, conv.id));
+      }
+
+      return NextResponse.json({ success: true, note: newNote });
+    }
+
+    // Action 5: Generate & Send Formal Quotation Link
     if (action === "generate_quote") {
       if (!quoteInput || !conversationId) {
         return NextResponse.json({ error: "Missing quote input parameters" }, { status: 400 });
@@ -133,7 +195,7 @@ export async function POST(req: NextRequest) {
           });
           target.lastMessageText = `[Quotation Sent]: ${quote.tripTitle} - ₹${quote.totalPrice}`;
           target.lastMessageAt = new Date().toISOString();
-          target.status = "quote_sent";
+          target.status = "payment_pending";
 
           if (target.channel === "instagram") {
             await sendInstagramDm(target.externalUserId, quote.formattedMessage);
@@ -161,7 +223,7 @@ export async function POST(req: NextRequest) {
         await db
           .update(schema.crmConversations)
           .set({
-            status: "quote_sent",
+            status: "payment_pending",
             quoteData: quote,
             lastMessageText: `[Quotation Sent]: ₹${quote.totalPrice}`,
             lastMessageAt: new Date(),
@@ -178,13 +240,39 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ success: true, quote });
     }
 
-    // Action 4: Trigger Automated Sales Drip Engine
+    // Action 6: Trigger Automated Sales Drip Engine
     if (action === "trigger_drip") {
       const dripResult = await runSalesDripEngine();
       return NextResponse.json({ success: true, ...dripResult });
     }
 
-    // Action 5: Send Manual Admin Reply
+    // Action 7: Launch WhatsApp Bulk Broadcast Campaign
+    if (action === "launch_broadcast") {
+      const { campaignTitle, textMessage, segment } = broadcastPayload || {};
+      console.log(`[Broadcast Launched]: Title="${campaignTitle}", Segment="${segment}"`);
+
+      // Mock broadcast dispatch to conversations
+      for (const c of mockConversations) {
+        if (c.channel === "whatsapp") {
+          c.messages.push({
+            id: Date.now(),
+            senderType: "admin",
+            content: `📢 [SPECIAL ANNOUNCEMENT: ${campaignTitle}]\n${textMessage}`,
+            createdAt: new Date().toISOString()
+          });
+          c.lastMessageText = `📢 ${campaignTitle}`;
+          c.lastMessageAt = new Date().toISOString();
+        }
+      }
+
+      return NextResponse.json({
+        success: true,
+        recipientCount: mockConversations.filter(c => c.channel === "whatsapp").length,
+        message: `Campaign "${campaignTitle}" broadcasted successfully!`
+      });
+    }
+
+    // Action 8: Send Manual Admin Reply
     if (action === "send_admin_reply") {
       if (!conversationId || !messageText) {
         return NextResponse.json({ error: "Missing conversationId or messageText" }, { status: 400 });
