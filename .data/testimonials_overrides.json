@@ -1,13 +1,91 @@
 [
   {
-    "id": 1785239762197,
-    "isFeatured": false,
-    "isApproved": false,
-    "createdAt": "2026-07-28T11:56:02.197Z",
-    "name": "Test Reviewer",
-    "location": "",
-    "tripSlug": "kashmir-blossom-sisterhood",
+    "id": 1000,
+    "name": " SWATHI.M.R swathi",
+    "location": "Bangalore, 32, Solo First Timer",
+    "tripSlug": "Kodaikanal",
     "rating": 5,
-    "content": "Loved it!"
+    "content": "This was my first trip with my sister without our family.\nIt was 3 day weekend trip for Kodaikenal and I was anxious little bit about how it will turn out until we boarded our pick up car.\nOnce we got into it, our co ordinator “THARUNI” made us feel like home. She handled everything with lot of patience, more than a coordinator she turned out to be a great companion who makes your trip better to best (Also best photographer). Also all the restaurants chosen by her was great and authentic.\nThank you TripNaari and our Naari Taruni for this beautiful memories. ❤️",
+    "isFeatured": false,
+    "isApproved": true,
+    "isDeleted": true,
+    "updatedAt": "2026-08-13T17:55:11.958Z"
+  },
+  {
+    "id": 1786643555198,
+    "isFeatured": true,
+    "isApproved": true,
+    "createdAt": "2026-08-13T17:52:35.198Z",
+    "name": "Revathi Reddy",
+    "location": "Mysore-38",
+    "tripSlug": "",
+    "rating": 5,
+    "content": "Had an amazing family trip to Meghalaya, and we’re so glad we chose Tripnaari to plan it for us. Everything was well organized, and the itinerary was customized according to our preferences, which made the trip feel very personal and comfortable.\n\nThe hotels, transportation, and overall arrangements were smooth, allowing us to enjoy the beautiful scenery and spend quality time with our family without worrying about the logistics.\n\nA big thank you to the Tripnaari team for being helpful, responsive, and making sure everything went as planned. Meghalaya was absolutely beautiful, and this trip gave us memories that we’ll cherish for a long time.\n\nHighly recommend Tripnaari for anyone looking for a hassle-free and memorable travel experience"
+  },
+  {
+    "id": 1001,
+    "name": "Lakshmi & Daughter (14)",
+    "location": "Chennai, Mother-Daughter Duo",
+    "tripSlug": "kerala-backwater-healing",
+    "rating": 5,
+    "content": "As a single mom, safety for my daughter is everything. Women-only boat, women therapist, no awkwardness. They even arranged Jain food as requested in form.",
+    "isFeatured": true,
+    "isDeleted": true
+  },
+  {
+    "id": 1003,
+    "name": "Savitri Devi",
+    "location": "Jaipur, 58, Adventurous Grandmother",
+    "tripSlug": "rajasthan-queens-trail",
+    "rating": 5,
+    "content": "Umar ka koi bandhan nahi! I danced in desert with girls half my age. TripNaari ensured ground floor room without me asking.",
+    "isFeatured": true,
+    "isDeleted": true
+  },
+  {
+    "id": 1002,
+    "name": "Zoya Ahmed",
+    "location": "Delhi, Entrepreneur, 28",
+    "tripSlug": "meghalaya-living-roots",
+    "rating": 5,
+    "content": "Pema didi literally held my hand during double decker trek. Never felt like a customer. Felt like community. Refund policy is crystal clear - my friend got refund in 6 days when she cancelled for emergency.",
+    "isFeatured": true,
+    "isDeleted": true
+  },
+  {
+    "id": 1786643781877,
+    "isFeatured": true,
+    "isApproved": true,
+    "createdAt": "2026-08-13T17:56:21.877Z",
+    "name": "Sirsti Baral",
+    "location": "23",
+    "tripSlug": "Arunancha-Tawang",
+    "rating": 5,
+    "content": "Had a wonderful experience on the Tawang trip with TripNaari in April. This was my second trip with them, and once again everything was well organized—from the itinerary to the overall coordination. It was a smooth, hassle-free, and memorable journey. Looking forward to traveling with TripNaari again. Highly recommended!",
+    "updatedAt": "2026-08-13T17:59:55.974Z"
+  },
+  {
+    "id": 1786643972868,
+    "isFeatured": true,
+    "isApproved": true,
+    "createdAt": "2026-08-13T17:59:32.868Z",
+    "name": "Sirjana Bhattarai",
+    "location": "Bangalore-45-Teacher",
+    "tripSlug": "Bhutan",
+    "rating": 5,
+    "content": "This was my second trip with TripNaari and once again they didn't disappoint. The itinerary had all the important places but didn't feel overloaded. We had enough time to enjoy the destinations at our own pace.The arrangements were smooth and the team was attentive throughout the journey. It was a beautiful experience overall.",
+    "updatedAt": "2026-08-13T18:00:14.924Z"
+  },
+  {
+    "id": 1786644125179,
+    "isFeatured": true,
+    "isApproved": true,
+    "createdAt": "2026-08-13T18:02:05.179Z",
+    "name": "Priyanshu Dangol",
+    "location": "Mumbai-35-Doctor",
+    "tripSlug": "Ladakh",
+    "rating": 5,
+    "content": "Really enjoyed my TripNaari experience. The arrangements were good, the itinerary was interesting and the overall coordination was smooth. There were a few unexpected changes during the trip because of travel conditions, but the team handled them patiently. That's something I really appreciated.\n",
+    "updatedAt": "2026-08-13T18:02:30.786Z"
   }
 ]

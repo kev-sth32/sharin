@@ -1,9 +1,9 @@
 [
   {
-    "id": "conv_7865rs6fs_1786380674354",
+    "id": "conv_yv77l4vyi_1787642133612",
     "role": "customer",
-    "createdAt": "2026-08-10T17:11:09.899Z",
-    "updatedAt": "2026-08-10T17:11:09.899Z",
+    "createdAt": "2026-08-25T07:16:53.448Z",
+    "updatedAt": "2026-08-25T07:16:53.448Z",
     "messages": [
       {
         "role": "assistant",
@@ -11,11 +11,11 @@
       },
       {
         "role": "user",
-        "content": "What is your refund policy and cancellation timeline?"
+        "content": "Any trips in September?"
       },
       {
         "role": "assistant",
-        "content": "At TripNaari, we understand that sometimes plans change. Our refund policy is designed to be fair and flexible. Here's a summary of our cancellation timeline and refund terms:\n\n1. **30 Days or more before departure date**: 100% Refund - Full amount refunded back to source account.\n2. **Between 15 to 30 Days before departure date**: 50% Refund - Half package cost refunded or 80% dynamic rollover credit voucher provided.\n3. **Between 7 to 14 Days before departure date**: 25% Refund - Quarterly package cost returned. Operational logistics fees apply.\n4. **Less than 7 Days before departure date**: No Refund (0%) - Strictly non-refundable due to advance mountain vehicle and hotel bookings.\n\nPlease note that permit application processing tokens, special high-altitude entry clearances, and customized border transit passes are fully non-refundable once initiated by state regulators.\n\nIf you have any further questions or concerns, feel free to ask."
+        "content": "We have a few exciting trips lined up for September. \n\nOne of our popular trips is the \"Varanasi Prayagraj & Ayodhya\" (5D/4N) trip, which starts on September 30th. This spiritual journey covers the sacred heart of India, including the timeless ghats of Varanasi, the Buddhist heritage of Sarnath, and the holy Triveni Sangam in Prayagraj. The price starts at ₹32,000 per person.\n\nIf you're interested in exploring more options or have a specific budget in mind, please let me know, and I can help you find the perfect fit. \n\n[SHOW_ENQUIRY_FORM]"
       }
     ],
     "messageCount": 3,
@@ -25,46 +25,10 @@
     }
   },
   {
-    "id": "test_conv_123",
+    "id": "conv_evadskkjk_1787119080262",
     "role": "customer",
-    "createdAt": "2026-08-10T14:21:13.796Z",
-    "updatedAt": "2026-08-10T15:12:32.272Z",
-    "messages": [
-      {
-        "role": "user",
-        "content": "Hello NaariAI! What packages do you have?"
-      },
-      {
-        "role": "assistant",
-        "content": "Namaste, lovely! I'm thrilled to introduce you to our curated collection of women-only trips, designed with safety, sisterhood, and local women leaders at the forefront. Here are our active trip packages:\n\n1. **Kashmir Blossom - Houseboat Sisterhood** (5D/4N): Explore Srinagar, Gulmarg, and Pahalgam with a tulip garden visit. Prices start at ₹22,999.\n2. **Kerala - Backwater & Spice Healing Retreat** (6D/5N): Unwind in Kerala with a houseboat stay, Ayurveda, and a tea factory visit. Prices start at ₹24,999.\n3. **Meghalaya - Living Roots & Waterfalls** (5D/4N): Discover Dawki, Cherrapunji, and Mawkdok with homestays run by women. Prices start at ₹18,500.\n4. **Rajasthan - Queens Trail** (7D/6N): Embark on a regal journey through Jaipur, Jodhpur, and Jaisalmer with a desert camp. Prices start at ₹28,999.\n5. **Spiti Winter Whites - Women Only 4x4** (8D/7N): Venture into the Himalayas for a thrilling winter adventure. Prices start at ₹34,999.\n6. **Goa & Gokarna Surf Sisters** (4D/3N): Catch waves and relax in Goa and Gokarna with a female instructor. Prices start at ₹14,999.\n7. **Tirthan & Jibhi Whispering Pines** (3D/2N): Escape to the Himalayas for a peaceful retreat. Prices start at ₹9,999.\n8. **Bali - Divine Feminine Retreat** (6D/5N): Rejuvenate in Ubud and Uluwatu with a focus on wellness and creativity. Prices start at ₹54,999.\n\nEach trip is carefully curated to ensure a safe and empowering experience for women. Our trip leaders are certified, and we conduct thorough safety audits for all accommodations.\n\nWhich trip resonates with you, or would you like me to recommend one based on your interests?"
-      }
-    ],
-    "messageCount": 2,
-    "context": {}
-  },
-  {
-    "id": "test_gemini_conv",
-    "role": "customer",
-    "createdAt": "2026-08-10T14:37:28.863Z",
-    "updatedAt": "2026-08-10T15:11:30.093Z",
-    "messages": [
-      {
-        "role": "user",
-        "content": "Hello! I need a safety-focused trip package for Kashmir."
-      },
-      {
-        "role": "assistant",
-        "content": "Hello there, dearest! Welcome to TripNaari—your safe and trusted space for incredible women's adventures! 🌸\n\nSafety is at the very heart of everything we do. When you travel with us, you are never alone; you are stepping into a warm, supportive sisterhood. Here is how we ensure you are completely taken care of:\n\n✨ **Our Safety Promise to You:**\n- **Verified Woman Trip Leader:** Every single departure is accompanied by a certified, verified woman trip leader who stays in the same accommodation, travels with you, and carries first-aid and emergency supplies.\n- **Strict Hotel & Transport Audits:** We personally audit every hotel for safety (including room lock checks prior to your check-in!) and partner with police-verified drivers with years of hill-driving experience.\n- **24/7 Support:** You'll receive a dedicated emergency card, and our team is always just a call or WhatsApp message away.\n\nWe have a wonderful, safety-first trip package waiting for you in Kashmir:\n\n🏔️ **Kashmir Blossom - Houseboat Sisterhood**\n- **Duration:** 5 Days / 4 Nights\n- **Price:** Starting at ₹21,999 (Scheduled departures available in August 2026!)\n- **Highlights:** Tulip Garden VIP Entry, a magical 1N Houseboat Stay on Dal Lake, traditional Kahwa & Wazwan experiences, and 24x7 support from your woman trip leader.\n- **Scheduled Departures:** \n  - August 10, 2026 – August 15, 2026 (Open, ₹21,999)\n  - August 23, 2026 – August 28, 2026 (Filling Fast, ₹21,999)\n\n*(Bonus: As a special treat, if you book your solo journey with us now, you can enjoy an extra ₹1,000 off since you asked about our safety protocols!)* ❤️\n\nWould you like to book your spot or customize your journey with our sisters? Just fill out our quick booking form below, and we'll get everything ready for you!\n\n[SHOW_ENQUIRY_FORM]"
-      }
-    ],
-    "messageCount": 2,
-    "context": {}
-  },
-  {
-    "id": "conv_1hlutuwl9_1786373239659",
-    "role": "customer",
-    "createdAt": "2026-08-10T14:47:54.735Z",
-    "updatedAt": "2026-08-10T14:58:13.608Z",
+    "createdAt": "2026-08-19T06:09:13.792Z",
+    "updatedAt": "2026-08-19T06:09:13.792Z",
     "messages": [
       {
         "role": "assistant",
@@ -76,7 +40,32 @@
       },
       {
         "role": "assistant",
-        "content": "At TripNaari, we take the safety of our travelers very seriously, especially for first-time solo female travelers. Here are some measures we have in place to ensure a safe and enjoyable journey:\n\n1. **Verified Women Trip Leaders**: Every departure has a certified female trip leader who stays with the group at all times, travels in the same vehicle, and is trained in wilderness first-aid.\n2. **Background-Checked Drivers**: Our drivers undergo police verification and background audits, and have a minimum of 5 years of experience in mountain driving (for Himalayan trips).\n3. **Hotel Safety Audit**: We conduct a thorough safety audit of every hotel room lock, location, and reviews from solo women travelers before check-in.\n4. **Emergency Contact Card**: Each traveler receives an emergency contact card with the trip leader's phone number, operations 24x7, local police, hospital, and TripNaari founder escalation.\n5. **Live Location Sharing**: We share live locations on travel days, and our trip leaders are active on WhatsApp from 6am-10pm, with emergency lines available 24x7.\n6. **Pre-Trip Call**: We offer a pre-trip call to first-time travelers to discuss their concerns, answer questions, and provide guidance on what to expect.\n7. **WhatsApp Group**: We create a WhatsApp group 48 hours before the trip, where travelers can connect with each other and the trip leader.\n8. **Zero Tolerance Policy**: We have a zero-tolerance policy towards harassment, non-consensual behavior, and hidden costs.\n\nAt TripNaari, we believe that safety is a collective responsibility, and we work hard to create a safe and supportive environment for all our travelers. If you have any specific concerns or questions, please feel free to ask!"
+        "content": "At TripNaari, we prioritize your safety above all else. We have a comprehensive safety promise and accountability system in place to ensure that every solo female traveler feels secure and supported throughout their journey.\n\nHere are some of the ways we ensure safety for first-time solo female travelers:\n\n1. **Verified Woman Trip Leader**: Every TripNaari departure is accompanied by a verified woman trip leader who is trained in CPR and basic first aid. She stays in the same property as the group, travels in the same vehicle, and is available 24/7 for any assistance.\n2. **Hotel Safety Verification**: We work only with hotels that have secure door locks, safe neighborhoods, and positive reviews from solo women travelers.\n3. **Driver & Vehicle Verification**: Our drivers are police-verified and undergo background checks. Vehicles are checked for registration, permits, insurance, and fitness compliance.\n4. **Emergency Preparedness**: Our trip leaders and drivers always carry a ready emergency contact kit, including the nearest hospital details, police station contact, ambulance and emergency service numbers, and local ground-support contacts.\n5. **Emergency Card for Every Traveller**: Each traveler receives a printed and WhatsApp emergency card containing the trip leader's phone number, TripNaari operations helpline (24×7), local police station contact, nearest hospital contact, and founder escalation contact.\n6. **Live Location Sharing**: We share live location updates on travel days whenever network permits.\n7. **WhatsApp Group**: A dedicated WhatsApp group is created 48 hours before departure for group coordination and communication.\n8. **Pre-Trip Call**: First-time solo travelers receive a pre-trip call to discuss their concerns, answer questions, and provide additional support.\n9. **Safety Promise**: We have a zero-tolerance policy for harassment, intimidation, non-consensual behavior, discrimination, or abuse. Immediate corrective action will be taken, including partner removal, traveller removal, refunds where appropriate, and formal escalation when required.\n\nAt TripNaari, we believe that safety is not a feature – it's the foundation of every journey we curate for women travelers. We're committed to providing a safe, supportive, and empowering travel experience for every Naari.\n\nWould you like to explore our active departures or book a trip? [SHOW_ENQUIRY_FORM]"
+      }
+    ],
+    "messageCount": 3,
+    "context": {
+      "pathname": "/",
+      "source": "website_chatbot"
+    }
+  },
+  {
+    "id": "conv_rzku9nui1_1786963843129",
+    "role": "customer",
+    "createdAt": "2026-08-17T10:51:32.179Z",
+    "updatedAt": "2026-08-17T10:52:27.991Z",
+    "messages": [
+      {
+        "role": "assistant",
+        "content": "Namaste! 🙏 Welcome to TripNaari. I am NaariAI, your travel companion. I can help you find safe women-only packages, check active departures, and answer any queries you have. What destinations are you dreaming of?"
+      },
+      {
+        "role": "user",
+        "content": "How does TripNaari ensure safety for a first-time solo female traveler?"
+      },
+      {
+        "role": "assistant",
+        "content": "Safety is our top priority at TripNaari. We understand that traveling solo can be intimidating, especially for the first time. That's why we have a comprehensive safety protocol in place to ensure that every solo female traveler feels secure and supported throughout her journey.\n\nHere are some of the ways we ensure safety for first-time solo female travelers:\n\n1. **Verified Woman Trip Leader**: Every TripNaari departure is accompanied by a verified woman trip leader who stays in the same property as the group, travels in the same vehicle, and is trained in CPR and basic first aid.\n2. **Hotel Safety Verification**: We work only with properties that are reviewed for secure door locks, safe neighborhoods, positive reviews from solo women travelers, and hygiene and emergency preparedness.\n3. **Driver & Vehicle Verification**: Drivers are police verified and undergo background checks, and vehicles are checked for registration, permits, insurance, and fitness compliance.\n4. **Emergency Preparedness**: Our trip leaders and drivers always carry a ready emergency contact kit, including nearest hospital details, police station contact, ambulance and emergency service numbers, and local ground-support contacts.\n5. **Emergency Card for Every Traveller**: Each traveler receives a printed and WhatsApp emergency card containing trip leader phone number, TripNaari operations helpline (24×7), local police station contact, nearest hospital contact, and founder escalation contact.\n6. **Live Location Sharing**: We share live location updates on travel days whenever network permits, so you can stay connected with your loved ones.\n7. **WhatsApp Group**: A dedicated WhatsApp group is created 48 hours before departure, where you can connect with your fellow travelers and trip leader.\n8. **Pre-Trip Call**: First-time solo travelers receive a pre-trip call to discuss their concerns, answer questions, and provide additional support.\n\nAt TripNaari, we believe that safety is not a feature, it's the foundation of every journey we curate for women travelers. We're committed to providing a safe, smooth, and personalized travel experience for every Naari.\n\nWould you like to know more about our safety protocols or book a trip?"
       },
       {
         "role": "user",
@@ -84,18 +73,201 @@
       },
       {
         "role": "assistant",
-        "content": "At TripNaari, we understand that sometimes plans change, and we want to be fair and transparent about our refund policy. Here's our cancellation timeline and refund terms:\n\n**Cancellation Timeline:**\n\n1. **30+ days before departure**: 90% refund\n2. **15-29 days before departure**: 50% refund + 50% credit (valid for 1 year)\n3. **7-14 days before departure**: 30% refund + 50% credit (valid for 1 year)\n4. **Less than 7 days before departure**: No refund, but 70% credit (valid for 1 year)\n\n**Refund Terms:**\n\n* Refunds are processed within 7-10 working days to the source account.\n* Credits are transferable to another Naari and can be used within 1 year.\n* If we cancel a trip due to safety concerns or unforeseen circumstances, we offer a 100% refund.\n\n**Special Policy Notes:**\n\n* Permit application processing tokens, special high-altitude entry clearances, and customized border transit passes are fully non-refundable once initiated by state regulators.\n* In instances of unexpected road blockages, landslides, natural emergencies, or severe snowfall restrictions, preventing entry past critical checkpoints, alternate valley exploration circuits will be systematically organized by TripNaari coordinators; direct payment cash disbursements cannot be processed under state-leased environmental restrictions.\n\nWe hope this helps! If you have any further questions or concerns, please don't hesitate to ask."
+        "content": "At TripNaari, we understand that unforeseen circumstances may arise, and we're committed to providing a fair and transparent refund policy. Here's an overview of our refund policy and cancellation timeline:\n\n**Booking & Cancellation Policy**\n\n1. **Domestic Trips**: Booking amount: ₹10,000 per traveller, Balance payment: 10 days before departure.\n2. **International Trips**: Booking amount: ₹15,000 per traveller, Balance payment: 15 days before departure.\n\n**Cancellation Policy**\n\n1. **30 Days or More Before Departure**: A credit note equivalent to the booking amount paid will be issued for future travel with TripNaari. Any amount paid over and above the booking amount will be refunded to the original payment source.\n2. **Between 30 and 15 Days Before Departure**: The booking amount is non-refundable and will be treated as the cancellation charge. The remaining amount paid will be issued as a TripNaari credit note.\n3. **Less Than 15 Days Before Departure**: No refund, transfer, or credit note will be issued, as hotels, transport, permits, and other services are prepaid and non-recoverable.\n\n**Refund Timeline**\n\nRefunds, wherever applicable, will be processed within 7–10 working days from cancellation confirmation.\n\n**Additional Terms**\n\n* Refunds may be subject to deductions for non-refundable components such as permits, safari bookings, event tickets, entry fees, visa fees, airfare components, or special activity charges.\n* Cancellation requests are valid only when submitted in writing through email or WhatsApp.\n* By making a booking payment, the traveller confirms that they have read, understood, and accepted this Booking, Cancellation & Refund Policy.\n\nIf you have any further questions or concerns about our refund policy, please don't hesitate to ask.\n\nWould you like to book a trip or discuss your specific travel plans?"
       },
       {
         "role": "user",
-        "content": "what trips are available next month"
+        "content": "Book"
       },
       {
         "role": "assistant",
-        "content": "We have several exciting trips planned for next month. Here are some of the options:\n\n1. **Kashmir Blossom - Houseboat Sisterhood** (5 Days / 4 Nights)\n\t* Departure Dates: August 10-15, August 23-28\n\t* Price: ₹21999\n2. **Kerala - Backwater & Spice Healing Retreat** (6 Days / 5 Nights)\n\t* Departure Dates: August 10-16, August 23-29\n\t* Price: ₹24999\n3. **Meghalaya - Living Roots & Waterfalls** (5 Days / 4 Nights)\n\t* Departure Dates: August 10-15, August 23-28\n\t* Price: ₹19999\n4. **Rajasthan - Queens Trail** (7 Days / 6 Nights)\n\t* Departure Dates: August 10-17, August 23-30\n\t* Price: ₹28999\n5. **Spiti Winter Whites - Women Only 4x4** (8 Days / 7 Nights)\n\t* Departure Dates: August 10-18, August 23-31\n\t* Price: ₹34999\n6. **Goa & Gokarna Surf Sisters** (4 Days / 3 Nights)\n\t* Departure Dates: August 10-14, August 23-27\n\t* Price: ₹14999\n7. **Tirthan & Jibhi Whispering Pines** (3 Days / 2 Nights)\n\t* Departure Dates: August 10-13, August 23-26\n\t* Price: ₹9999\n8. **Bali - Divine Feminine Retreat** (6 Days / 5 Nights)\n\t* Departure Dates: August 10-16, August 23-29\n\t* Price: ₹54999\n\nThese trips offer a range of experiences, from cultural immersion to adventure and relaxation. Please note that prices may vary depending on the departure date and availability.\n\nIf you're interested in booking a trip or would like more information, please feel free to ask or fill out our quick Enquiry/Booking Form: [SHOW_ENQUIRY_FORM]"
+        "content": "To book a trip with TripNaari, please provide us with some more information. Please fill out our quick Enquiry/Booking Form:\n\n[SHOW_ENQUIRY_FORM]\n\nThis will help us understand your travel preferences and provide you with the best possible options.\n\n**Important:** Please mention any specific safety concerns or requirements you may have, and we'll do our best to accommodate them.\n\nOnce you submit the form, our team will get in touch with you to discuss your options and book your trip.\n\n**Special Offer:** As a solo female traveler, you're eligible for an extra ₹1,000 off on your booking. Just mention \"safety questions\" when you submit the form, and we'll take care of the rest.\n\nLooking forward to helping you plan your next adventure!"
       }
     ],
     "messageCount": 7,
+    "context": {
+      "pathname": "/trips/mystical-bhutan-with-tripnaari",
+      "source": "website_chatbot"
+    }
+  },
+  {
+    "id": "conv_osotqf63p_1786791494069",
+    "role": "customer",
+    "createdAt": "2026-08-15T10:58:24.080Z",
+    "updatedAt": "2026-08-15T10:58:45.897Z",
+    "messages": [
+      {
+        "role": "assistant",
+        "content": "Namaste! 🙏 Welcome to TripNaari. I am NaariAI, your travel companion. I can help you find safe women-only packages, check active departures, and answer any queries you have. What destinations are you dreaming of?"
+      },
+      {
+        "role": "user",
+        "content": "How does TripNaari ensure safety for a first-time solo female traveler?"
+      },
+      {
+        "role": "assistant",
+        "content": "Safety is our topmost priority at TripNaari. We have a comprehensive safety promise and accountability system in place to ensure that every solo female traveler feels secure and supported throughout their journey.\n\nHere are some of the measures we take:\n\n1. **Verified Woman Trip Leader**: Every TripNaari departure is accompanied by a verified woman trip leader who is trained in CPR and basic first aid. She stays in the same property as the group, travels in the same vehicle, and is available 24/7 for any assistance.\n\n2. **Hotel Safety Verification**: We work only with properties that are reviewed for secure door locks and room safety, safe neighbourhood and accessibility, positive reviews from solo women travelers, hygiene, and emergency preparedness.\n\n3. **Driver & Vehicle Verification**: Our drivers are police verified and undergo background checks. They have a minimum of 5 years of hill-driving experience for mountain destinations, and vehicles are checked for registration, permits, insurance, and fitness compliance.\n\n4. **Emergency Preparedness**: Our trip leaders and drivers always carry a ready emergency contact kit, including the nearest hospital details, police station contact, ambulance and emergency service numbers, and local ground-support contacts.\n\n5. **Emergency Card for Every Traveller**: Each traveler receives a printed and WhatsApp emergency card containing the trip leader's phone number, TripNaari operations helpline (24×7), local police station contact, nearest hospital contact, and founder escalation contact.\n\n6. **Live Location Sharing**: We share live location updates on travel days whenever network permits, so you can stay connected with your group and trip leader.\n\n7. **Dedicated WhatsApp Group**: A dedicated WhatsApp group is created 48 hours before departure, where you can connect with your group members and trip leader.\n\n8. **Pre-Trip Call**: First-time solo travelers receive a pre-trip call to discuss their concerns, answer any questions, and provide additional support.\n\n9. **Zero-Tolerance Policy**: We have a zero-tolerance policy for harassment, intimidation, non-consensual behavior, discrimination, or abuse. Immediate corrective action will be taken, including partner removal, traveler removal, refunds where appropriate, and formal escalation when required.\n\nAt TripNaari, we believe that safety is not a feature, it's the foundation of every journey we curate for women travelers. We're here to support you every step of the way!\n\nWould you like to know more about our safety measures or explore our trip packages?"
+      },
+      {
+        "role": "user",
+        "content": "What is your refund policy and cancellation timeline?"
+      },
+      {
+        "role": "assistant",
+        "content": "At TripNaari, we understand that unforeseen circumstances may arise, and we're committed to being fair and transparent in our refund and cancellation policies.\n\nHere's a summary of our refund and cancellation policy:\n\n**Booking Policy**\n\n- For domestic trips, a booking amount of ₹10,000 per traveler is required.\n- For international trips, a booking amount of ₹15,000 per traveler is required.\n- Balance payment is due 10 days before departure for domestic trips and 15 days before departure for international trips.\n\n**Cancellation Policy**\n\n1. **30 Days or More Before Departure**: A credit note equivalent to the booking amount paid will be issued for future travel with TripNaari. Any amount paid over and above the booking amount will be refunded to the original payment source.\n2. **Between 30 and 15 Days Before Departure**: The booking amount is non-refundable and will be treated as the cancellation charge. The remaining amount paid will be issued as a TripNaari credit note.\n3. **Less Than 15 Days Before Departure**: No refund, transfer, or credit note will be issued, as hotels, transport, permits, and other services are prepaid and non-recoverable.\n\n**Additional Terms**\n\n- Refunds, wherever applicable, will be processed within 7–10 working days from cancellation confirmation.\n- If TripNaari cancels a trip due to low group size, operational reasons, or adverse weather, travelers will receive either a 100% refund or a full credit note for future travel.\n- In case of natural calamities, extreme weather, political unrest, government travel restrictions, airline disruptions, visa restrictions, or other force majeure situations, the amount paid will be issued as a credit note for future travel.\n- Credit notes are issued in the name of the original traveler, are non-transferable, non-cash, and subject to availability.\n- Any non-refundable components such as permits, safari bookings, event tickets, entry fees, visa fees, airfare components, or special activity charges may be additionally deducted wherever applicable.\n- Cancellation requests are valid only when submitted in writing through email or WhatsApp.\n\nBy making a booking payment, the traveler confirms that they have read, understood, and accepted this Booking, Cancellation & Refund Policy.\n\nIf you have any further questions or concerns, please don't hesitate to ask!\n\nWould you like to know more about our refund and cancellation policy or explore our trip packages?"
+      }
+    ],
+    "messageCount": 5,
+    "context": {
+      "pathname": "/",
+      "source": "website_chatbot"
+    }
+  },
+  {
+    "id": "conv_efdwjn7gl_1786731263506",
+    "role": "customer",
+    "createdAt": "2026-08-14T18:19:25.263Z",
+    "updatedAt": "2026-08-14T18:19:25.263Z",
+    "messages": [
+      {
+        "role": "assistant",
+        "content": "Namaste! 🙏 Welcome to TripNaari. I am NaariAI, your travel companion. I can help you find safe women-only packages, check active departures, and answer any queries you have. What destinations are you dreaming of?"
+      },
+      {
+        "role": "user",
+        "content": "How does TripNaari ensure safety for a first-time solo female traveler?"
+      },
+      {
+        "role": "assistant",
+        "content": "At TripNaari, we prioritize your safety above all else. We understand that traveling solo can be intimidating, especially for first-timers. That's why we've put in place a comprehensive safety framework to ensure you feel secure and supported throughout your journey.\n\nHere are some of the measures we take to ensure your safety:\n\n1. **Verified Woman Trip Leader**: Every TripNaari departure is accompanied by a verified woman trip leader who stays in the same property as the group, travels in the same vehicle, and is trained in CPR and basic first aid.\n2. **Hotel Safety Verification**: We work only with properties that are reviewed for secure door locks, safe neighborhoods, positive reviews from solo women travelers, and hygiene and emergency preparedness.\n3. **Driver & Vehicle Verification**: Our drivers are police verified and undergo background checks, and our vehicles are checked for registration, permits, insurance, and fitness compliance.\n4. **Emergency Preparedness**: Our trip leaders and drivers always carry a ready emergency contact kit, including nearest hospital details, police station contact, ambulance and emergency service numbers, and local ground-support contacts.\n5. **Emergency Card for Every Traveller**: Each traveler receives a printed and WhatsApp emergency card containing the trip leader's phone number, TripNaari operations helpline (24×7), local police station contact, nearest hospital contact, and founder escalation contact.\n6. **Live Location Sharing**: We share live location updates on travel days whenever network permits, so you can stay connected with your group and trip leader.\n7. **Dedicated WhatsApp Group**: A dedicated WhatsApp group is created 48 hours before departure, where you can connect with your fellow travelers and trip leader.\n8. **Pre-Trip Call**: First-time solo travelers receive a pre-trip call to discuss their concerns, answer questions, and provide additional support.\n\nAt TripNaari, we believe that safety is not a feature – it's the foundation of every journey we curate for women travelers. We're committed to providing you with a safe, smooth, and enjoyable travel experience.\n\nWould you like to know more about our safety measures or explore our active departures?"
+      }
+    ],
+    "messageCount": 3,
+    "context": {
+      "pathname": "/contact",
+      "source": "website_chatbot"
+    }
+  },
+  {
+    "id": "conv_y3pk00o6h_1786635080091",
+    "role": "customer",
+    "createdAt": "2026-08-13T15:35:52.752Z",
+    "updatedAt": "2026-08-13T15:35:52.752Z",
+    "messages": [
+      {
+        "role": "assistant",
+        "content": "Namaste! 🙏 Welcome to TripNaari. I am NaariAI, your travel companion. I can help you find safe women-only packages, check active departures, and answer any queries you have. What destinations are you dreaming of?"
+      },
+      {
+        "role": "user",
+        "content": "What is your refund policy and cancellation timeline?"
+      },
+      {
+        "role": "assistant",
+        "content": "At TripNaari, we understand that sometimes plans change, and we're here to support you. Our refund and cancellation policy is designed to be fair and transparent. \n\nHere's a summary of our policy:\n\n**Cancellation Policy:**\n\n- 30+ days before departure: 90% refund, 10% credit note for future travel.\n- 15-29 days before departure: 50% refund + 50% credit note.\n- 7-14 days before departure: 30% refund + 70% credit note.\n- Less than 7 days before departure: No refund, but 100% credit note valid for 1 year.\n\n**Refund Timeline:**\n\n- Refunds are processed within 7-10 working days after cancellation confirmation.\n\n**Additional Terms:**\n\n- Non-refundable components like permits, safari bookings, event tickets, entry fees, visa fees, airfare components, or special activity charges may be deducted from refunds.\n- Cancellation requests must be submitted in writing via email or WhatsApp.\n\nWe're committed to ensuring your safety and comfort, and we appreciate your understanding in case of any changes or cancellations. If you have any specific questions or concerns, please feel free to ask!"
+      }
+    ],
+    "messageCount": 3,
+    "context": {
+      "pathname": "/",
+      "source": "website_chatbot"
+    }
+  },
+  {
+    "id": "conv_bkfl96907_1786584170165",
+    "role": "customer",
+    "createdAt": "2026-08-13T01:22:56.625Z",
+    "updatedAt": "2026-08-13T01:22:56.625Z",
+    "messages": [
+      {
+        "role": "assistant",
+        "content": "Namaste! 🙏 Welcome to TripNaari. I am NaariAI, your travel companion. I can help you find safe women-only packages, check active departures, and answer any queries you have. What destinations are you dreaming of?"
+      },
+      {
+        "role": "user",
+        "content": "What is your refund policy and cancellation timeline?"
+      },
+      {
+        "role": "assistant",
+        "content": "At TripNaari, we have a clear and transparent refund policy to ensure your peace of mind. \n\n**Booking & Cancellation Policy (v2.2, Updated: 10 Aug 2026)**\n\nHere's a summary:\n\n- **30+ days before departure**: 90% refund, 10% credit note for future travel.\n- **15-29 days before departure**: 50% refund + 50% credit note for future travel.\n- **7-14 days before departure**: 30% refund + 70% credit note for future travel.\n- **Less than 7 days before departure**: No refund, but 100% credit note valid for 1 year.\n\nRefunds are processed within 7-10 working days after cancellation confirmation.\n\n**Safety Promise & Accountability (v1.4, Updated: 10 Jan 2026)**\n\nWe have a zero-tolerance policy for safety concerns. If you need to cancel due to safety reasons, we'll work with you to find a suitable solution.\n\n**Force Majeure**\n\nIn case of unforeseen events like natural disasters, political unrest, or government restrictions, we'll make reasonable efforts to provide suitable alternatives or process refunds according to our Cancellation & Refund Policy.\n\nIf you have any specific questions or concerns, please feel free to ask. I'm here to help!"
+      }
+    ],
+    "messageCount": 3,
+    "context": {
+      "pathname": "/",
+      "source": "website_chatbot"
+    }
+  },
+  {
+    "id": "conv_37c5rlnc3_1786529742606",
+    "role": "customer",
+    "createdAt": "2026-08-12T11:25:31.638Z",
+    "updatedAt": "2026-08-12T11:25:31.638Z",
+    "messages": [
+      {
+        "role": "assistant",
+        "content": "Namaste! 🙏 Welcome to TripNaari. I am NaariAI, your travel companion. I can help you find safe women-only packages, check active departures, and answer any queries you have. What destinations are you dreaming of?"
+      },
+      {
+        "role": "user",
+        "content": "tell me about arunanchal trip"
+      },
+      {
+        "role": "assistant",
+        "content": "The Arunanchal-Tawang-Hidden-Paradise trip is a 6-day/5-night journey to the breathtaking Land of the Dawn-Lit Mountains. This trip is a hidden gem, offering a mix of stunning Himalayan scenery, pristine lakes, waterfalls, and vibrant Buddhist culture.\n\nHere's a brief overview:\n\n**Trip Name:** Arunanchal-Tawang-Hidden-Paradise\n**Duration:** 6 days/5 nights\n**Price:** ₹45,000 (starts at)\n**Slug:** arunanchal-tawang-hidden-paradise\n\nThis trip is a must-visit for nature lovers and those seeking a spiritual experience. You'll have the chance to explore the breathtaking landscapes, visit ancient monasteries, and immerse yourself in the local culture.\n\nWould you like to know more about this trip or explore other options? Perhaps you'd like to book this trip or customize a private package? Just let me know! [SHOW_ENQUIRY_FORM]"
+      }
+    ],
+    "messageCount": 3,
+    "context": {
+      "pathname": "/about",
+      "source": "website_chatbot"
+    }
+  },
+  {
+    "id": "conv_lmrfs623h_1786449544354",
+    "role": "customer",
+    "createdAt": "2026-08-11T12:57:47.758Z",
+    "updatedAt": "2026-08-11T12:58:41.346Z",
+    "messages": [
+      {
+        "role": "assistant",
+        "content": "Namaste! 🙏 Welcome to TripNaari. I am NaariAI, your travel companion. I can help you find safe women-only packages, check active departures, and answer any queries you have. What destinations are you dreaming of?"
+      },
+      {
+        "role": "user",
+        "content": "What is your refund policy and cancellation timeline?"
+      },
+      {
+        "role": "assistant",
+        "content": "At TripNaari, we understand that sometimes plans change, and we want to ensure you have a smooth experience. Here's our refund policy and cancellation timeline:\n\n**Cancellation Timeline Window & Refund Terms:**\n\n1. **30 Days or more before departure date**: 100% Refund - Full amount refunded back to source account. No hidden penalties.\n2. **Between 15 to 30 Days before departure date**: 50% Refund - Half package cost refunded or 80% dynamic rollover credit voucher provided.\n3. **Between 7 to 14 Days before departure date**: 25% Refund - Quarterly package cost returned. Operational logistics fees apply.\n4. **Less than 7 Days before departure date**: No Refund (0%) - Strictly non-refundable due to advance mountain vehicle and hotel bookings.\n\n**Special Policy Notes:**\n\n* Permit application processing tokens, special high-altitude entry clearances, and customized border transit passes are fully non-refundable once initiated by state regulators.\n* In instances of unexpected road"
+      }
+    ],
+    "messageCount": 3,
+    "context": {
+      "pathname": "/",
+      "source": "website_chatbot"
+    }
+  },
+  {
+    "id": "conv_j5pnsbjr8_1786450115922",
+    "role": "customer",
+    "createdAt": "2026-08-11T12:45:23.675Z",
+    "updatedAt": "2026-08-11T12:45:23.675Z",
+    "messages": [
+      {
+        "role": "assistant",
+        "content": "Namaste! 🙏 Welcome to TripNaari. I am NaariAI, your travel companion. I can help you find safe women-only packages, check active departures, and answer any queries you have. What destinations are you dreaming of?"
+      },
+      {
+        "role": "user",
+        "content": "What is your refund policy and cancellation timeline?"
+      },
+      {
+        "role": "assistant",
+        "content": "At TripNaari, we understand that sometimes plans change, and we want to be fair and transparent about our refund policy. Here's our cancellation timeline and refund terms:\n\n1. **30 Days or more before departure date**: 100% Refund - Full amount refunded back to source account. No hidden penalties.\n2. **Between 15 to 30 Days before departure date**: 50% Refund - Half package cost refunded or 80% dynamic rollover credit voucher provided.\n3. **Between 7 to 14 Days before departure date**: 25% Refund - Quarterly package cost returned. Operational logistics fees apply.\n4. **Less than 7 Days before departure date**: No Refund (0%) - Strictly non-refundable due to advance mountain vehicle and hotel bookings.\n\nPlease note that permit application processing tokens, special high-altitude entry clearances, and customized border transit passes are fully non-refundable once initiated by state regulators.\n\nWe hope this helps! If you have any further questions or concerns, feel free to ask."
+      }
+    ],
+    "messageCount": 3,
     "context": {
       "pathname": "/",
       "source": "website_chatbot"

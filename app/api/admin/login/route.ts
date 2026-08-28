@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { createAdminToken, COOKIE_NAME } from "@/lib/auth";
 
 // SECURITY: Simple in-memory rate limiting (per IP)
 const attempts = new Map<string, { count: number; last: number }>();
@@ -61,17 +62,29 @@ export async function POST(req: Request) {
     if (!isValid) {
       return NextResponse.json({ 
         success: false, 
-        error: "Invalid ID or password. Hint: Try TripNaari2026! / admin" 
+        error: "Invalid password." 
       }, { status: 401 });
     }
 
+    const token = await createAdminToken();
     const res = NextResponse.json({ success: true });
-    res.cookies.set("tripnaari_admin", "authenticated", {
+    
+    const isSecure = req.headers.get("x-forwarded-proto") === "https" || req.url.startsWith("https:");
+
+    res.cookies.set(COOKIE_NAME, token, {
       httpOnly: true, // SECURITY: Not accessible via JS
       sameSite: "lax", // CSRF protection
-      secure: req.headers.get("x-forwarded-proto") === "https" || req.url.startsWith("https:"), // HTTPS only when served over HTTPS
+      secure: isSecure,
       path: "/",
-      maxAge: 60 * 60 * 8, // 8 hours
+      maxAge: 60 * 60 * 24 * 7, // 7 days
+    });
+
+    res.cookies.set("tripnaari_admin", "authenticated", {
+      httpOnly: true,
+      sameSite: "lax",
+      secure: isSecure,
+      path: "/",
+      maxAge: 60 * 60 * 24 * 7,
     });
     
     // SECURITY: Add security headers
@@ -83,3 +96,4 @@ export async function POST(req: Request) {
     return NextResponse.json({ success: false, error: "Invalid request" }, { status: 400 });
   }
 }
+

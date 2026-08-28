@@ -314,6 +314,30 @@ function EnquiryFormInner({
       {/* Hidden field to submit the exact date */}
       <input type="hidden" name="date" value={selectedDate || ""} />
 
+      {/* Visual Step Progress Indicator */}
+      {mode !== "download" && (
+        <div className="mb-4 flex items-center justify-between text-xs font-bold text-[#13253D]/70 px-1">
+          <div className="flex items-center gap-1.5">
+            <span className={`w-5 h-5 rounded-full flex items-center justify-center text-[10px] ${step >= 1 ? "bg-[#FF4A7D] text-white" : "bg-gray-200 text-gray-500"}`}>1</span>
+            <span className={step === 1 ? "text-[#FF4A7D]" : ""}>Your Info</span>
+          </div>
+          <div className="h-[2px] flex-1 mx-2 bg-[#F1D9D0] overflow-hidden rounded-full">
+            <div className="h-full bg-[#FF4A7D] transition-all duration-300" style={{ width: step === 1 ? "0%" : step === 2 ? "50%" : "100%" }} />
+          </div>
+          <div className="flex items-center gap-1.5">
+            <span className={`w-5 h-5 rounded-full flex items-center justify-center text-[10px] ${step >= 2 ? "bg-[#FF4A7D] text-white" : "bg-gray-200 text-gray-500"}`}>2</span>
+            <span className={step === 2 ? "text-[#FF4A7D]" : ""}>Trip</span>
+          </div>
+          <div className="h-[2px] flex-1 mx-2 bg-[#F1D9D0] overflow-hidden rounded-full">
+            <div className="h-full bg-[#FF4A7D] transition-all duration-300" style={{ width: step === 3 ? "100%" : "0%" }} />
+          </div>
+          <div className="flex items-center gap-1.5">
+            <span className={`w-5 h-5 rounded-full flex items-center justify-center text-[10px] ${step >= 3 ? "bg-[#FF4A7D] text-white" : "bg-gray-200 text-gray-500"}`}>3</span>
+            <span className={step === 3 ? "text-[#FF4A7D]" : ""}>Submit</span>
+          </div>
+        </div>
+      )}
+
       {/* STEP 1: Contact Details */}
       <div className={step === 1 ? "grid grid-cols-1 gap-4 animate-in fade-in duration-200" : "hidden"}>
         <Input 
@@ -417,20 +441,13 @@ function EnquiryFormInner({
             disabled={!isStep2Valid}
             className="flex-[2] font-bold"
           >
-            Preferences →
+            Final Step →
           </Button>
         </div>
       </div>
 
       {/* STEP 3: Personal Preferences */}
       <div className={step === 3 && mode !== "download" ? "grid grid-cols-1 gap-4 animate-in fade-in duration-200" : "hidden"}>
-        <Select 
-          name="budget" 
-          label="Budget per person" 
-          value={budget}
-          onChange={(e) => setBudget(e.target.value)}
-          options={[{value:"<10k", label:"< ₹10,000 weekend"}, {value:"10-20k", label:"₹10k-20k"}, {value:"20-35k", label:"₹20k-35k"}, {value:"35k+", label:"₹35k+ (premium/international)"}]} 
-        />
         <Select 
           name="travelStyle" 
           label="Who are you?" 

@@ -31,7 +31,7 @@ export default function Header() {
             <span className="hidden md:inline-flex gap-2"><span>33K+ Instagram community</span><a href="https://instagram.com/tripnaari" target="_blank" className="underline underline-offset-2 hover:text-[#FF4A7D] inline-flex items-center gap-1"><Instagram className="w-3 h-3" /> @tripnaari</a></span>
           </div>
           <div className="hidden md:flex items-center gap-4">
-            <a href="tel:+919282794457" className="inline-flex items-center gap-1 hover:text-[#FF4A7D]"><Phone className="w-3 h-3" /> Emergency: +91 92827 94457</a>
+            <a href="tel:+919282794457" className="inline-flex items-center gap-1 hover:text-[#FF4A7D]"><Phone className="w-3 h-3" /> Contact: +91 92827 94457</a>
           </div>
         </div>
       </div>

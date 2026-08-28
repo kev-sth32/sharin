@@ -1,25 +1,1193 @@
 [
   {
-    "slug": "test-crud-trip",
-    "title": "Test CRUD Trip",
-    "shortDescription": "",
-    "longDescription": "",
-    "destinationSlug": "kashmir",
-    "durationDays": 4,
-    "durationNights": 3,
-    "priceFrom": 15000,
-    "groupSizeMin": 6,
-    "groupSizeMax": 16,
+    "slug": "nepal-ft-muktinath",
+    "title": "Nepal Ft.Muktinath",
+    "shortDescription": "A carefully curated 7N/8D women-only Nepal group trip covering Kathmandu – Pokhara – Jomsom – Muktinath – Kathmandu, blending spirituality, Himalayan landscapes, cultural heritage, and sisterhood in one unforgettable journey.",
+    "longDescription": "TripNaari’s Exploring Nepal tour is a thoughtfully designed women’s group experience that takes you through Nepal’s most iconic spiritual and scenic destinations. Begin in Kathmandu with the mesmerizing evening Aarati at Pashupatinath Temple, travel through river valleys and Himalayan foothills to the lakeside city of Pokhara, continue into the dramatic Mustang region to Jomsom and the sacred Muktinath Temple, and conclude with a heritage tour of Kathmandu’s UNESCO-listed spiritual landmarks.\r\n\r\nThe journey is ideal for women seeking a safe, well-organized, and enriching travel experience with a verified Trip Leader, comfortable stays, private transportation, and a supportive travel community.",
+    "destinationSlug": "Nepal",
+    "locationLabel": "Muktinath, Nepal",
+    "durationDays": 8,
+    "durationNights": 7,
+    "priceFrom": 32000,
+    "priceOriginal": 35000,
+    "groupSizeMin": 4,
+    "groupSizeMax": 10,
     "difficulty": "easy",
     "comfortLevel": "comfort",
-    "heroImage": "",
-    "highlights": [],
-    "isFeatured": false,
+    "heroImage": "/uploads/1786704670803-kt2kuf.jpeg",
+    "gallery": [
+      "/uploads/1786622135860-39mvie.jpg",
+      "/uploads/1786622147354-yd3qjg.jpg",
+      "/uploads/1786622154853-rci63r.jpg",
+      "/uploads/1786622168841-ety3cy.jpg",
+      "/uploads/1786622229294-9l7nzs.jpg"
+    ],
+    "highlights": [
+      "Evening Sandhya Aarati at Pashupatinath Temple",
+      "Scenic drive from Kathmandu to Pokhara",
+      "Leisure time at Phewa Lake & Lakeside Market",
+      "Drive through the dramatic landscapes of Mustang",
+      "Rupse Waterfall photo stop",
+      "Sacred Muktinath Temple Darshan",
+      "Pokhara sightseeing including Devi’s Fall & Gupteshwor Cave",
+      "Peaceful boat ride on Phewa Lake",
+      "Manakamana Cable Car experience",
+      "Kathmandu heritage tour",
+      "Pashupatinath Nath",
+      "Boudhanath",
+      "Swayambhunath & Budhanilkantha"
+    ],
+    "isFeatured": true,
     "isPublished": true,
-    "itineraryChangePolicy": "",
+    "isInternational": true,
+    "itineraryChangePolicy": "TripNaari reserves the right to modify the itinerary due to weather, road conditions, government restrictions, safety concerns, or operational requirements. Any changes will be communicated to travellers as early as possible, and suitable alternatives will be arranged wherever feasible. Safety and the overall travel experience of the group will always remain our highest priority.",
+    "inclusions": [
+      "Comfortable private vehicle for all transfers and sightseeing",
+      "Accommodation in handpicked 3-star hotels and authentic homestays",
+      "Experienced and friendly TripNaari Trip Leader",
+      "7 breakfasts",
+      "1 special traditional dinner",
+      "Manakamana Cable Car tickets",
+      "All required permits"
+    ],
+    "exclusions": [
+      "Airfare to and from Kathmandu",
+      "Lunches and dinners (unless specifically mentioned)",
+      "Entry fees to monuments, museums, and attractions not included in the itinerary",
+      "Optional activities",
+      "Personal expenses (shopping, tips, laundry, beverages, etc.)",
+      "Travel insurance",
+      "Visa charges (if applicable)",
+      "5% GST"
+    ],
+    "itinerary": [
+      {
+        "day": 1,
+        "title": "Arrival in Kathmandu & Pashupatinath Aarati",
+        "desc": "Arrive at Kathmandu International Airport and transfer to the hotel. In the evening, visit Pashupatinath Temple to witness the divine Sandhya Aarati on the banks of the Bagmati River. Overnight stay in Kathmandu.",
+        "meals": [],
+        "stay": "Hotel Marsangdi/similar"
+      },
+      {
+        "day": 2,
+        "title": "Drive to Pokhara",
+        "desc": "After breakfast, drive to Pokhara, Nepal’s beautiful lake city. Enjoy scenic views of rivers, hills, villages, and Himalayan ranges along the way. Evening free for a walk around Phewa Lake and the vibrant Lakeside Market. Overnight stay in Pokhara.",
+        "meals": [
+          "B"
+        ],
+        "stay": "Hotel Lake Shore/similar"
+      },
+      {
+        "day": 3,
+        "title": "Pokhara to Jomsom",
+        "desc": "After breakfast, drive to Jomsom, gateway to the Mustang region. Stop at the spectacular Rupse Waterfall en route. Enjoy dramatic mountain scenery and unique high-altitude landscapes before reaching Jomsom. Overnight stay in Jomsom.",
+        "meals": [
+          "B"
+        ],
+        "stay": "Hotel Sambhala/similar"
+      },
+      {
+        "day": 4,
+        "title": "Muktinath Darshan & Return to Pokhara",
+        "desc": "Early morning drive to the sacred Muktinath Temple for darshan and puja. Experience the serene spiritual atmosphere surrounded by the Himalayas. Return to Jomsom for breakfast and continue driving back to Pokhara. Overnight stay in Pokhara.",
+        "meals": [
+          "B"
+        ],
+        "stay": "Hotel Lake Shore/similar"
+      },
+      {
+        "day": 5,
+        "title": "Pokhara Sightseeing",
+        "desc": "Explore Pokhara’s major attractions including Bindabasini Temple, Seti River Gorge, Devi’s Fall, Gupteshwor Mahadev Cave, and Barahi Temple on Phewa Lake. Evening at leisure in Lakeside. Overnight stay in Pokhara.",
+        "meals": [
+          "B"
+        ],
+        "stay": "Hotel Lake Shore/similar"
+      },
+      {
+        "day": 6,
+        "title": "Pokhara to Kathmandu via Manakamana",
+        "desc": "After breakfast, drive back to Kathmandu. En route, visit Manakamana Temple and enjoy the scenic cable car ride across lush valleys and rivers. Continue to Kathmandu and check in to the hotel. Overnight stay in Kathmandu.",
+        "meals": [
+          "B"
+        ],
+        "stay": "Hotel Marsangdi/similar"
+      },
+      {
+        "day": 7,
+        "title": "Kathmandu Sightseeing",
+        "desc": "Visit Kathmandu’s iconic spiritual landmarks: Pashupatinath Temple, Boudhanath Stupa, Budhanilkantha Temple, and Swayambhunath (Monkey Temple). Enjoy panoramic views of Kathmandu Valley and spend the evening shopping in local markets. Overnight stay in Kathmandu.",
+        "meals": [
+          "B",
+          "D"
+        ],
+        "stay": "Hotel Marsangdi/similar"
+      },
+      {
+        "day": 8,
+        "title": "Departure from Kathmandu",
+        "desc": "After breakfast, transfer to Kathmandu International Airport for your onward journey with beautiful memories and divine blessings from Nepal.",
+        "meals": [
+          "B"
+        ],
+        "stay": ""
+      }
+    ],
+    "hotels": [
+      {
+        "name": "Hotel Marsangdi/Similar",
+        "category": "3-star comfort",
+        "location": "Kathmandu",
+        "amenities": [],
+        "confirmationTimeline": "Exact name 7 days before"
+      },
+      {
+        "name": "Hotel Lake Shore/Similar",
+        "category": "3-star comfort",
+        "location": "Pokhara",
+        "amenities": [],
+        "confirmationTimeline": "Exact name 7 days before"
+      },
+      {
+        "name": "Hotel Sambhala/Similar",
+        "category": "3-star comfort",
+        "location": "Jomsom",
+        "amenities": [],
+        "confirmationTimeline": "Exact name 7 days before"
+      }
+    ],
+    "packingItems": [
+      "Please pack light but smart, as temperatures can vary from pleasant in Kathmandu and Pokhara to quite cold in Jomsom and Muktinath.",
+      "Clothing",
+      "Heavy woolens / warm jacket",
+      "Thermals (top & bottom)",
+      "Fleece or sweater",
+      "Comfortable T-shirts and track pants",
+      "Extra pair of socks",
+      "Scarf / muffler / stole",
+      "Cap or woolen beanie",
+      "Sleepwear",
+      "Footwear",
+      "Sturdy walking shoes or trekking shoes with good grip",
+      "Comfortable slippers / sandals for hotel use",
+      "Personal Essentials",
+      "Valid Government ID (Passport preferred for Nepal travel)",
+      "Personal medications",
+      "Moisturizer",
+      "Lip balm",
+      "Sunscreen (SPF 30+)",
+      "Sunglasses",
+      "Reusable water bottle",
+      "Hand sanitizer & wet wipes",
+      "Tissues",
+      "Electronics",
+      "Mobile phone & charger",
+      "Power bank",
+      "Camera (optional)",
+      "Universal travel adapter (if required)",
+      "Useful Extras",
+      "Small backpack / day bag",
+      "Umbrella or light rain jacket",
+      "Snacks for long drives",
+      "Notebook & pen",
+      "Travel pouch for documents and cash",
+      "TripNaari Tip 💜",
+      "Layering works best in Nepal. Carry 2–3 light warm layers instead of one very heavy outfit, and keep a warm jacket easily accessible during mountain drives."
+    ],
+    "momentsGallery": [],
+    "cancellationSlabs": [
+      {
+        "window": "30 Days or more before departure date",
+        "refund": "100% Refund",
+        "terms": "A credit note equivalent to the booking amount paid will be issued for future travel with TripNaari. Any amount paid over and above the booking amount will be refunded to the original payment source"
+      },
+      {
+        "window": "Between 15 to 30 Days before departure date",
+        "refund": "Partial Refund",
+        "terms": "The booking amount is non-refundable and will be treated as the cancellation charge. The remaining amount paid will be issued as a TripNaari credit note."
+      },
+      {
+        "window": "Less Than 15 Days Before Departure",
+        "refund": "No Refund (0%)",
+        "terms": "No refund, transfer, or credit note will be issued, as hotels, transport, permits, and other services are prepaid and non-recoverable."
+      }
+    ],
+    "cancellationSpecialNotes": "Refunds, wherever applicable, will be processed within 7–10 working days from cancellation confirmation.\r\nIf TripNaari cancels a trip due to low group size, operational reasons, or adverse weather, travellers will receive either a 100% refund or a full credit note for future travel.\r\nIn case of natural calamities, extreme weather, political unrest, government travel restrictions, airline disruptions, visa restrictions, or other force majeure situations, the amount paid will be issued as a credit note for future travel.\r\nCredit notes are issued in the name of the original traveller, are non-transferable, non-cash, and subject to availability.\r\nAny non-refundable components such as permits, safari bookings, event tickets, entry fees, visa fees, airfare components, or special activity charges may be additionally deducted wherever applicable.\r\nCancellation requests are valid only when submitted in writing through email or WhatsApp.\r\n\r\nBy making a booking payment, the traveller confirms that they have read, understood, and accepted this Booking, Cancellation & Refund Policy.\r\n",
     "ratingAvg": "4.9",
     "ratingCount": 0,
-    "createdAt": "2026-07-28T14:20:25.204Z",
-    "updatedAt": "2026-07-28T14:22:04.940Z"
+    "createdAt": "2026-08-12T15:46:52.090Z",
+    "updatedAt": "2026-08-14T11:48:29.340Z",
+    "badgeText": "Selling Fast"
+  },
+  {
+    "slug": "mystical-bhutan-with-tripnaari",
+    "title": "Mystical Bhutan with TripNaari",
+    "shortDescription": "Step into the magical Kingdom of Bhutan with TripNaari’s women-only group journey. From the peaceful monasteries of Tiger’s Nest and the cultural charm of Thimphu to the beautiful valleys of Paro and the scenic Himalayan landscapes, this trip is designed for women who seek culture, connection, serenity, and meaningful travel experiences.  Travel with a wonderful community of women, discover Bhutan’s unique traditions, explore monasteries and dzongs, enjoy mountain views, and create unforgettable memories together.",
+    "longDescription": "TripNaari’s Exploring Bhutan tour is a thoughtfully curated women’s group experience that introduces you to the spiritual heart of the Himalayas. Begin your journey through the tea gardens and forests of North Bengal before entering Bhutan through Phuntsholing. Travel onward to Thimphu, Bhutan’s charming capital, and explore its monasteries, cultural landmarks, and traditional streets.\r\n\r\nContinue to the picturesque valley of Paro, home to ancient dzongs, museums, wooden bridges, and the world-famous Tiger’s Nest Monastery. The highlight of the journey is the scenic hike to Taktsang Monastery, dramatically perched on a cliffside above the Paro Valley.\r\n\r\nDesigned with safety, comfort, and sisterhood in mind, this women-only trip includes private transportation, handpicked stays, local guide assistance, Bhutan permit support, and a supportive TripNaari travel community throughout the journey.",
+    "destinationSlug": "Mystical Bhutan",
+    "locationLabel": "Bhutan",
+    "badgeText": "Best Seller",
+    "durationDays": 7,
+    "durationNights": 6,
+    "priceFrom": 36000,
+    "groupSizeMin": 2,
+    "groupSizeMax": 10,
+    "difficulty": "easy",
+    "comfortLevel": "comfort",
+    "heroImage": "/uploads/1786705727577-cwwhv1.jpeg",
+    "gallery": [
+      "/uploads/1786623755756-p3io5x.jpg",
+      "/uploads/1786623775805-8m8d6o.jpg",
+      "/uploads/1786623797431-bj66g9.jpg",
+      "/uploads/1786623874944-hwkkpx.jpg"
+    ],
+    "highlights": [
+      "North Bengal tea gardens",
+      "Phuntsholing",
+      "Karbandi Goenpa",
+      "Wankha Waterfalls",
+      "Thimphu monasteries",
+      "Buddha Dordenma",
+      "Memorial Chorten",
+      "Simply Bhutan",
+      "Royal Takin Preserve",
+      "Ta Dzong",
+      "Paro Rinpung Dzong",
+      "Nya-Mey Zam Wooden Bridge",
+      "Paro Market",
+      "Tiger’s Nest Monastery hike"
+    ],
+    "isFeatured": true,
+    "isPublished": true,
+    "isInternational": true,
+    "itineraryChangePolicy": "TripNaari reserves the right to modify the itinerary due to weather, road conditions, government restrictions, safety concerns, or operational requirements. Any changes will be communicated to travellers as early as possible, and suitable alternatives will be arranged wherever feasible. Safety and the overall travel experience of the group will always remain our highest priority",
+    "inclusions": [
+      "Private vehicle for all transfers and sightseeing from Bagdogra as per itinerary",
+      "6 Breakfasts",
+      "6 Dinners",
+      "Comfortable 3-star hotel accommodation on a twin-sharing basis",
+      "Experienced local tour guide throughout the trip",
+      "Bhutan Sustainable Development Fee (SDF) of ₹1,200 per person per day",
+      "Entry formalities assistance",
+      "Travel insurance guidance"
+    ],
+    "exclusions": [
+      "Airfare and train tickets",
+      "Entry fees to monuments and attractions",
+      "Lunches throughout the trip",
+      "Personal expenses and optional activities (spa, hot stone bath, etc.)",
+      "Tips for driver, guide, and hotel staff",
+      "Additional airport pickup/drop outside scheduled timings",
+      "5% GST"
+    ],
+    "itinerary": [
+      {
+        "day": 1,
+        "title": "Arrival in Bhutan (Phuntsholing)",
+        "desc": "Arrive at NJP Railway Station, Siliguri, or Bagdogra Airport and begin your scenic drive to Phuntsholing through tea gardens and forested landscapes. Check in to the hotel and relax for the evening.",
+        "meals": [
+          "D"
+        ],
+        "stay": "Park Hotel/ Central Hotel/ Gadhen Hotel"
+      },
+      {
+        "day": 2,
+        "title": "Phuntsholing → Thimphu",
+        "desc": "Complete permit formalities and drive to Thimphu. En route, visit Karbandi Goenpa and stop at the scenic Wankha Waterfalls. Check in to the hotel and enjoy a relaxed evening in Thimphu.",
+        "meals": [
+          "B",
+          "D"
+        ],
+        "stay": "Cholay Khangzang/ Ugyen Hotel/ Hotel Migmar"
+      },
+      {
+        "day": 3,
+        "title": "Explore Thimphu",
+        "desc": "Visit Simtokha Dzong, Buddha Dordenma, Memorial Chorten, Simply Bhutan, Changangkha Lhakhang, and the Royal Takin Preserve. Spend the evening shopping at Norzin Lam and relaxing at Changjuel Park.",
+        "meals": [
+          "B",
+          "D"
+        ],
+        "stay": "Cholay Khangzang/ Ugyen Hotel/ Hotel Migmar"
+      },
+      {
+        "day": 4,
+        "title": "Thimphu → Paro",
+        "desc": "Drive to Paro with a stop at Chuzom, the confluence of two rivers, and the historic iron bridge. Visit Ta Dzong (National Museum), Paro Rinpung Dzong, and the iconic Nya-Mey Zam Wooden Bridge. Evening free to explore Paro Market.",
+        "meals": [
+          "B",
+          "D"
+        ],
+        "stay": "Namsay Choling Hotel/ Hotel Center Point/ Hotel Gakyidaina"
+      },
+      {
+        "day": 5,
+        "title": "Tiger’s Nest Hike",
+        "desc": "Embark on the iconic hike to Tiger’s Nest Monastery (Taktsang) through pine forests while enjoying spectacular views of the Paro Valley. Return to Paro in the evening and relax.",
+        "meals": [
+          "B",
+          "D"
+        ],
+        "stay": "Namsay Choling Hotel/ Hotel Center Point/ Hotel Gakyidaina"
+      },
+      {
+        "day": 6,
+        "title": "Paro → Phuntsholing /Bagdogra",
+        "desc": "After breakfast, drive back to Phuntsholing -Bagdogra. Check in to the hotel and relax after the journey.",
+        "meals": [
+          "B",
+          "D"
+        ],
+        "stay": "Park Hotel/ Central Hotel/ Gadhen Hotel"
+      },
+      {
+        "day": 7,
+        "title": "Departure",
+        "desc": "Transfer to Bagdogra Airport or NJP Railway Station for your onward journey with beautiful memories of the Land of the Thunder Dragon.",
+        "meals": [
+          "B"
+        ],
+        "stay": ""
+      }
+    ],
+    "hotels": [
+      {
+        "name": "Park Hotel/ Central Hotel/ Gadhen Hotel",
+        "category": "3-star comfort",
+        "location": "Phuntsholing ",
+        "amenities": [],
+        "confirmationTimeline": "Exact name 7 days before"
+      },
+      {
+        "name": "Cholay Khangzang/ Ugyen Hotel/ Hotel Migmar/ Peaceful Resort",
+        "category": "3-star comfort",
+        "location": "Thimphu ",
+        "amenities": [],
+        "confirmationTimeline": "Exact name 7 days before"
+      },
+      {
+        "name": "Namsay Choling Hotel/ Hotel Center Point/ Hotel Gakyidaina",
+        "category": "3-star comfort",
+        "location": "Paro ",
+        "amenities": [],
+        "confirmationTimeline": "Exact name 7 days before"
+      }
+    ],
+    "packingItems": [
+      "Warm jacket / fleece",
+      "Thermals (for winter departures)",
+      "Comfortable clothes & extra socks",
+      "Good walking or trekking shoes",
+      "Slippers / sandals",
+      "Valid Government ID (Voter ID / Passport)",
+      "Personal medicines",
+      "Sunscreen, sunglasses & lip balm",
+      "Moisturizer",
+      "Mobile charger & power bank",
+      "Small backpack for day trips",
+      "TripNaari Tip 💜: Carry comfortable walking shoes and warm layers, especially for the Tiger’s Nest hike and cooler mountain mornings."
+    ],
+    "momentsGallery": [],
+    "cancellationSlabs": [
+      {
+        "window": "30 Days or more before departure date",
+        "refund": "100% Refund",
+        "terms": "A credit note equivalent to the booking amount paid will be issued for future travel with TripNaari. If the traveller has paid any amount over and above the booking amount, that additional amount will also be refunded to original source ."
+      },
+      {
+        "window": "Between 15 to 30 Days before departure date",
+        "refund": "Partial Refund",
+        "terms": "A credit note will be issued for the remaining amount paid after deducting the booking amount, which will be treated as the cancellation charge. Cancellation Charge: Booking amount (non-refundable) Credit Note Issued: Total amount paid minus booking amount"
+      },
+      {
+        "window": "Cancellation Between 15 and 0 Days Before Departure",
+        "refund": "No Refund (0%)",
+        "terms": "No refund, transfer, or credit note will be issued for cancellations made within 15 days of the departure date, as hotels, transport, permits, and other services are prepaid and non-recoverable."
+      }
+    ],
+    "cancellationSpecialNotes": "Refunds, wherever applicable, will be processed within 7–10 working days from the date of cancellation confirmation. If TripNaari cancels the trip due to low group size, operational reasons, or adverse weather conditions, travellers will be offered either a 100% refund or a full credit note valid for future travel with TripNaari. If the trip is cancelled due to natural calamities, extreme weather conditions, political unrest, or government-imposed travel restrictions, the amount paid will be issued as a credit note for a future TripNaari trip. By confirming the booking, the traveller acknowledges and agrees to all the above cancellation terms and conditions. Credit notes are issued in the name of the original traveller and may be redeemed against any future TripNaari trip, subject to availability. Credit notes are non-cash, non-transferable, and cannot be encashed under any circumstances. Any non-refundable components such as permits, safari bookings, event tickets, entry fees, or special activity charges may be additionally deducted wherever applicable. The effective date and time of cancellation will be considered as the date and time when a written cancellation request is received by TripNaari through email or WhatsApp.",
+    "ratingAvg": "4.9",
+    "ratingCount": 0,
+    "createdAt": "2026-08-13T09:20:22.090Z",
+    "updatedAt": "2026-08-14T11:47:51.475Z",
+    "priceOriginal": 39000
+  },
+  {
+    "slug": "wayanad",
+    "title": "Wayanad",
+    "shortDescription": "Escape to the refreshing hills of Wayanad with TripNaari’s women-only group getaway. From breathtaking viewpoints and thrilling adventures to waterfalls, lakes, and tea plantation landscapes, this trip is designed for women who love nature, adventure, relaxation, and meaningful travel experiences.  Travel with a wonderful community of women, explore Wayanad’s scenic beauty, enjoy exciting activities, and create unforgettable memories together.",
+    "longDescription": "TripNaari’s Exploring Wayanad tour is a thoughtfully curated weekend escape for women seeking a perfect mix of nature, adventure, and relaxation. Begin your journey from Bangalore and travel through the beautiful landscapes of Kerala to Banasura Sagar Dam, one of India’s largest earth dams.\r\n\r\nExperience the thrill of the 900 Kandi Glass Bridge, enjoy optional adventure activities such as the Longest Zip Line and Giant Swing, and witness the cascading beauty of Soochipara Waterfalls surrounded by lush forest. Stroll through the vibrant Wayanad Floating Market and conclude the trip with panoramic views from the unique Phantom Rock.\r\n\r\nDesigned with safety, comfort, and sisterhood in mind, this women-only trip includes private transportation, handpicked stays, entry tickets, and a supportive TripNaari Trip Leader throughout the journey.",
+    "destinationSlug": "Wayanad",
+    "locationLabel": "Wayanad",
+    "badgeText": "Best Seller",
+    "durationDays": 3,
+    "durationNights": 2,
+    "priceFrom": 12500,
+    "groupSizeMin": 4,
+    "groupSizeMax": 12,
+    "difficulty": "easy",
+    "comfortLevel": "comfort",
+    "heroImage": "/uploads/1786708194717-yjy20b.jpeg",
+    "gallery": [
+      "/uploads/1786624169536-f33e4l.jpg",
+      "/uploads/1786624174413-om49k0.jpg",
+      "/uploads/1786624181654-5iwvc1.jpg",
+      "/uploads/1786624281522-fwt5ab.jpg"
+    ],
+    "highlights": [
+      "Banasura Sagar Dam",
+      "900 Kandi Glass Bridge",
+      "Longest Zip Line",
+      "Giant Swing",
+      "Soochipara Waterfalls",
+      "Wayanad Floating Market",
+      "Phantom Rock",
+      "Tea plantation views",
+      "Misty hill landscapes"
+    ],
+    "isFeatured": true,
+    "isPublished": true,
+    "isInternational": false,
+    "itineraryChangePolicy": "TripNaari reserves the right to modify the itinerary due to weather, road conditions, government restrictions, safety concerns, or operational requirements. Any changes will be communicated to travellers as early as possible, and suitable alternatives will be arranged wherever feasible. Safety and the overall travel experience of the group will always remain our highest priority.",
+    "inclusions": [
+      "AC Tempo Traveller for the entire journey",
+      "Accommodation on a double-sharing basis in handpicked 3-star hotels",
+      "Experienced TripNaari Trip Leader",
+      "2 Breakfasts",
+      "Kandi Bridge Jeep ride",
+      "Skypark entry fees",
+      "Entry fees as per the itinerary"
+    ],
+    "exclusions": [
+      "Lunches and dinners",
+      "Optional activities such as Zip Line, Giant Swing, shuttle services, and other adventure activities",
+      "Personal expenses such as shopping, laundry, tips, and phone calls",
+      "Anything not specifically mentioned under inclusions",
+      "5% GST"
+    ],
+    "itinerary": [
+      {
+        "day": 1,
+        "title": "Bangalore → Wayanad",
+        "desc": "Begin your journey from Bangalore and drive to the beautiful hills of Wayanad. En route, visit Banasura Sagar Dam and enjoy its breathtaking surroundings. Check in to the hotel and relax for the evening.",
+        "meals": [
+          "B"
+        ],
+        "stay": "3Hill County"
+      },
+      {
+        "day": 2,
+        "title": "Adventure & Sightseeing",
+        "desc": "After breakfast, visit the famous 900 Kandi Glass Bridge and enjoy the thrill of optional activities such as the Longest Zip Line and Giant Swing overlooking lush tea plantations. Later, explore Soochipara Waterfalls and conclude the day with a visit to the vibrant Wayanad Floating Market. Return to the hotel for an overnight stay.",
+        "meals": [
+          "B"
+        ],
+        "stay": "3Hill County"
+      },
+      {
+        "day": 3,
+        "title": "Phantom Rock & Departure",
+        "desc": "After breakfast, check out from the hotel and visit Phantom Rock, known for its distinctive natural rock formation and panoramic views. Later, begin your return journey to Bangalore with wonderful memories of Wayanad.",
+        "meals": [
+          "B"
+        ],
+        "stay": ""
+      }
+    ],
+    "hotels": [
+      {
+        "name": "3Hill County",
+        "category": "3-star comfort",
+        "location": "Wayand",
+        "amenities": [],
+        "confirmationTimeline": "Exact name 7 days before"
+      }
+    ],
+    "momentsGallery": [],
+    "cancellationSlabs": [
+      {
+        "window": "30 Days or more before departure date",
+        "refund": "100% Refund",
+        "terms": "A credit note equivalent to the booking amount paid will be issued for future travel with TripNaari. If the traveller has paid any amount over and above the booking amount, that additional amount will also be refunded to original source ."
+      },
+      {
+        "window": "Between 15 to 30 Days before departure date",
+        "refund": "Partial Refund",
+        "terms": "A credit note will be issued for the remaining amount paid after deducting the booking amount, which will be treated as the cancellation charge. Cancellation Charge: Booking amount (non-refundable) Credit Note Issued: Total amount paid minus booking amount"
+      },
+      {
+        "window": "Cancellation Between 15 and 0 Days Before Departure",
+        "refund": "No Refund (0%)",
+        "terms": "No refund, transfer, or credit note will be issued for cancellations made within 15 days of the departure date, as hotels, transport, permits, and other services are prepaid and non-recoverable"
+      }
+    ],
+    "cancellationSpecialNotes": "Refunds, wherever applicable, will be processed within 7–10 working days from the date of cancellation confirmation. If TripNaari cancels the trip due to low group size, operational reasons, or adverse weather conditions, travellers will be offered either a 100% refund or a full credit note valid for future travel with TripNaari. If the trip is cancelled due to natural calamities, extreme weather conditions, political unrest, or government-imposed travel restrictions, the amount paid will be issued as a credit note for a future TripNaari trip. By confirming the booking, the traveller acknowledges and agrees to all the above cancellation terms and conditions. Credit notes are issued in the name of the original traveller and may be redeemed against any future TripNaari trip, subject to availability. Credit notes are non-cash, non-transferable, and cannot be encashed under any circumstances. Any non-refundable components such as permits, safari bookings, event tickets, entry fees, or special activity charges may be additionally deducted wherever applicable. The effective date and time of cancellation will be considered as the date and time when a written cancellation request is received by TripNaari through email or WhatsApp.",
+    "ratingAvg": "4.9",
+    "ratingCount": 0,
+    "createdAt": "2026-08-13T09:34:12.407Z",
+    "updatedAt": "2026-08-14T11:53:38.244Z"
+  },
+  {
+    "slug": "varanasi-prayagraj-ayodhya",
+    "title": "Varanasi Prayagraj & Ayodhya",
+    "shortDescription": "Embark on a soulful journey through the sacred heart of India with TripNaari’s women-only spiritual group tour. From the timeless ghats of Varanasi and the Buddhist heritage of Sarnath to the holy Triveni Sangam in Prayagraj and the divine atmosphere of Ayodhya, this journey is designed for women seeking spirituality, culture, history, peace, and meaningful connections.  Travel with a wonderful community of women, witness mesmerizing Ganga and Saryu Aartis, seek blessings at revered temples, explore ancient heritage sites, and create unforgettable memories together.",
+    "longDescription": "TripNaari’s Exploring Varanasi, Prayagraj & Ayodhya tour is a thoughtfully curated women’s group pilgrimage through some of India’s holiest destinations. Begin in Varanasi, one of the world’s oldest living cities, where the sacred Ganga flows past historic ghats and temples. Experience a serene boat ride and the divine Ganga Aarti at Dashashwamedh Ghat.\r\n\r\nContinue your spiritual journey with VIP Darshan at Kashi Vishwanath Temple, visits to revered temples, and an exploration of Sarnath, where Lord Buddha delivered his first sermon. Travel onward to Prayagraj to visit the sacred Triveni Sangam, historic temples, and cultural landmarks. Conclude the journey in Ayodhya, the birthplace of Lord Rama, with darshan at Shri Ram Janmabhoomi Temple, Hanuman Garhi, and the peaceful Saryu Aarti.\r\n\r\nDesigned with safety, comfort, and sisterhood in mind, this women-only trip includes private transportation, handpicked stays, local assistance, temple experiences, and a supportive TripNaari Trip Leader throughout the journey.",
+    "destinationSlug": "Varanasi, Prayagraj & Ayodhya",
+    "locationLabel": "Varanasi",
+    "badgeText": "Varanasi, Prayagraj & Ayodhya",
+    "durationDays": 5,
+    "durationNights": 4,
+    "priceFrom": 32000,
+    "priceOriginal": 35000,
+    "groupSizeMin": 4,
+    "groupSizeMax": 10,
+    "difficulty": "easy",
+    "comfortLevel": "comfort",
+    "heroImage": "/uploads/1786708436134-u5po2v.jpeg",
+    "gallery": [
+      "/uploads/1786624393804-0yhbb2.jpg",
+      "/uploads/1786624404079-eq4m0y.jpg",
+      "/uploads/1786624427369-qaqpn9.jpg",
+      "/uploads/1786624443815-fimewi.jpg"
+    ],
+    "highlights": [
+      "Ganga boat ride",
+      "Dashashwamedh Ganga Aarti",
+      "Kashi Vishwanath VIP Darshan",
+      "Kal Bhairav Temple",
+      "Sarnath",
+      "Dhamek Stupa",
+      "Ashoka Pillar",
+      "Triveni Sangam",
+      "Bade Hanuman Mandir",
+      "Akshay Vat",
+      "Anand Bhawan",
+      "Shri Ram Janmabhoomi Temple",
+      "Hanuman Garhi",
+      "Saryu Aarti"
+    ],
+    "isFeatured": true,
+    "isPublished": true,
+    "isInternational": false,
+    "itineraryChangePolicy": "TripNaari reserves the right to modify the itinerary due to weather, road conditions, government restrictions, safety concerns, or operational requirements. Any changes will be communicated to travellers as early as possible, and suitable alternatives will be arranged wherever feasible. Safety and the overall travel experience of the group will always remain our highest priority.",
+    "inclusions": [
+      "4 nights accommodation (Varanasi – 2N, Prayagraj – 1N, Ayodhya – 1N)",
+      "Daily breakfast",
+      "VIP Darshan at Kashi Vishwanath Temple and Kal Bhairav Temple",
+      "Private vehicle for all transfers and sightseeing",
+      "Local Tuk-Tuk (E-rickshaw) ride for old city exploration",
+      "Entry fees to attractions mentioned in the itinerary (where applicable)",
+      "Evening Ganga Aarti and Saryu Aarti",
+      "Boat ride on the River Ganga in Varanasi",
+      "Experienced TripNaari Trip Leader throughout the journey",
+      "Dedicated local assistance"
+    ],
+    "exclusions": [
+      "Airfare and train tickets",
+      "Meals other than breakfast",
+      "Personal expenses, shopping, laundry, and beverages",
+      "Tips and gratuities for drivers, guides, and hotel staff",
+      "Special puja arrangements or additional VIP darshan not mentioned in inclusions",
+      "Travel insurance and medical expenses",
+      "Sparsh Darshan at Kashi Vishwanath Temple (subject to availability)",
+      "5% GST"
+    ],
+    "itinerary": [
+      {
+        "day": 1,
+        "title": "Arrival in Varanasi",
+        "desc": "Arrive in Varanasi and transfer to the hotel. In the evening, enjoy a peaceful boat ride along the iconic 84 ghats and witness the mesmerizing Ganga Aarti at Dashashwamedh Ghat. Later, explore Godowlia Market and enjoy Varanasi’s famous street food. Overnight stay in Varanasi.",
+        "meals": [
+          "B"
+        ],
+        "stay": "Hotel Aloka Kashi"
+      },
+      {
+        "day": 2,
+        "title": "Sacred Varanasi",
+        "desc": "Begin the day with VIP Darshan at Kashi Vishwanath Temple and blessings at Kal Bhairav Temple. Continue sightseeing with visits to Tulsi Manas Temple, Sankat Mochan Hanuman Mandir, Durga Kund Temple, Bharat Mata Mandir, and BHU Vishwanath Temple. Overnight stay in Varanasi.",
+        "meals": [
+          "B"
+        ],
+        "stay": "Hotel Aloka Kashi/Similar"
+      },
+      {
+        "day": 3,
+        "title": "Varanasi → Sarnath → Prayagraj",
+        "desc": "Visit Sarnath, where Lord Buddha delivered his first sermon. Explore Dhamek Stupa, Ashoka Pillar, Archaeological Museum, and Mulagandha Kuti Vihar. Later, drive to Prayagraj and visit Triveni Sangam, Bade Hanuman Mandir, Akshay Vat, Saraswati Koop, Anand Bhawan, and view Allahabad Fort from outside. Overnight stay in Prayagraj.",
+        "meals": [
+          "B"
+        ],
+        "stay": "RK Villas/Similar"
+      },
+      {
+        "day": 4,
+        "title": "Prayagraj → Ayodhya",
+        "desc": "Drive to Ayodhya and check in to the hotel. Visit Shri Ram Janmabhoomi Temple and Hanuman Garhi. In the evening, attend the serene Saryu Aarti at Saryu Ghat. Overnight stay in Ayodhya.",
+        "meals": [
+          "B"
+        ],
+        "stay": ""
+      },
+      {
+        "day": 5,
+        "title": "Ayodhya Exploration & Departure",
+        "desc": "Enjoy a relaxed morning in Ayodhya before check-out. Transfer to Ayodhya Airport or Railway Station for your onward journey with beautiful spiritual memories.",
+        "meals": [
+          "B"
+        ],
+        "stay": ""
+      }
+    ],
+    "hotels": [
+      {
+        "name": "Hotel Aloka Kashi/Similar",
+        "category": "3-star comfort",
+        "location": "varanasi",
+        "amenities": [],
+        "confirmationTimeline": "Exact name 7 days before"
+      },
+      {
+        "name": "RK Villas/Similar",
+        "category": "3-star comfort",
+        "location": "Prayagraj",
+        "amenities": [],
+        "confirmationTimeline": "Exact name 7 days before"
+      }
+    ],
+    "packingItems": [
+      "Comfortable traditional or casual clothes",
+      "Light shawl / stole for temples",
+      "Comfortable walking sandals or shoes",
+      "Valid Government ID",
+      "Personal medicines",
+      "Water bottle",
+      "Sunscreen, sunglasses & cap",
+      "Umbrella or light rain protection (seasonal)",
+      "Mobile charger & power bank",
+      "Small backpack for daily sightseeing",
+      "TripNaari Tip 💜: Carry modest, comfortable clothing suitable for temple visits and easy walking through ghats and heritage areas."
+    ],
+    "momentsGallery": [],
+    "cancellationSlabs": [
+      {
+        "window": "30 Days or more before departure date",
+        "refund": "100% Refund",
+        "terms": "A credit note equivalent to the booking amount paid will be issued for future travel with TripNaari. If the traveller has paid any amount over and above the booking amount, that additional amount will also be refunded to original source ."
+      },
+      {
+        "window": "Between 15 to 30 Days before departure date",
+        "refund": "Partial Refund",
+        "terms": "A credit note will be issued for the remaining amount paid after deducting the booking amount, which will be treated as the cancellation charge. Cancellation Charge: Booking amount (non-refundable) Credit Note Issued: Total amount paid minus booking amount"
+      },
+      {
+        "window": "Cancellation Between 15 and 0 Days Before Departure",
+        "refund": "No Refund (0%)",
+        "terms": "No refund, transfer, or credit note will be issued for cancellations made within 15 days of the departure date, as hotels, transport, permits, and other services are prepaid and non-recoverable"
+      }
+    ],
+    "cancellationSpecialNotes": "Refunds, wherever applicable, will be processed within 7–10 working days from the date of cancellation confirmation. If TripNaari cancels the trip due to low group size, operational reasons, or adverse weather conditions, travellers will be offered either a 100% refund or a full credit note valid for future travel with TripNaari. If the trip is cancelled due to natural calamities, extreme weather conditions, political unrest, or government-imposed travel restrictions, the amount paid will be issued as a credit note for a future TripNaari trip. By confirming the booking, the traveller acknowledges and agrees to all the above cancellation terms and conditions. Credit notes are issued in the name of the original traveller and may be redeemed against any future TripNaari trip, subject to availability. Credit notes are non-cash, non-transferable, and cannot be encashed under any circumstances. Any non-refundable components such as permits, safari bookings, event tickets, entry fees, or special activity charges may be additionally deducted wherever applicable. The effective date and time of cancellation will be considered as the date and time when a written cancellation request is received by TripNaari through email or WhatsApp.",
+    "ratingAvg": "4.9",
+    "ratingCount": 0,
+    "createdAt": "2026-08-13T09:42:20.905Z",
+    "updatedAt": "2026-08-14T12:03:52.569Z"
+  },
+  {
+    "slug": "arunanchal-kaziranga",
+    "title": "Arunanchal Kaziranga",
+    "shortDescription": "Popularly known as the Land of the Dawn-Lit Mountains, Arunachal Pradesh is India’s first state to greet the rising sun and is blessed with dramatic Himalayan scenery, pristine lakes, waterfalls, and vibrant Buddhist culture.",
+    "longDescription": "Discover the magical beauty of Arunachal Pradesh and Assam on this unforgettable 6-day journey. From the snow-covered passes of Sela Pass and the monasteries of Tawang, to the serene valleys of Dirang and the wild landscapes of Kaziranga National Park, this trip is a perfect blend of mountains, culture, and wildlife.",
+    "destinationSlug": "Arunanchal",
+    "locationLabel": "Arunanchal Pradesh, India",
+    "badgeText": "Best Seller",
+    "durationDays": 6,
+    "durationNights": 5,
+    "priceFrom": 45000,
+    "priceOriginal": 48000,
+    "groupSizeMin": 4,
+    "groupSizeMax": 10,
+    "difficulty": "easy",
+    "comfortLevel": "comfort",
+    "heroImage": "/uploads/1786614224278-k9infs.png",
+    "gallery": [
+      "/uploads/1786623381129-4rjx8d.jpg",
+      "/uploads/1786465988162-q9wl0r.jpg",
+      "/uploads/1786470703394-4d8h2t.jpg",
+      "/uploads/1786623946373-gxzckm.jpg"
+    ],
+    "highlights": [
+      "Sela Pass & Sela Lake",
+      "Tawang Monastery",
+      "War Memorial",
+      "Bumla Pass (Indo-China Border)",
+      "Madhuri Lake",
+      "PTSO Lake",
+      "Chug Valley",
+      "Sangti Valley",
+      "Jung Waterfall",
+      "Kaziranga National Park Safari",
+      "NorthEast's Cultural Evening",
+      "Tea Estate Visit"
+    ],
+    "isFeatured": true,
+    "isPublished": true,
+    "isInternational": false,
+    "itineraryChangePolicy": "TripNaari reserves the right to modify the itinerary due to weather, road conditions, government restrictions, safety concerns, or operational requirements. Any changes will be communicated to travellers as early as possible, and suitable alternatives will be arranged wherever feasible. Safety and the overall travel experience of the group will always remain our highest priority.",
+    "itineraryPdf": "/uploads/1786587810293-cdya3z.pdf",
+    "inclusions": [
+      "Guwahati airport pickup & drop",
+      "All transportation by private vehicle",
+      "Accommodation on twin sharing basis",
+      "Daily Breakfast And Dinner",
+      "Inner Line Permit (ILP)",
+      "Bumla Pass vehicle arrangement",
+      "Jeep safari in kaziranga national park",
+      "All Entry Tickets",
+      "Sightseeing as per itinerary",
+      "Trip leader assistance throughout the journey"
+    ],
+    "exclusions": [
+      "Airfare / train tickets",
+      "Lunch & snacks",
+      "Personal expenses",
+      "Travel insurance",
+      "Optional activities not mentioned",
+      "Camera fees (if applicable)",
+      "5% GST"
+    ],
+    "itinerary": [
+      {
+        "day": 1,
+        "title": "Arrival in Guwahati → Dirang",
+        "desc": "Arrive at Guwahati Airport by 10:00 AM and meet the TripNaari team. Begin your scenic drive towards Dirang, passing through lush tea gardens, river valleys, and picturesque hill roads. Enjoy the changing landscapes as you enter the Eastern Himalayas.",
+        "meals": [
+          "D"
+        ],
+        "stay": "Sangti valley Homestay/Similar"
+      },
+      {
+        "day": 2,
+        "title": "Sangti Valley → Tawang",
+        "desc": "After breakfast, explore the beautiful Sangti Valley, known for its peaceful riverside setting and Himalayan views. Visit Dirang Monastery before continuing towards Tawang. En route, witness the breathtaking Sela Pass, Sela Lake, Jaswant Garh War Memorial, and the spectacular Jung (Nuranang) Waterfall.",
+        "meals": [
+          "B",
+          "D"
+        ],
+        "stay": "Hotel Tawang Heights/Similar"
+      },
+      {
+        "day": 3,
+        "title": "Bumla Pass & Lakes Excursion",
+        "desc": "Today is dedicated to the high-altitude wonders near the Indo-China border. Visit Bumla Pass (subject to permits and weather conditions), the stunning Madhuri Lake (Sangestar Tso), and PTSO Lake. Later, visit the Tawang War Memorial and enjoy the Light & Cultural Show in the evening.",
+        "meals": [
+          "B",
+          "D"
+        ],
+        "stay": "Hotel Tawang Heights/Similar"
+      },
+      {
+        "day": 4,
+        "title": "Chug Valley Excursion → Dirang",
+        "desc": "Enjoy a peaceful excursion to Chug Valley, a hidden Himalayan village known for its natural beauty and traditional culture. Return to Dirang by evening and unwind with a cozy bonfire gathering.",
+        "meals": [
+          "B",
+          "D"
+        ],
+        "stay": "Sangti Valley Homestay, Dirang/Similar"
+      },
+      {
+        "day": 5,
+        "title": "Dirang → Bomdila → Kaziranga",
+        "desc": "After breakfast, drive through Bomdila and descend towards the plains of Assam. Continue to Kaziranga National Park, home to the famous one-horned rhinoceros. In the evening, enjoy a traditional Assamese cultural show at Orchid Garden.",
+        "meals": [
+          "B",
+          "D"
+        ],
+        "stay": "Tea Nest Resort, kaziranga/Similar"
+      },
+      {
+        "day": 6,
+        "title": "Kaziranga Safari → Guwahati Airport Drop",
+        "desc": "Start early for an exciting morning safari in Kaziranga National Park. Witness the rich wildlife, including rhinos, elephants, wild buffalo, deer, and numerous bird species — often referred to as the park’s “Big Five” experience. Later, visit a scenic tea estate before driving back to Guwahati Airport for your onward journey.",
+        "meals": [
+          "B"
+        ],
+        "stay": ""
+      }
+    ],
+    "hotels": [
+      {
+        "name": "Sangti valley Homestay/Similar",
+        "category": "3-star comfort",
+        "location": "Sangti Valley , Dirang",
+        "amenities": [],
+        "confirmationTimeline": "Exact name 7 days before"
+      },
+      {
+        "name": "Hotel Tawang Heights/Similar",
+        "category": "3-star comfort",
+        "location": "Tawang",
+        "amenities": [],
+        "confirmationTimeline": "Exact name 7 days before"
+      },
+      {
+        "name": "Tea Nest Resort, kaziranga/Similar",
+        "category": "3-star comfort",
+        "location": "kaziranga",
+        "amenities": [],
+        "confirmationTimeline": "Exact name 7 days before"
+      }
+    ],
+    "packingItems": [
+      "Warm jacket & fleece",
+      "Thermal wear (2 pairs recommended)",
+      "Woollen cap, gloves & warm socks",
+      "Comfortable walking / trekking shoes",
+      "Rain jacket or poncho",
+      "Sunglasses & sunscreen",
+      "Personal medicines",
+      "Power bank & charger",
+      "Water bottle & light snacks",
+      "Government ID proof (Aadhaar / Passport / Voter ID)"
+    ],
+    "momentsGallery": [
+      "/uploads/1786470636551-u6zyf7.jpeg",
+      "/uploads/1786470652141-x4xvys.jpeg",
+      "/uploads/1786470668626-whzo6g.jpeg",
+      "/uploads/1786470680031-t5hp83.jpeg"
+    ],
+    "cancellationSlabs": [
+      {
+        "window": "30 Days or more before departure date",
+        "refund": "100% Refund",
+        "terms": "A credit note equivalent to the booking amount paid will be issued for future travel with TripNaari.  If the traveller has paid any amount over and above the booking amount, that additional amount will also be refunded to original source ."
+      },
+      {
+        "window": "cancellation Between 30 and 15 Days Before Departure",
+        "refund": "Partial Refund",
+        "terms": "A credit note will be issued for the remaining amount paid after deducting the booking amount, which will be treated as the cancellation charge.  Cancellation Charge: Booking amount (non-refundable)  Credit Note Issued: Total amount paid minus booking amount"
+      },
+      {
+        "window": "Cancellation Between 15 and 0 Days Before Departure",
+        "refund": "No Refund (0%)",
+        "terms": "No refund, transfer, or credit note will be issued for cancellations made within 15 days of the departure date, as hotels, transport, permits, and other services are prepaid and non-recoverable."
+      }
+    ],
+    "cancellationSpecialNotes": "Refunds, wherever applicable, will be processed within 7–10 working days from the date of cancellation confirmation.\r\n\r\nIf TripNaari cancels the trip due to low group size, operational reasons, or adverse weather conditions, travellers will be offered either a 100% refund or a full credit note valid for future travel with TripNaari.\r\n\r\nIf the trip is cancelled due to natural calamities, extreme weather conditions, political unrest, or government-imposed travel restrictions, the amount paid will be issued as a credit note for a future TripNaari trip.\r\n\r\nBy confirming the booking, the traveller acknowledges and agrees to all the above cancellation terms and conditions.\r\n\r\nCredit notes are issued in the name of the original traveller and may be redeemed against any future TripNaari trip, subject to availability.\r\n\r\nCredit notes are non-cash, non-transferable, and cannot be encashed under any circumstances.\r\n\r\nAny non-refundable components such as permits, safari bookings, event tickets, entry fees, or special activity charges may be additionally deducted wherever applicable.\r\n\r\nThe effective date and time of cancellation will be considered as the date and time when a written cancellation request is received by TripNaari through email or WhatsApp.",
+    "ratingAvg": "4.9",
+    "ratingCount": 0,
+    "createdAt": "2026-08-13T09:59:30.153Z",
+    "updatedAt": "2026-08-14T12:03:16.364Z"
+  },
+  {
+    "slug": "hampi",
+    "title": " Hampi",
+    "shortDescription": "Step into the timeless world of Hampi with TripNaari’s women-only group getaway. Explore ancient ruins, sacred hilltops, tranquil lakes, and the rich heritage of the Vijayanagara Empire while travelling with a wonderful community of women.  This short yet immersive journey combines spirituality, history, nature, photography, laughter, and meaningful connections—perfect for women who love discovering new places together.",
+    "longDescription": "TripNaari’s Exploring Hampi tour is a thoughtfully curated weekend escape for women who wish to experience the magic of one of India’s most iconic heritage destinations. Begin your journey from Bangalore and travel to Anjaneya Hills, believed to be the birthplace of Lord Hanuman, followed by the peaceful Sanapur Lake surrounded by Hampi’s famous boulder landscapes.\r\n\r\nSpend a full day exploring the magnificent ruins of Hampi, a UNESCO World Heritage Site known for its grand temples, royal enclosures, stone architecture, and fascinating history. Conclude the trip with a visit to the scenic Tungabhadra Dam before returning to Bangalore with unforgettable memories.\r\n\r\nDesigned with safety, comfort, and community in mind, this women-only group trip includes private transportation, handpicked stays, a local Hampi guide, and a supportive TripNaari Trip Leader throughout the journey.",
+    "destinationSlug": " Hampi",
+    "locationLabel": "Hampi, India",
+    "badgeText": "Weekend Special",
+    "durationDays": 2,
+    "durationNights": 3,
+    "priceFrom": 12500,
+    "groupSizeMin": 4,
+    "groupSizeMax": 12,
+    "difficulty": "easy",
+    "comfortLevel": "comfort",
+    "heroImage": "/uploads/1786618221125-na3u8w.png",
+    "gallery": [
+      "/uploads/1786623176795-6z0z8h.jpg",
+      "/uploads/1786623183764-si3rp2.jpg",
+      "/uploads/1786623192449-0qhh42.jpg",
+      "/uploads/1786623203023-m6rmg0.jpg"
+    ],
+    "highlights": [
+      "Anjaneya Hills",
+      "Sanapur Lake",
+      "UNESCO-listed Hampi ruins",
+      "Ancient temples and Royal enclosures",
+      "Guided Hampi heritage tour",
+      "Scenic Tungabhadra Dam",
+      "Stunning boulder landscapes"
+    ],
+    "isFeatured": true,
+    "isPublished": true,
+    "isInternational": false,
+    "itineraryChangePolicy": "TripNaari reserves the right to modify the itinerary due to weather, road conditions, government restrictions, safety concerns, or operational requirements. Any changes will be communicated to travellers as early as possible, and suitable alternatives will be arranged wherever feasible. Safety and the overall travel experience of the group will always remain our highest priority.",
+    "inclusions": [
+      "AC Tempo Traveller for the entire journey",
+      "Accommodation on a double-sharing basis in handpicked 3-star hotels",
+      "Experienced TripNaari Trip Leader",
+      "2 Breakfasts",
+      "Local guide for Day 2 Hampi sightseeing",
+      "Entry fees as per the itinerary"
+    ],
+    "exclusions": [
+      "Lunches and dinners",
+      "Optional activities and adventure sports",
+      "Personal expenses such as shopping, laundry, tips, and phone charges",
+      "Anything not specifically mentioned under inclusions",
+      "5% GST"
+    ],
+    "itinerary": [
+      {
+        "day": 1,
+        "title": "Bangalore → Anjaneya Hills → Sanapur Lake → Hampi",
+        "desc": "Start your journey from Bangalore in the morning and drive towards Anjaneya Hills, believed to be the birthplace of Lord Hanuman. Continue to the serene Sanapur Lake, surrounded by Hampi’s dramatic rocky landscape. Check in to the hotel in Hampi and relax for the evening.",
+        "meals": [
+          "B"
+        ],
+        "stay": "Hotel Hampi International/similar"
+      },
+      {
+        "day": 2,
+        "title": "Explore the Ruins of Hampi",
+        "desc": "Spend the day discovering the magnificent ruins of Hampi, a UNESCO World Heritage Site. Visit iconic temples, ancient monuments, royal enclosures, and historic landmarks while learning about the grandeur of the Vijayanagara Empire with a local guide. Overnight stay in Hampi.",
+        "meals": [
+          "B"
+        ],
+        "stay": "Hotel Hampi International/similar"
+      },
+      {
+        "day": 3,
+        "title": "Hampi → Tungabhadra Dam → Bangalore",
+        "desc": "After breakfast, visit the scenic Tungabhadra Dam and enjoy the peaceful surroundings. Later, begin the return journey to Bangalore with wonderful memories of Hampi’s history, heritage, and timeless beauty.",
+        "meals": [
+          "B"
+        ],
+        "stay": ""
+      }
+    ],
+    "hotels": [
+      {
+        "name": "Hotel Hampi International/similar",
+        "category": "3-star comfort",
+        "location": "Hampi",
+        "amenities": [],
+        "confirmationTimeline": "Exact name 7 days before"
+      }
+    ],
+    "momentsGallery": [],
+    "cancellationSlabs": [
+      {
+        "window": "30 Days or more before departure date",
+        "refund": "100% Refund",
+        "terms": "A credit note equivalent to the booking amount paid will be issued for future travel with TripNaari. If the traveller has paid any amount over and above the booking amount, that additional amount will also be refunded to original source ."
+      },
+      {
+        "window": "Between 15 to 30 Days before departure date",
+        "refund": "Partial Refund",
+        "terms": "A credit note will be issued for the remaining amount paid after deducting the booking amount, which will be treated as the cancellation charge. Cancellation Charge: Booking amount (non-refundable) Credit Note Issued: Total amount paid minus booking amount"
+      },
+      {
+        "window": "Cancellation Between 15 and 0 Days Before Departure",
+        "refund": "No Refund (0%)",
+        "terms": "No refund, transfer, or credit note will be issued for cancellations made within 15 days of the departure date, as hotels, transport, permits, and other services are prepaid and non-recoverable."
+      }
+    ],
+    "cancellationSpecialNotes": "Refunds, wherever applicable, will be processed within 7–10 working days from the date of cancellation confirmation.\r\n If TripNaari cancels the trip due to low group size, operational reasons, or adverse weather conditions, travellers will be offered either a 100% refund or a full credit note valid for future travel with TripNaari.\r\n If the trip is cancelled due to natural calamities, extreme weather conditions, political unrest, or government-imposed travel restrictions, the amount paid will be issued as a credit note for a future TripNaari trip.\r\n. Credit notes are issued in the name of the original traveller and may be redeemed against any future TripNaari trip, subject to availability.\r\n Credit notes are non-cash, non-transferable, and cannot be encashed under any circumstances.\r\n Any non-refundable components such as permits, safari bookings, event tickets, entry fees, or special activity charges may be additionally deducted wherever applicable.\r\n The effective date and time of cancellation will be considered as the date and time when a written cancellation request is received by TripNaari through email or WhatsApp.\r\n\r\n\r\n\r\n By confirming the booking, the traveller acknowledges and agrees to all the above cancellation terms and conditions",
+    "ratingAvg": "4.9",
+    "ratingCount": 0,
+    "createdAt": "2026-08-13T18:06:41.828Z",
+    "updatedAt": "2026-08-14T12:04:24.839Z"
+  },
+  {
+    "slug": "meghalaya-kaziranga",
+    "title": " Meghalaya & Kaziranga",
+    "shortDescription": "A 6N/7D women-only Meghalaya & Kaziranga trip covering Shillong, Phe Phe Falls, Krang Suri Falls, Mawlynnong, Dawki, Cherrapunji, Double Decker Living Root Bridge, Laitlum Canyon, and Kaziranga National Park, with comfortable stays, private transportation, guided experiences, and a dedicated TripNaari Trip Leader.",
+    "longDescription": "TripNaari’s Exploring Meghalaya & Kaziranga tour is a thoughtfully curated women’s group experience that takes you through the most iconic destinations of Meghalaya and Assam. Begin in Shillong, the charming hill capital, and witness the beauty of Umiam Lake. Explore hidden gems like Phe Phe Falls and Krang Suri Falls, visit Mawlynnong, famously known as Asia’s Cleanest Village, and experience the crystal-clear waters of the Umngot River in Dawki.\r\n\r\nContinue to Cherrapunji, where lush valleys, caves, waterfalls, and the legendary Double Decker Living Root Bridge Trek await. End the journey in Kaziranga National Park, home to the world-famous one-horned rhinoceros, with an exciting jeep safari and a traditional Assamese cultural evening.\r\n\r\nDesigned with safety, comfort, and community in mind, this women-only trip includes private transportation, handpicked stays, local guides, entry tickets, safari experience, and a supportive TripNaari Trip Leader throughout the journey.",
+    "destinationSlug": "Exploring Meghalaya & Kaziranga",
+    "locationLabel": "Shillong, Meghalaya",
+    "badgeText": "Popular",
+    "durationDays": 7,
+    "durationNights": 6,
+    "priceFrom": 45000,
+    "priceOriginal": 48000,
+    "groupSizeMin": 4,
+    "groupSizeMax": 10,
+    "difficulty": "easy",
+    "comfortLevel": "comfort",
+    "heroImage": "/uploads/1786615194646-rjbun2.png",
+    "gallery": [
+      "/uploads/1786623610644-a6zpz3.jpg",
+      "/uploads/1786623983168-i4fjbz.jpg",
+      "/uploads/1786623637217-w4d70l.jpg",
+      "/uploads/1786623654166-0cfabu.jpg"
+    ],
+    "highlights": [
+      "Umiam Lake",
+      "Phe Phe Falls",
+      "Krang Suri Falls",
+      "Mawlynnong",
+      "Single Living Root Bridge",
+      "Dawki’s crystal-clear Umngot River",
+      "Double Decker Living Root Bridge trek",
+      "Nohkalikai Falls",
+      "Mawsmai Cave",
+      "Arwah Cave",
+      "Garden of Caves",
+      "Seven Sisters Falls",
+      "Laitlum Canyon",
+      "Kaziranga Jeep Safari",
+      "Assamese Cultural Show"
+    ],
+    "isFeatured": true,
+    "isPublished": true,
+    "isInternational": false,
+    "itineraryChangePolicy": "TripNaari reserves the right to modify the itinerary due to weather, road conditions, government restrictions, safety concerns, or operational requirements. Any changes will be communicated to travellers as early as possible, and suitable alternatives will be arranged wherever feasible. Safety and the overall travel experience of the group will always remain our highest priority.",
+    "inclusions": [
+      "Private vehicle for all transfers and sightseeing from Guwahati to Guwahati",
+      "Airport pickup and drop at scheduled timings",
+      "6 Breakfasts",
+      "6 Dinners",
+      "Comfortable hotels and homestays on a twin-sharing basis",
+      "Experienced TripNaari Trip Leader throughout the journey",
+      "Local guides for treks and selected sightseeing",
+      "Dawki boating on the Umngot River",
+      "1 Jeep Safari in Kaziranga National Park",
+      "Traditional Assamese Cultural Show",
+      "Entry fees to attractions mentioned in the itinerary"
+    ],
+    "exclusions": [
+      "Airfare and train tickets",
+      "Lunches",
+      "Bottled water and meals during road journeys",
+      "Personal expenses",
+      "Optional activities",
+      "Travel insurance",
+      "Tips for drivers, guides, and hotel staff",
+      "5% GST"
+    ],
+    "itinerary": [
+      {
+        "day": 1,
+        "title": "Guwahati → Shillong",
+        "desc": "Arrive at Guwahati Airport (pickup by 12:00 PM) and drive to Shillong. En route, stop at the picturesque Umiam Lake for photographs. Check in to the hotel and relax for the evening.",
+        "meals": [
+          "D"
+        ],
+        "stay": "Hotel Indiana Hills/Similar"
+      },
+      {
+        "day": 2,
+        "title": "Phe Phe Falls & Krang Suri Falls",
+        "desc": "After breakfast, visit the beautiful Phe Phe Falls in the Jaintia Hills, followed by the crystal-clear Krang Suri Falls, one of Meghalaya’s most scenic waterfalls. Return to Shillong in the evening.",
+        "meals": [
+          "B",
+          "D"
+        ],
+        "stay": "Hotel Indiana Hills/Similar"
+      },
+      {
+        "day": 3,
+        "title": "Mawlynnong & Dawki → Cherrapunji",
+        "desc": "Visit Mawlynnong, Asia’s Cleanest Village, and walk across the famous Single Living Root Bridge. Continue to Dawki and experience the crystal-clear Umngot River. Later, drive to Cherrapunji for an overnight stay.",
+        "meals": [
+          "B",
+          "D"
+        ],
+        "stay": "Hotel Vintage Grande/Similar"
+      },
+      {
+        "day": 4,
+        "title": "Double Decker Living Root Bridge Trek",
+        "desc": "Begin early for the iconic Double Decker Living Root Bridge Trek. After the trek, visit the majestic Nohkalikai Falls and enjoy panoramic valley views before returning to the hotel.",
+        "meals": [
+          "B",
+          "D"
+        ],
+        "stay": "Hotel Vintage Grande/Similar"
+      },
+      {
+        "day": 5,
+        "title": "Cherrapunji Sightseeing → Shillong",
+        "desc": "Explore the highlights of Cherrapunji including Mawsmai Cave, Arwah Cave, Garden of Caves, and Seven Sisters Falls. Later, drive back to Shillong for an overnight stay.",
+        "meals": [
+          "B",
+          "D"
+        ],
+        "stay": "Hotel Indiana Hills/Similar"
+      },
+      {
+        "day": 6,
+        "title": "Laitlum Canyon → Kaziranga",
+        "desc": "Visit the breathtaking Laitlum Canyon (subject to accessibility). Continue your journey to Kaziranga National Park. In the evening, enjoy a traditional Assamese Cultural Show before checking in to the resort.",
+        "meals": [
+          "B",
+          "D"
+        ],
+        "stay": "Tea Nest Resort/Similar"
+      },
+      {
+        "day": 7,
+        "title": "Kaziranga Safari & Departure",
+        "desc": "Early morning, embark on an exciting Jeep Safari in Kaziranga National Park, famous for its one-horned rhinoceros, elephants, deer, wild buffalo, and rich birdlife. Return for breakfast and later transfer to Guwahati Airport for your onward journey",
+        "meals": [
+          "B"
+        ],
+        "stay": ""
+      }
+    ],
+    "hotels": [
+      {
+        "name": "Hotel Vintage Grand/similar",
+        "category": "3-star comfort",
+        "location": "Sohra, Cherrapunji ",
+        "amenities": [],
+        "confirmationTimeline": "Exact name 7 days before"
+      },
+      {
+        "name": "Hotel Indiana Hills/similar",
+        "category": "3-star comfort",
+        "location": "Shilong",
+        "amenities": [],
+        "confirmationTimeline": "Exact name 7 days before"
+      },
+      {
+        "name": "Tea Nest Resort /similar",
+        "category": "3-star comfort",
+        "location": "Kaziranga",
+        "amenities": [],
+        "confirmationTimeline": "Exact name 7 days before"
+      }
+    ],
+    "packingItems": [
+      "Warm jacket / fleece",
+      "Thermals (for winter departures)",
+      "Comfortable clothes & extra socks",
+      "Rain jacket / poncho",
+      "Good walking or trekking shoes",
+      "Slippers / sandals",
+      "Valid ID proof",
+      "Personal medicines",
+      "Sunscreen, sunglasses & lip balm",
+      "Reusable water bottle",
+      "Mobile charger & power bank",
+      "Small backpack for day trips",
+      "TripNaari Tip 💜: Carry comfortable waterproof footwear and a light rain layer, as Meghalaya weather can change quickly."
+    ],
+    "momentsGallery": [],
+    "cancellationSlabs": [
+      {
+        "window": "30 Days or more before departure date",
+        "refund": "100% Refund",
+        "terms": "A credit note equivalent to the booking amount paid will be issued for future travel with TripNaari. If the traveller has paid any amount over and above the booking amount, that additional amount will also be refunded to original source "
+      },
+      {
+        "window": "Between 15 to 30 Days before departure date",
+        "refund": "Partial Refund",
+        "terms": "A credit note will be issued for the remaining amount paid after deducting the booking amount, which will be treated as the cancellation charge. Cancellation Charge: Booking amount (non-refundable) Credit Note Issued: Total amount paid minus booking amount"
+      },
+      {
+        "window": "Cancellation Between 15 and 0 Days Before Departure",
+        "refund": "No Refund (0%)",
+        "terms": "No refund, transfer, or credit note will be issued for cancellations made within 15 days of the departure date, as hotels, transport, permits, and other services are prepaid and non-recoverable."
+      }
+    ],
+    "cancellationSpecialNotes": "Refunds, wherever applicable, will be processed within 7–10 working days from the date of cancellation confirmation. If TripNaari cancels the trip due to low group size, operational reasons, or adverse weather conditions, travellers will be offered either a 100% refund or a full credit note valid for future travel with TripNaari. If the trip is cancelled due to natural calamities, extreme weather conditions, political unrest, or government-imposed travel restrictions, the amount paid will be issued as a credit note for a future TripNaari trip. . Credit notes are issued in the name of the original traveller and may be redeemed against any future TripNaari trip, subject to availability. Credit notes are non-cash, non-transferable, and cannot be encashed under any circumstances. Any non-refundable components such as permits, safari bookings, event tickets, entry fees, or special activity charges may be additionally deducted wherever applicable. The effective date and time of cancellation will be considered as the date and time when a written cancellation request is received by TripNaari through email or WhatsApp. By confirming the booking, the traveller acknowledges and agrees to all the above cancellation terms and conditions",
+    "ratingAvg": "4.9",
+    "ratingCount": 0,
+    "createdAt": "2026-08-13T18:09:37.300Z",
+    "updatedAt": "2026-08-14T12:01:47.475Z"
   }
 ]

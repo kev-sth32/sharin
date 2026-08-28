@@ -2,13 +2,17 @@ import { NextResponse } from "next/server";
 import { getMergedTrips, getMergedDepartures, getMergedFAQs, getAISettings, getMergedPolicies } from "@/lib/public-store";
 import { logConversation } from "@/lib/admin-store";
 import { getAdminDataShared } from "@/lib/admin-store-shared";
+import { verifyAdminToken, COOKIE_NAME } from "@/lib/auth";
 import dns from "dns";
 
 dns.setDefaultResultOrder("ipv4first");
 
-function isAdminAuthenticated(req: Request) {
-  const cookie = req.headers.get("cookie") || "";
-  return cookie.includes("tripnaari_admin=authenticated");
+async function isAdminAuthenticated(req: Request) {
+  const cookieHeader = req.headers.get("cookie") || "";
+  const match = cookieHeader.match(new RegExp(`(?:^|; )\\s*${COOKIE_NAME}=([^;]*)`));
+  const token = match ? decodeURIComponent(match[1]) : null;
+  if (token && (await verifyAdminToken(token))) return true;
+  return cookieHeader.includes("tripnaari_admin=authenticated");
 }
 
 function makeTextStream(text: string) {
@@ -52,7 +56,7 @@ export async function POST(req: Request) {
     }
 
     // 1. Security Check for Admin role
-    if (role === "admin" && !isAdminAuthenticated(req)) {
+    if (role === "admin" && !(await isAdminAuthenticated(req))) {
       return NextResponse.json({ error: "Unauthorized — Admin session required" }, { status: 401 });
     }
 

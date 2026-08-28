@@ -1,55 +1,192 @@
 [
   {
-    "slug": "meghalaya-living-roots",
-    "title": "Meghalaya - Living Roots & Waterfalls",
-    "shortDescription": "5D/4N Dawki, Cherrapunji & Mawkdok. Homestays run by women, trek graded.",
-    "longDescription": "Meghalaya is matrilineal - women own land, and now they lead your trek. Double decker root bridge with safety rope team.",
-    "destinationSlug": "meghalaya",
-    "durationDays": 5,
-    "durationNights": 4,
-    "priceFrom": 18500,
-    "priceOriginal": 23999,
-    "groupSizeMin": 10,
-    "groupSizeMax": 15,
-    "difficulty": "moderate",
-    "comfortLevel": "comfort",
-    "heroImage": "https://images.unsplash.com/photo-1533105079780-92b9be482077?w=1200&q=80",
-    "highlights": [
-      "Dawki Crystal Boat",
-      "Double Decker Trek with Local Women",
-      "Homestay Experience"
+    "slug": "test-trip-1",
+    "isFeatured": false
+  },
+  {
+    "slug": "spiti-winter-whites",
+    "title": "Spiti Winter Whites - Women Only 4x4",
+    "shortDescription": "8D/7N for the fearless. Monasteries, snow leopards & chai with nuns.",
+    "longDescription": "Not for everyone, only for fierce. 4x4 with trained drivers, oxygen kit, and trip leader with high-altitude certification.",
+    "destinationSlug": "himachal",
+    "badgeText": "best package",
+    "durationDays": 8,
+    "durationNights": 7,
+    "priceFrom": 34999,
+    "priceOriginal": 39999,
+    "groupSizeMin": 6,
+    "groupSizeMax": 10,
+    "difficulty": "challenging",
+    "comfortLevel": "backpacker",
+    "heroImage": "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=1200&q=80",
+    "gallery": [
+      "https://images.unsplash.com/photo-1501785888041-af3ef285b470?w=800&q=80",
+      "https://images.unsplash.com/photo-1595815771613-e38f95959446?w=800&q=80",
+      "https://images.unsplash.com/photo-1526772661823-3f88f33771cd?w=800&q=80",
+      "https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?w=800&q=80"
     ],
-    "isFeatured": true,
-    "isPublished": true,
-    "itineraryChangePolicy": "Rain may delay treks. Alternative waterfall visits. Safety over itinerary.",
+    "highlights": [
+      "Comics Village",
+      "Key Monastery Private Prayer",
+      "Women-led Kitchen"
+    ],
+    "isFeatured": false,
+    "isPublished": false,
+    "isInternational": false,
+    "itineraryChangePolicy": "Snow blocks change route. 100% refund if trip cancelled by us due to safety.",
+    "inclusions": [],
+    "exclusions": [],
+    "itinerary": [
+      {
+        "day": 1,
+        "title": "Day 1 Plan",
+        "desc": "asdcoiefno",
+        "meals": [
+          "B"
+        ],
+        "stay": "Stay / Hotel details"
+      },
+      {
+        "day": 2,
+        "title": "Day 2 Plan",
+        "desc": "efnjewfnon",
+        "meals": [
+          "B"
+        ],
+        "stay": "Stay / Hotel details"
+      },
+      {
+        "day": 3,
+        "title": "Day 3 Plan",
+        "desc": "sejfnwefn",
+        "meals": [
+          "B"
+        ],
+        "stay": "Stay / Hotel details"
+      },
+      {
+        "day": 4,
+        "title": "Day 4 Plan",
+        "desc": "wefjqewfjn",
+        "meals": [
+          "B"
+        ],
+        "stay": "Stay / Hotel details"
+      },
+      {
+        "day": 5,
+        "title": "Day 5 Plan",
+        "desc": "ewqjfnewjfn",
+        "meals": [
+          "B"
+        ],
+        "stay": "Stay / Hotel details"
+      },
+      {
+        "day": 6,
+        "title": "Day 6 Plan",
+        "desc": "eqkfjnewfn",
+        "meals": [
+          "B"
+        ],
+        "stay": "Stay / Hotel details"
+      },
+      {
+        "day": 7,
+        "title": "kewqfjjekwf jeqf",
+        "desc": "h hj hj",
+        "meals": [
+          "B"
+        ],
+        "stay": "Stay / Hotel details"
+      },
+      {
+        "day": 8,
+        "title": "Day 8 Plan",
+        "desc": "wejkf wkjef ",
+        "meals": [
+          "B"
+        ],
+        "stay": "Stay / Hotel details"
+      }
+    ],
+    "hotels": [
+      {
+        "name": "wfjef ",
+        "category": "3-star comfort",
+        "location": "wekjv fwjkev ",
+        "amenities": [
+          "Locker",
+          "24x7 reception"
+        ],
+        "confirmationTimeline": "Exact name 7 days before"
+      }
+    ],
+    "packingDisclaimer": "emf nef",
+    "packingItems": [
+      "wje fkw ef"
+    ],
+    "momentsGallery": [],
+    "cancellationSlabs": [
+      {
+        "window": "30 Days or more before departure date",
+        "refund": "100% Refund",
+        "terms": "Full amount refunded back to source account. No hidden penalties."
+      },
+      {
+        "window": "Between 15 to 30 Days before departure date",
+        "refund": "50% Refund",
+        "terms": "Half package cost refunded or 80% dynamic rollover credit voucher provided."
+      },
+      {
+        "window": "Between 7 to 14 Days before departure date",
+        "refund": "25% Refund",
+        "terms": "Quarterly package cost returned. Operational logistics fees apply."
+      },
+      {
+        "window": "Less than 7 Days before departure date",
+        "refund": "No Refund (0%)",
+        "terms": "Strictly non-refundable due to advance mountain vehicle and hotel bookings."
+      }
+    ],
     "ratingAvg": "4.9",
-    "ratingCount": 0
+    "ratingCount": 0,
+    "locationLabel": "himachal",
+    "isDeleted": true
   },
   {
     "slug": "kashmir-blossom-sisterhood",
-    "title": "Kashmir Blossom - Houseboat Sisterhood",
-    "shortDescription": "5D/4N Srinagar-Gulmarg-Pahalgam women-only spring special. Tulip garden included.",
-    "longDescription": "Imagine shikara rides at sunrise with only your girl gang, kahwa with stories, and a tulip garden that looks like heaven spilled. Every stay is verified, every driver is background-checked, trip leader is with you from arrival till drop. We share hotel names 7 days prior and keep a WhatsApp group active 48 hours before departure.",
-    "destinationSlug": "kashmir",
-    "durationDays": 5,
-    "durationNights": 4,
-    "priceFrom": 22999,
-    "priceOriginal": 25999,
-    "groupSizeMin": 8,
-    "groupSizeMax": 16,
-    "difficulty": "easy",
-    "comfortLevel": "comfort",
-    "heroImage": "/uploads/1785286824794-d9w034.jpeg",
-    "highlights": [
-      "Tulip Garden VIP Entry",
-      "1N Houseboat Stay",
-      "Women Trip Leader 24x7",
-      "Kahwa & Wazwan Experience"
-    ],
-    "isFeatured": true,
-    "isPublished": true,
-    "itineraryChangePolicy": "In case of weather, curfew, or safety advisory, itinerary may change. You will be informed 12 hours prior with alternatives. No cost cutting.",
-    "ratingAvg": "4.9",
-    "ratingCount": 0
+    "isDeleted": true,
+    "isPublished": false
+  },
+  {
+    "slug": "kerala-backwater-healing",
+    "isDeleted": true,
+    "isPublished": false
+  },
+  {
+    "slug": "meghalaya-living-roots",
+    "isDeleted": true,
+    "isPublished": false
+  },
+  {
+    "slug": "rajasthan-queens-trail",
+    "isDeleted": true,
+    "isPublished": false
+  },
+  {
+    "slug": "bali-divine-feminine",
+    "isDeleted": true,
+    "isPublished": false
+  },
+  {
+    "slug": "goa-gokarna-surf-sisters",
+    "isDeleted": true,
+    "isPublished": false
+  },
+  {
+    "slug": "tirthan-whispers",
+    "isDeleted": true,
+    "isPublished": false
   }
 ]

@@ -24,7 +24,7 @@ export const metadata: Metadata = {
   },
   description: "Women-oriented travel company & community for safe, handcrafted domestic & international trips. 6000+ women, verified stays, women trip leaders 24x7. Bangalore based, MSME & Startup India recognised.",
   keywords: ["women travel", "solo women travel India", "women only tours", "TripNaari", "safe travel for women", "Kashmir women trip", "Kerala women trip"],
-  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || "https://tripnaari.com"),
+  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || "https://www.tripnaari.com"),
   openGraph: {
     type: "website",
     locale: "en_IN",
@@ -44,24 +44,40 @@ export default function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://www.tripnaari.com";
+  const orgSchema = {
+    "@context": "https://schema.org",
+    "@type": "TravelAgency",
+    "name": "TripNaari",
+    "alternateName": "TripNaari Women Travel",
+    "description": "Women-first travel company & community for safe, handcrafted domestic & international trips for women.",
+    "url": siteUrl,
+    "logo": `${siteUrl}/icon.png`,
+    "sameAs": [
+      "https://www.instagram.com/tripnaari",
+      "https://www.facebook.com/tripnaari"
+    ],
+    "address": {
+      "@type": "PostalAddress",
+      "addressLocality": "Bangalore",
+      "addressCountry": "IN"
+    },
+    "founder": "TripNaari Team",
+    "aggregateRating": {
+      "@type": "AggregateRating",
+      "ratingValue": "4.9",
+      "reviewCount": "1200"
+    },
+    "knowsAbout": ["Women-only travel", "Solo female travel", "Kashmir tours for women", "Kerala backwater retreats", "Safe group tours"]
+  };
+
   return (
     <html lang="en" className={`${jakarta.variable} ${fraunces.variable} h-full antialiased`}>
       <head>
         <link rel="manifest" href="/manifest.json" />
         <meta name="theme-color" content="#800F2D" />
         {/* Structured Data */}
-        <script type="application/ld+json" dangerouslySetInnerHTML={{__html: JSON.stringify({
-          "@context":"https://schema.org",
-          "@type":"TravelAgency",
-          "name":"TripNaari",
-          "description":"Women-first travel company & community",
-          "url":"https://tripnaari.com",
-          "logo":"https://tripnaari.com/logo.png",
-          "sameAs":["https://www.instagram.com/tripnaari"],
-          "address":{"@type":"PostalAddress","addressLocality":"Bangalore","addressCountry":"IN"},
-          "founder":"TripNaari",
-          "aggregateRating":{"@type":"AggregateRating","ratingValue":"4.9","reviewCount":"1200"}
-        })}} />
+        <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(orgSchema) }} />
       </head>
       <body className="min-h-full flex flex-col bg-[#FFF8F0] text-[#13253D]">
         <SiteLayoutWrapper>{children}</SiteLayoutWrapper>

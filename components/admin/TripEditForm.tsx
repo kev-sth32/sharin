@@ -2,33 +2,48 @@
 import { useState, useTransition } from "react";
 import ImageUpload from "./ImageUpload";
 import { Loader2, Plus, Trash2, Calendar, Hotel as HotelIcon, CheckCircle, XCircle, Upload } from "lucide-react";
+import { compressImageInBrowser } from "@/lib/client-compressor";
+import { uploadFileWithProgress } from "@/lib/upload-with-progress";
 
 export default function TripEditForm({ initial, action }: { initial?: any; action: (fd: FormData)=>Promise<any> }) {
   const [heroImage, setHeroImage] = useState(initial?.heroImage || "");
   const [itineraryPdf, setItineraryPdf] = useState(initial?.itineraryPdf || "");
   const [pdfUploading, setPdfUploading] = useState(false);
+  const [pdfProgressPercent, setPdfProgressPercent] = useState(0);
+  const [pdfStatusText, setPdfStatusText] = useState("");
   const [isPending, startTransition] = useTransition();
 
   async function handlePdfUpload(e: React.ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0];
     if (!file) return;
-    setPdfUploading(true);
 
-    const formData = new FormData();
-    formData.append("file", file);
+    if (file.size > 100 * 1024 * 1024) {
+      alert(`File is too large (${(file.size / (1024 * 1024)).toFixed(1)}MB). Max allowed size is 100MB.`);
+      return;
+    }
+
+    setPdfUploading(true);
+    setPdfProgressPercent(5);
+    setPdfStatusText("Preparing PDF file...");
 
     try {
-      const res = await fetch("/api/admin/upload", { method: "POST", body: formData });
-      const data = await res.json();
-      if (data.success) {
-        setItineraryPdf(data.url);
+      const res = await uploadFileWithProgress(file, (info) => {
+        setPdfProgressPercent(info.percent);
+        setPdfStatusText(info.statusText);
+      });
+
+      if (res.success && res.url) {
+        setItineraryPdf(res.url);
       } else {
-        alert("Upload failed: " + data.error);
+        alert("Upload failed: " + (res.error || "Server error"));
       }
-    } catch (err) {
-      alert("Error uploading PDF");
+    } catch (err: any) {
+      alert("Error uploading file: " + (err?.message || "Network error"));
     } finally {
       setPdfUploading(false);
+      setPdfProgressPercent(0);
+      setPdfStatusText("");
+      e.target.value = "";
     }
   }
 
@@ -78,19 +93,21 @@ export default function TripEditForm({ initial, action }: { initial?: any; actio
     if (!file) return;
 
     setUploadingGalleryIdx(index);
-    const formData = new FormData();
-    formData.append("file", file);
 
     try {
+      const finalFile = await compressImageInBrowser(file);
+      const formData = new FormData();
+      formData.append("file", finalFile);
+
       const res = await fetch("/api/admin/upload", { method: "POST", body: formData });
-      const data = await res.json();
-      if (data.success) {
+      const data = await res.json().catch(() => null);
+      if (res.ok && data?.success) {
         updateGalleryUrl(index, data.url);
       } else {
-        alert("Upload failed: " + data.error);
+        alert("Upload failed: " + (data?.error || res.statusText || "Server error"));
       }
-    } catch (err) {
-      alert("Error uploading image");
+    } catch (err: any) {
+      alert("Error uploading image: " + (err?.message || "Network error"));
     } finally {
       setUploadingGalleryIdx(null);
     }
@@ -116,19 +133,21 @@ export default function TripEditForm({ initial, action }: { initial?: any; actio
     if (!file) return;
 
     setUploadingIndex(index);
-    const formData = new FormData();
-    formData.append("file", file);
 
     try {
+      const finalFile = await compressImageInBrowser(file);
+      const formData = new FormData();
+      formData.append("file", finalFile);
+
       const res = await fetch("/api/admin/upload", { method: "POST", body: formData });
-      const data = await res.json();
-      if (data.success) {
+      const data = await res.json().catch(() => null);
+      if (res.ok && data?.success) {
         updateMomentUrl(index, data.url);
       } else {
-        alert("Upload failed: " + data.error);
+        alert("Upload failed: " + (data?.error || res.statusText || "Server error"));
       }
-    } catch (err) {
-      alert("Error uploading image");
+    } catch (err: any) {
+      alert("Error uploading image: " + (err?.message || "Network error"));
     } finally {
       setUploadingIndex(null);
     }
@@ -398,7 +417,22 @@ export default function TripEditForm({ initial, action }: { initial?: any; actio
             <div className="mt-2 rounded-xl border border-dashed border-[#F1D9D0] bg-[#FFF8F0] p-4">
               <label className="text-[11px] font-bold uppercase tracking-widest text-[#13253D]/60 block mb-1">Upload Itinerary PDF</label>
               <input type="file" accept="application/pdf" onChange={handlePdfUpload} className="text-xs" />
-              {pdfUploading && <div className="text-xs mt-1 text-[#FF4A7D]">Uploading PDF...</div>}
+              {pdfUploading && (
+                <div className="mt-3 space-y-1.5 bg-white p-3 rounded-xl border border-[#F1D9D0] shadow-sm">
+                  <div className="flex items-center justify-between text-xs font-semibold text-[#13253D]">
+                    <span className="truncate pr-2 text-[#FF4A7D]">{pdfStatusText}</span>
+                    <span className="font-mono text-[10px] bg-[#FF4A7D]/10 text-[#FF4A7D] px-2 py-0.5 rounded-md font-bold">
+                      {pdfProgressPercent}%
+                    </span>
+                  </div>
+                  <div className="h-2.5 w-full bg-[#E5D7D0] rounded-full overflow-hidden p-0.5">
+                    <div
+                      className="h-full bg-gradient-to-r from-[#FF4A7D] via-[#FF758C] to-[#FFC107] rounded-full transition-all duration-300 ease-out shadow-sm"
+                      style={{ width: `${pdfProgressPercent}%` }}
+                    />
+                  </div>
+                </div>
+              )}
               {itineraryPdf && (
                 <div className="text-xs mt-2 text-green-700 font-semibold flex items-center gap-1">
                   <span>✓ Configured PDF:</span>

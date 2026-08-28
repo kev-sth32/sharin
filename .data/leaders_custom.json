@@ -1,13 +1,18 @@
 [
   {
-    "slug": "test-leader",
-    "name": "Test Leader",
-    "bio": "Exp guide",
-    "specialties": [],
-    "languages": [],
+    "slug": "anjali-sharma",
+    "name": "Anjali Sharma",
+    "bio": "Mountaineer from Bhopal with 30+ trips led across India. A Wilderness First Responder who brings experience, calm, and care to every journey — plus extra hot-water bottles when the mountains get cold.",
+    "specialties": [
+      "High Altitude"
+    ],
+    "languages": [
+      "Hindi",
+      "English"
+    ],
     "experienceYears": 3,
-    "tripsLed": 0,
-    "image": "",
+    "tripsLed": 32,
+    "image": "/uploads/1786625333336-uc2epx.png",
     "isVerified": true
   }
 ]

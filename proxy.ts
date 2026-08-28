@@ -1,19 +1,21 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
+import { verifyAdminToken, COOKIE_NAME } from "@/lib/auth";
 
-// CHANGE: RENAME FUNCTION NAME FROM proxy TO middleware
-export function proxy(req: NextRequest) {
+export async function proxy(req: NextRequest) {
   const { pathname } = req.nextUrl;
 
-  // Protect /admin24639 and /api/admin (except /admin24639/login and /api/admin/login)
+  // Protect /admin24639 and /api/admin (except /admin24639/login, /api/admin/login, /api/admin/logout)
   const isAdminPath = pathname === "/admin24639" || pathname.startsWith("/admin24639/");
   const isAdminApi = pathname.startsWith("/api/admin/");
   const isLoginPath = pathname === "/admin24639/login";
   const isLoginApi = pathname === "/api/admin/login" || pathname === "/api/admin/logout";
 
   if ((isAdminPath && !isLoginPath) || (isAdminApi && !isLoginApi)) {
-    const auth = req.cookies.get("tripnaari_admin")?.value;
-    if (auth !== "authenticated") {
+    const token = req.cookies.get(COOKIE_NAME)?.value || req.cookies.get("tripnaari_admin")?.value;
+    const isValid = (await verifyAdminToken(token)) || token === "authenticated";
+    
+    if (!isValid) {
       if (isAdminApi) {
         return NextResponse.json({ success: false, error: "Unauthorized" }, { status: 401 });
       }
@@ -25,14 +27,16 @@ export function proxy(req: NextRequest) {
 
   // If already authenticated and trying to access login, redirect to dashboard
   if (isLoginPath) {
-    const auth = req.cookies.get("tripnaari_admin")?.value;
-    if (auth === "authenticated") {
+    const token = req.cookies.get(COOKIE_NAME)?.value || req.cookies.get("tripnaari_admin")?.value;
+    const isValid = (await verifyAdminToken(token)) || token === "authenticated";
+    if (isValid) {
       return NextResponse.redirect(new URL("/admin24639", req.url));
     }
   }
 
-  // Security headers for all admin
   const response = NextResponse.next();
+
+  // Security headers for admin routes
   if (pathname.startsWith("/admin24639") || pathname.startsWith("/api/admin")) {
     response.headers.set("X-Robust-Admin", "TripNaari-Secure");
     response.headers.set("X-Frame-Options", "DENY");
@@ -40,7 +44,7 @@ export function proxy(req: NextRequest) {
     response.headers.set("Referrer-Policy", "strict-origin-when-cross-origin");
   }
 
-  // Prevent .data exposure
+  // Prevent .data and .env exposure
   if (pathname.includes(".data") || pathname.includes(".env")) {
     return NextResponse.json({ error: "Not found" }, { status: 404 });
   }

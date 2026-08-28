@@ -1,0 +1,30 @@
+[
+  {
+    "slug": "anjali-mehra",
+    "name": "Anjali Mehra",
+    "bio": "sample sample sample",
+    "specialties": [
+      "Himachal",
+      "Kashmir",
+      "High Altitude"
+    ],
+    "languages": [
+      "Hindi",
+      "English",
+      "Pahadi"
+    ],
+    "experienceYears": 6,
+    "tripsLed": 124,
+    "image": "/uploads/1786691312246-hbv5q5.jpeg",
+    "isVerified": true,
+    "isDeleted": true
+  },
+  {
+    "slug": "safa-khan",
+    "isDeleted": true
+  },
+  {
+    "slug": "pema-lhamu",
+    "isDeleted": true
+  }
+]

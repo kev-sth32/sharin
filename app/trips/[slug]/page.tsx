@@ -1,6 +1,7 @@
 import { getMergedTrips, getMergedDepartures } from "@/lib/public-store";
 import { notFound } from "next/navigation";
 import { formatINR, locationMap } from "@/lib/utils";
+import { touristTripStructuredData, faqStructuredData, breadcrumbStructuredData } from "@/lib/seo";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import EnquiryForm from "@/components/forms/EnquiryForm";
@@ -299,6 +300,20 @@ export default async function TripDetail({ params }: { params: Promise<{ slug: s
 
   return (
     <div className="bg-[#FFF8F0] min-h-screen">
+      {/* JSON-LD Structured Data for SEO, AEO & GEO */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify([
+            touristTripStructuredData(trip),
+            breadcrumbStructuredData([
+              { name: "Home", item: "/" },
+              { name: "Trips", item: "/trips" },
+              { name: trip.title, item: `/trips/${trip.slug}` },
+            ]),
+          ]),
+        }}
+      />
       
       {/* Clean Modern Header Section */}
       <div className="max-w-[1280px] mx-auto px-4 md:px-8 pt-8 pb-2">
@@ -328,7 +343,7 @@ export default async function TripDetail({ params }: { params: Promise<{ slug: s
             <span className="text-[#13253D]/50 font-normal">({trip.ratingCount || 120} reviews)</span>
           </span>
           <span className="text-[#3D4A5E]/60 text-[11px] font-bold tracking-wider uppercase">
-            Verified Stays • Women Drivers • Refund Transparent
+            Verified Stays • Verified Transport • Refund Transparent
           </span>
         </div>
 

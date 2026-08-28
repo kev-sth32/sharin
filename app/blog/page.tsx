@@ -1,9 +1,11 @@
 import Link from "next/link";
-import { blogSeed } from "@/lib/data";
+import { getMergedBlogs } from "@/lib/public-store";
 
 export const metadata = { title: "Blog / Resources - Safe Travel for Women | TripNaari" };
 
 export default function BlogPage() {
+  const blogs = getMergedBlogs().filter((b: any) => b.isPublished !== false);
+
   return (
     <div className="bg-[#FFF8F0] py-16 md:py-24 min-h-screen">
       <div className="max-w-[1280px] mx-auto px-4 md:px-8">
@@ -22,7 +24,7 @@ export default function BlogPage() {
 
         {/* Grid List */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {blogSeed.map(b => (
+          {blogs.map((b: any) => (
             <Link 
               key={b.slug} 
               href={`/blog/${b.slug}`} 

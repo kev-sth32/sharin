@@ -27,8 +27,17 @@ function getJsonSubscriptions(): any[] {
 
 function saveJsonSubscriptions(subs: any[]) {
   ensureDir();
-  const fp = path.join(dataDir, jsonFile);
-  fs.writeFileSync(fp, JSON.stringify(subs, null, 2));
+  const targetPath = path.join(dataDir, jsonFile);
+  const tempPath = path.join(dataDir, `${jsonFile}.${Date.now()}.${Math.random().toString(36).slice(2)}.tmp`);
+  try {
+    fs.writeFileSync(tempPath, JSON.stringify(subs, null, 2), "utf-8");
+    fs.renameSync(tempPath, targetPath);
+  } catch (err) {
+    if (fs.existsSync(tempPath)) {
+      try { fs.unlinkSync(tempPath); } catch {}
+    }
+    console.error("Failed atomic write for push_subscriptions.json:", err);
+  }
 }
 
 export async function POST(req: Request) {

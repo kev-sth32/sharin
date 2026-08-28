@@ -16,7 +16,17 @@ function readFile(name: string, fallback: any[] = []) {
 }
 function writeFile(name: string, data: any, revalidate = true) {
   ensureDir();
-  fs.writeFileSync(path.join(dataDir, name), JSON.stringify(data, null, 2));
+  const targetPath = path.join(dataDir, name);
+  const tempPath = path.join(dataDir, `${name}.${Date.now()}.${Math.random().toString(36).slice(2)}.tmp`);
+  try {
+    fs.writeFileSync(tempPath, JSON.stringify(data, null, 2), "utf-8");
+    fs.renameSync(tempPath, targetPath);
+  } catch (err) {
+    if (fs.existsSync(tempPath)) {
+      try { fs.unlinkSync(tempPath); } catch {}
+    }
+    console.error(`Failed atomic write for ${name}:`, err);
+  }
   if (revalidate) {
     try {
       revalidatePath("/", "layout");
