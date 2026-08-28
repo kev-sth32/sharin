@@ -9,6 +9,7 @@ import { Menu, X } from "lucide-react";
 
 const nav = [
   { href: "/admin24639", label: "Dashboard", icon: "📊" },
+  { href: "/admin24639/crm", label: "AI Omnichannel CRM", icon: "🤖" },
   { href: "/admin24639/leads", label: "Leads & CRM", icon: "💬" },
   { href: "/admin24639/trips", label: "Trip Packages", icon: "🎒" },
   { href: "/admin24639/departures", label: "Departures", icon: "📅" },
@@ -20,7 +21,7 @@ const nav = [
   { href: "/admin24639/gallery", label: "Gallery", icon: "🖼️" },
   { href: "/admin24639/contacts", label: "Contacts & Refunds", icon: "📥" },
   { href: "/admin24639/finance", label: "Finance Tracker", icon: "💵" },
-  { href: "/admin24639/ai-settings", label: "AI Settings", icon: "🤖" },
+  { href: "/admin24639/ai-settings", label: "AI Settings", icon: "⚙️" },
 ];
 
 export default function AdminLayoutClient({ children }: { children: React.ReactNode }) {

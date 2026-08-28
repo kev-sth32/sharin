@@ -121,7 +121,7 @@ export async function POST(req: Request) {
           "Authorization": `Bearer ${apiKey}`
         },
         body: JSON.stringify({
-          model: aiSettings.modelName || "meta/llama-3.1-70b-instruct",
+          model: aiSettings.modelName || "meta/llama-3.2-11b-vision-instruct",
           messages: formattedMessages,
           temperature: aiSettings.temperature !== undefined ? Number(aiSettings.temperature) : (role === "admin" ? 0.5 : 0.2),
           max_tokens: 1000,

@@ -1,5 +1,41 @@
 [
   {
+    "id": "conv_1787944792010",
+    "role": "customer",
+    "createdAt": "2026-08-28T19:20:05.451Z",
+    "updatedAt": "2026-08-28T19:20:05.451Z",
+    "messages": [
+      {
+        "role": "user",
+        "content": "Hi"
+      },
+      {
+        "role": "assistant",
+        "content": ""
+      }
+    ],
+    "messageCount": 2,
+    "context": {}
+  },
+  {
+    "id": "conv_1787940341040",
+    "role": "customer",
+    "createdAt": "2026-08-28T18:05:50.439Z",
+    "updatedAt": "2026-08-28T18:05:50.439Z",
+    "messages": [
+      {
+        "role": "user",
+        "content": "Hi, tell me about Kashmir trips"
+      },
+      {
+        "role": "assistant",
+        "content": "Kashmir is a beautiful destination, and we have a few trips planned there. However, I want to ensure that you're aware of the current safety situation in the region. Our team has been closely monitoring the situation, and we're committed to providing a safe and enjoyable experience for our travelers.\n\nThat being said, we do have a few trips planned to Kashmir, and I'd be happy to share more information with you. Our Kashmir trips typically include a mix of cultural experiences, outdoor activities, and relaxation time. You can expect to visit places like Srinagar, Gulmarg, and Pahalgam, and enjoy activities like hiking, trekking, and boat rides.\n\nBefore I can provide more details, I just want to confirm that you're aware of the current safety situation in Kashmir. We take the safety of our travelers very seriously, and we want to ensure that you're comfortable with the current situation before we proceed.\n\nIf you're still interested in learning more about our Kashmir trips, I'd be happy to share more information with you. We also have a few FAQs on our website that you might find helpful.\n\n[SHOW_ENQUIRY_FORM]"
+      }
+    ],
+    "messageCount": 2,
+    "context": {}
+  },
+  {
     "id": "conv_yv77l4vyi_1787642133612",
     "role": "customer",
     "createdAt": "2026-08-25T07:16:53.448Z",

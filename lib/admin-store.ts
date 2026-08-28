@@ -729,7 +729,7 @@ export async function getAISettings() {
   const fallback = {
     nvidiaApiKey: "",
     geminiApiKey: "",
-    modelName: "meta/llama-3.1-70b-instruct",
+    modelName: "meta/llama-3.2-11b-vision-instruct",
     welcomeMessage: "Namaste! 🙏 Welcome to TripNaari. I am NaariAI, your travel companion. I can help you find safe women-only packages, check active departures, and answer any queries you have. What destinations are you dreaming of?",
     systemInstruction: `You are "NaariAI", the official women's safety & group travel assistant for TripNaari.
 TripNaari is India's leading travel brand focusing on safe solo and group travel experiences for women, sisters, mothers, and daughters.

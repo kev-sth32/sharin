@@ -279,8 +279,64 @@ export const pushSubscriptions = pgTable("push_subscriptions", {
   createdAt: timestamp("created_at").defaultNow(),
 });
 
+// Omnichannel CRM Conversations (Instagram DM + WhatsApp)
+export const crmConversations = pgTable("crm_conversations", {
+  id: serial("id").primaryKey(),
+  channel: varchar("channel", { length: 20 }).notNull(), // 'instagram' | 'whatsapp' | 'website_chat'
+  externalUserId: varchar("external_user_id", { length: 100 }).unique().notNull(), // IG User ID or WhatsApp Phone Number (+91...)
+  externalUsername: varchar("external_username", { length: 150 }), // IG handle or WhatsApp display name
+  customerName: varchar("customer_name", { length: 150 }),
+  leadId: integer("lead_id").references(() => leads.id), // linked lead record
+  assignedAgent: varchar("assigned_agent", { length: 100 }).default("Unassigned"),
+  mode: varchar("mode", { length: 20 }).default("ai"), // 'ai' | 'human'
+  status: varchar("status", { length: 50 }).default("active"), // 'active', 'qualified', 'quote_sent', 'escalated', 'booked', 'closed'
+  dripStep: integer("drip_step").default(0), // 0: new, 1: 24h follow up, 2: 72h urgency, 3: 7d discount
+  quoteData: json("quote_data"), // generated quote details (price, deposit, link)
+  lastMessageText: text("last_message_text"),
+  lastMessageAt: timestamp("last_message_at").defaultNow(),
+  unreadCount: integer("unread_count").default(0),
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
+
+// Omnichannel CRM Messages Log
+export const crmMessages = pgTable("crm_messages", {
+  id: serial("id").primaryKey(),
+  conversationId: integer("conversation_id")
+    .references(() => crmConversations.id)
+    .notNull(),
+  channel: varchar("channel", { length: 20 }).notNull(), // 'instagram' | 'whatsapp'
+  senderType: varchar("sender_type", { length: 20 }).notNull(), // 'user', 'ai', 'admin'
+  senderId: varchar("sender_id", { length: 100 }),
+  contentType: varchar("content_type", { length: 30 }).default("text"), // 'text', 'image', 'document', 'interactive'
+  content: text("content").notNull(),
+  mediaUrl: text("media_url"),
+  rawPayload: json("raw_payload"),
+  intentDetected: varchar("intent_detected", { length: 100 }), // e.g. 'pricing_inquiry', 'date_inquiry', 'phone_provided'
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
+// AI Agent Configuration & Persona Rules
+export const aiAgentConfigs = pgTable("ai_agent_configs", {
+  id: serial("id").primaryKey(),
+  name: varchar("name", { length: 100 }).default("TripNaari AI Assistant"),
+  systemPrompt: text("system_prompt").notNull(),
+  model: varchar("model", { length: 50 }).default("gpt-4o-mini"),
+  temperature: numeric("temperature", { precision: 2, scale: 1 }).default("0.7"),
+  autoReplyEnabled: boolean("auto_reply_enabled").default(true),
+  whatsappAutoSendPdf: boolean("whatsapp_auto_send_pdf").default(true),
+  humanTakeoverKeywords: json("human_takeover_keywords").$type<string[]>().default([
+    "speak to agent", "call me", "human", "complaint", "speak to manager", "operator"
+  ]),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
+
 // Types export
 export type TripPackage = typeof tripPackages.$inferSelect;
 export type DepartureDate = typeof departureDates.$inferSelect;
 export type Lead = typeof leads.$inferSelect;
 export type PushSubscriptionType = typeof pushSubscriptions.$inferSelect;
+export type CRMConversation = typeof crmConversations.$inferSelect;
+export type CRMMessage = typeof crmMessages.$inferSelect;
+export type AIAgentConfig = typeof aiAgentConfigs.$inferSelect;
+

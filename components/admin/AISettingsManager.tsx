@@ -84,9 +84,9 @@ interface AISettingsManagerProps {
 }
 
 const defaultModels = [
-  { value: "meta/llama-3.1-70b-instruct", label: "Llama 3.1 70B Instruct (Recommended)" },
-  { value: "nvidia/llama-3.1-nemotron-70b-instruct", label: "Llama 3.1 Nemotron 70B Instruct (Great for QA)" },
-  { value: "meta/llama-3.1-8b-instruct", label: "Llama 3.1 8B Instruct (Extremely Fast)" },
+  { value: "meta/llama-3.2-11b-vision-instruct", label: "Llama 3.2 11B Vision Instruct (Recommended & Fast)" },
+  { value: "meta/llama-3.2-90b-vision-instruct", label: "Llama 3.2 90B Vision Instruct (High Performance)" },
+  { value: "nv-mistralai/mistral-nemo-12b-instruct", label: "Mistral Nemo 12B Instruct (Great for QA)" },
 ];
 
 const defaultWelcomeMessage = "Namaste! 🙏 Welcome to TripNaari. I am NaariAI, your travel companion. I can help you find safe women-only packages, check active departures, and answer any queries you have. What destinations are you dreaming of?";
