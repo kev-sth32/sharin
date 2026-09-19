@@ -1,0 +1,9 @@
+{
+  "crons": [
+    {
+      "path": "/api/cron/sales-drip",
+      "schedule": "30 3,11 * * *"
+    }
+  ],
+  "regions": ["sin1"]
+}

@@ -15,9 +15,9 @@ export default function SafetyPromise() {
           {/* Left: Road Image */}
           <div className="lg:col-span-5 flex justify-center">
             <div className="relative w-full max-w-[400px] aspect-[3/4] overflow-hidden rounded-[32px] shadow-xl">
-              <img 
-                src="/uploads/sisterhood-circle.jpg" 
-                alt="TripNaari Sisterhood of Exploration" 
+              <img
+                src="/uploads/sisterhood-circle.jpg"
+                alt="TripNaari Sisterhood of Exploration"
                 className="w-full h-full object-cover"
               />
             </div>

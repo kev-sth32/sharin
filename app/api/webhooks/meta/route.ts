@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { processAiLeadRefinement, sendInstagramDm, sendWhatsAppMessage } from "@/lib/ai-crm";
 import { dbInstance, schema } from "@/lib/db";
 import { eq } from "drizzle-orm";
+import { broadcastCrmEvent } from "@/lib/crm-events";
 
 /**
  * GET Handler: Meta Webhook Verification (Challenge Response)
@@ -13,7 +14,11 @@ export async function GET(req: NextRequest) {
   const token = searchParams.get("hub.verify_token");
   const challenge = searchParams.get("hub.challenge");
 
-  const VERIFY_TOKEN = process.env.META_WEBHOOK_VERIFY_TOKEN || "tripnaari_crm_secret_token";
+  const VERIFY_TOKEN = process.env.META_WEBHOOK_VERIFY_TOKEN;
+  if (!VERIFY_TOKEN) {
+    console.error("[Meta Webhook] META_WEBHOOK_VERIFY_TOKEN env var is not set. Rejecting verification.");
+    return NextResponse.json({ error: "Webhook not configured" }, { status: 403 });
+  }
 
   if (mode === "subscribe" && token === VERIFY_TOKEN) {
     console.log("[Meta Webhook] Verification Successful!");
@@ -52,6 +57,21 @@ export async function POST(req: NextRequest) {
 }
 
 /**
+ * Generates a deterministic numeric conversation ID from a string (phone/userId).
+ * Stable across all requests — eliminates the random ID bug that broke SSE matching.
+ */
+function stableConversationId(input: string): number {
+  let hash = 0;
+  for (let i = 0; i < input.length; i++) {
+    const char = input.charCodeAt(i);
+    hash = (hash << 5) - hash + char;
+    hash = hash & hash; // Convert to 32-bit integer
+  }
+  // Return positive int in range 5000–9999 (avoids colliding with mock IDs 101, 102)
+  return 5000 + Math.abs(hash % 5000);
+}
+
+/**
  * Handles Incoming Instagram Direct Messages
  */
 async function handleInstagramEvent(body: any) {
@@ -67,13 +87,34 @@ async function handleInstagramEvent(body: any) {
 
       console.log(`[Instagram DM] From User ${senderId}: "${messageText}"`);
 
-      // Process via AI CRM Engine
-      const aiResult = await processAiLeadRefinement(messageText, [], "instagram");
+      // Generate stable conversationId for this sender
+      const conversationId = stableConversationId(`ig_${senderId}`);
+
+      // Fetch conversation history from DB for AI context
+      const db = dbInstance();
+      let conversationHistory: Array<{ role: "user" | "assistant"; content: string }> = [];
+
+      if (!db._isMock) {
+        try {
+          const recentMessages = await db
+            .select()
+            .from(schema.crmMessages)
+            .where(eq(schema.crmMessages.conversationId, conversationId))
+            .limit(6);
+
+          conversationHistory = recentMessages.map((m: any) => ({
+            role: m.senderType === "user" ? "user" : "assistant",
+            content: m.content
+          }));
+        } catch (e) {
+          console.warn("[IG History Fetch] Could not load message history:", e);
+        }
+      }
+
+      // Process via AI CRM Engine with conversation context
+      const aiResult = await processAiLeadRefinement(messageText, conversationHistory, "instagram");
 
       // Store message in database if PostgreSQL DB is configured
-      const db = dbInstance();
-      let conversationId: number | null = null;
-
       if (!db._isMock) {
         try {
           let [existing] = await db
@@ -92,14 +133,43 @@ async function handleInstagramEvent(body: any) {
                 mode: aiResult.extractedLead.shouldEscalate ? "human" : "ai",
                 status: aiResult.extractedLead.intentScore && aiResult.extractedLead.intentScore >= 70 ? "qualified" : "active",
                 lastMessageText: messageText,
+                dripStep: 0,
               })
               .returning();
-            conversationId = newConv.id;
+            existing = newConv;
           } else {
-            conversationId = existing.id;
+            // User re-engaged — reset drip so follow-up sequences start fresh
+            await db
+              .update(schema.crmConversations)
+              .set({
+                lastMessageText: messageText,
+                lastMessageAt: new Date(),
+                dripStep: 0,
+                status: aiResult.extractedLead.shouldEscalate ? "qualified" : (existing.status || "active"),
+                mode: aiResult.extractedLead.shouldEscalate ? "human" : "ai",
+              })
+              .where(eq(schema.crmConversations.id, existing.id));
           }
 
-          // Check if lead details present and update/create lead
+          // Save incoming user message to DB
+          await db.insert(schema.crmMessages).values({
+            conversationId: existing.id,
+            channel: "instagram",
+            senderType: "user",
+            content: messageText,
+            intentDetected: aiResult.intent,
+          });
+
+          // Save AI auto-reply to DB (builds conversation history for next turn)
+          await db.insert(schema.crmMessages).values({
+            conversationId: existing.id,
+            channel: "instagram",
+            senderType: "ai",
+            content: aiResult.replyText,
+            intentDetected: "ai_auto_reply",
+          });
+
+          // Upsert lead data if AI extracted contact info
           if (aiResult.extractedLead.phone || aiResult.extractedLead.destination) {
             await db.insert(schema.leads).values({
               name: aiResult.extractedLead.name || `IG Guest (${senderId.slice(-4)})`,
@@ -109,7 +179,7 @@ async function handleInstagramEvent(body: any) {
               travelMonth: aiResult.extractedLead.travelMonth,
               source: "instagram_dm",
               status: aiResult.extractedLead.phone ? "contacted" : "new",
-              notes: `Extracted via AI Chat bot. Intent Score: ${aiResult.extractedLead.intentScore}`,
+              notes: `AI Bot. Intent Score: ${aiResult.extractedLead.intentScore}`,
             });
           }
         } catch (dbErr) {
@@ -117,7 +187,17 @@ async function handleInstagramEvent(body: any) {
         }
       }
 
-      // If mode is AI, send auto-reply back to Instagram user
+      // Broadcast live event to connected CRM dashboards via SSE
+      broadcastCrmEvent({
+        type: aiResult.extractedLead.shouldEscalate ? "human_escalation" : "new_message",
+        conversationId,
+        channel: "instagram",
+        customerName: `Instagram Guest (${senderId.slice(-4)})`,
+        messageText,
+        timestamp: new Date().toISOString()
+      });
+
+      // Send AI auto-reply back to Instagram user
       await sendInstagramDm(senderId, aiResult.replyText);
     }
   }
@@ -136,7 +216,7 @@ async function handleWhatsAppEvent(body: any) {
       const contacts = value?.contacts || [];
 
       for (const msg of messages) {
-        const fromPhone = msg.from; // WhatsApp phone number
+        const fromPhone = msg.from; // WhatsApp phone number (no +)
         const messageText = msg.text?.body;
         const senderName = contacts.find((c: any) => c.wa_id === fromPhone)?.profile?.name || "WhatsApp User";
 
@@ -144,11 +224,33 @@ async function handleWhatsAppEvent(body: any) {
 
         console.log(`[WhatsApp Message] From ${senderName} (${fromPhone}): "${messageText}"`);
 
-        // Process via AI CRM Engine
-        const aiResult = await processAiLeadRefinement(messageText, [], "whatsapp");
+        // Generate stable conversationId from phone (FIXES the Math.random() bug)
+        const conversationId = stableConversationId(`wa_${fromPhone}`);
 
-        // Store message in DB
+        // Fetch conversation history from DB for AI memory
         const db = dbInstance();
+        let conversationHistory: Array<{ role: "user" | "assistant"; content: string }> = [];
+
+        if (!db._isMock) {
+          try {
+            const recentMessages = await db
+              .select()
+              .from(schema.crmMessages)
+              .where(eq(schema.crmMessages.conversationId, conversationId))
+              .limit(6);
+
+            conversationHistory = recentMessages.map((m: any) => ({
+              role: m.senderType === "user" ? "user" : "assistant",
+              content: m.content
+            }));
+          } catch (e) {
+            console.warn("[WA History Fetch] Could not load message history:", e);
+          }
+        }
+
+        // Process via AI CRM Engine with conversation memory
+        const aiResult = await processAiLeadRefinement(messageText, conversationHistory, "whatsapp");
+
         if (!db._isMock) {
           try {
             let [existing] = await db
@@ -157,17 +259,53 @@ async function handleWhatsAppEvent(body: any) {
               .where(eq(schema.crmConversations.externalUserId, fromPhone));
 
             if (!existing) {
-              await db.insert(schema.crmConversations).values({
-                channel: "whatsapp",
-                externalUserId: fromPhone,
-                customerName: senderName,
-                mode: aiResult.extractedLead.shouldEscalate ? "human" : "ai",
-                status: "qualified", // Phone is already available on WhatsApp!
-                lastMessageText: messageText,
-              });
+              const [newConv] = await db
+                .insert(schema.crmConversations)
+                .values({
+                  channel: "whatsapp",
+                  externalUserId: fromPhone,
+                  externalUsername: `+${fromPhone}`,
+                  customerName: senderName,
+                  mode: aiResult.extractedLead.shouldEscalate ? "human" : "ai",
+                  // Phone already known on WA — immediately qualifies the lead
+                  status: "qualified",
+                  lastMessageText: messageText,
+                  dripStep: 0,
+                })
+                .returning();
+              existing = newConv;
+            } else {
+              // Re-engagement: reset drip step so follow-up sequences restart
+              await db
+                .update(schema.crmConversations)
+                .set({
+                  lastMessageText: messageText,
+                  lastMessageAt: new Date(),
+                  dripStep: 0,
+                  mode: aiResult.extractedLead.shouldEscalate ? "human" : (existing.mode || "ai"),
+                })
+                .where(eq(schema.crmConversations.id, existing.id));
             }
 
-            // Sync lead
+            // Save user message to DB
+            await db.insert(schema.crmMessages).values({
+              conversationId: existing.id,
+              channel: "whatsapp",
+              senderType: "user",
+              content: messageText,
+              intentDetected: aiResult.intent,
+            });
+
+            // Save AI auto-reply to DB (builds history for next message)
+            await db.insert(schema.crmMessages).values({
+              conversationId: existing.id,
+              channel: "whatsapp",
+              senderType: "ai",
+              content: aiResult.replyText,
+              intentDetected: "ai_auto_reply",
+            });
+
+            // Sync lead record
             await db.insert(schema.leads).values({
               name: senderName,
               email: `${fromPhone}@whatsapp.user`,
@@ -176,14 +314,24 @@ async function handleWhatsAppEvent(body: any) {
               travelMonth: aiResult.extractedLead.travelMonth,
               source: "whatsapp_bot",
               status: "new",
-              notes: `AI Qualified via WhatsApp. Destination: ${aiResult.extractedLead.destination || 'Unspecified'}`,
+              notes: `AI Bot. Destination: ${aiResult.extractedLead.destination || "Unspecified"}`,
             });
           } catch (dbErr) {
             console.error("[DB Sync Error - WhatsApp]:", dbErr);
           }
         }
 
-        // Send auto-reply back via WhatsApp
+        // Broadcast SSE event to all connected admin dashboards
+        broadcastCrmEvent({
+          type: aiResult.extractedLead.shouldEscalate ? "human_escalation" : "new_message",
+          conversationId,
+          channel: "whatsapp",
+          customerName: senderName,
+          messageText,
+          timestamp: new Date().toISOString()
+        });
+
+        // Send AI auto-reply back to the WhatsApp user
         await sendWhatsAppMessage(fromPhone, aiResult.replyText);
       }
     }

@@ -1,15 +1,18 @@
 import { NextResponse } from "next/server";
 import { getMergedTrips } from "@/lib/public-store";
+import { verifyAdminToken, COOKIE_NAME } from "@/lib/auth";
 
-function isAdminAuthenticated(req: Request) {
-  const cookie = req.headers.get("cookie") || "";
-  return cookie.includes("tripnaari_admin=authenticated");
+async function isAdminAuthenticated(req: Request) {
+  const cookieHeader = req.headers.get("cookie") || "";
+  const match = cookieHeader.match(new RegExp(`(?:^|; )\\s*${COOKIE_NAME}=([^;]*)`));
+  const token = match ? decodeURIComponent(match[1]) : null;
+  return token ? await verifyAdminToken(token) : false;
 }
 
 export async function POST(req: Request) {
   try {
     // 1. Security Check
-    if (!isAdminAuthenticated(req)) {
+    if (!(await isAdminAuthenticated(req))) {
       return NextResponse.json({ error: "Unauthorized — Admin session required" }, { status: 401 });
     }
 

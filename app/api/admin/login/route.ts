@@ -1,10 +1,29 @@
 import { NextResponse } from "next/server";
 import { createAdminToken, COOKIE_NAME } from "@/lib/auth";
+import fs from "fs";
+import path from "path";
 
-// SECURITY: Simple in-memory rate limiting (per IP)
-const attempts = new Map<string, { count: number; last: number }>();
+// SECURITY: File-based rate limiting — persists across server restarts / cold starts
+const RATE_LIMIT_FILE = path.join(process.cwd(), ".data", "rate_limits.json");
 const MAX_ATTEMPTS = 5;
 const WINDOW_MS = 15 * 60 * 1000; // 15 min
+
+function readRateLimits(): Record<string, { count: number; last: number }> {
+  try {
+    const dataDir = path.join(process.cwd(), ".data");
+    if (!fs.existsSync(dataDir)) fs.mkdirSync(dataDir, { recursive: true });
+    if (!fs.existsSync(RATE_LIMIT_FILE)) return {};
+    return JSON.parse(fs.readFileSync(RATE_LIMIT_FILE, "utf-8"));
+  } catch { return {}; }
+}
+
+function writeRateLimits(data: Record<string, { count: number; last: number }>) {
+  try {
+    const tmp = `${RATE_LIMIT_FILE}.tmp`;
+    fs.writeFileSync(tmp, JSON.stringify(data));
+    fs.renameSync(tmp, RATE_LIMIT_FILE);
+  } catch {}
+}
 
 function getClientIp(req: Request) {
   return req.headers.get("x-forwarded-for")?.split(",")[0]?.trim() || 
@@ -12,12 +31,14 @@ function getClientIp(req: Request) {
          "unknown";
 }
 
-function isRateLimited(ip: string) {
+function isRateLimited(ip: string): boolean {
   const now = Date.now();
-  const record = attempts.get(ip);
+  const limits = readRateLimits();
+  const record = limits[ip];
   if (!record) return false;
   if (now - record.last > WINDOW_MS) {
-    attempts.delete(ip);
+    delete limits[ip];
+    writeRateLimits(limits);
     return false;
   }
   return record.count >= MAX_ATTEMPTS;
@@ -25,13 +46,16 @@ function isRateLimited(ip: string) {
 
 function recordAttempt(ip: string, success: boolean) {
   if (success) {
-    attempts.delete(ip);
+    const limits = readRateLimits();
+    delete limits[ip];
+    writeRateLimits(limits);
     return;
   }
   const now = Date.now();
-  const rec = attempts.get(ip);
-  if (!rec) attempts.set(ip, { count: 1, last: now });
-  else attempts.set(ip, { count: rec.count + 1, last: now });
+  const limits = readRateLimits();
+  const rec = limits[ip];
+  limits[ip] = rec ? { count: rec.count + 1, last: now } : { count: 1, last: now };
+  writeRateLimits(limits);
 }
 
 export async function POST(req: Request) {
@@ -54,7 +78,11 @@ export async function POST(req: Request) {
     // SECURITY: Trim and limit length
     const cleanPassword = password.trim().slice(0, 200);
 
-    const correctPassword = process.env.ADMIN_PASSWORD || "Qwerty@2053";
+    const correctPassword = process.env.ADMIN_PASSWORD;
+    if (!correctPassword) {
+      console.error("[TripNaari] ADMIN_PASSWORD env var is not set. Login is disabled.");
+      return NextResponse.json({ success: false, error: "Admin login is not configured. Contact the site administrator." }, { status: 503 });
+    }
     const isValid = cleanPassword === correctPassword;
 
     recordAttempt(ip, isValid);

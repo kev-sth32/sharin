@@ -4,14 +4,11 @@ import AdminLayoutClient from "@/components/admin/AdminLayoutClient";
 import { verifyAdminToken, COOKIE_NAME } from "@/lib/auth";
 
 export default async function AdminLayout({ children }: { children: React.ReactNode }) {
-  // SECURITY: Server-side auth check using HMAC token with legacy fallback
+  // SECURITY: Server-side auth check using HMAC JWT token
   const cookieStore = await cookies();
-  const token = cookieStore.get(COOKIE_NAME)?.value || cookieStore.get("tripnaari_admin")?.value;
+  const token = cookieStore.get(COOKIE_NAME)?.value;
   
-  const isValidToken = await verifyAdminToken(token);
-  const isLegacyAuth = token === "authenticated";
-  
-  if (!isValidToken && !isLegacyAuth) {
+  if (!(await verifyAdminToken(token))) {
     redirect("/admin24639/login");
   }
 

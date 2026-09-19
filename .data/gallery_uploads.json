@@ -752,5 +752,15 @@
     "savedBytes": 0,
     "type": "multipart/form-data; boundary=----WebKitFormBoundaryAnAhngBcsP3B09jR",
     "uploadedAt": "2026-08-28T01:33:56.654Z"
+  },
+  {
+    "id": 1788030974539,
+    "url": "/uploads/1788030974534-zj7ria.png",
+    "originalName": "1786614224278-k9infs.png",
+    "originalSize": 820106,
+    "compressedSize": 779193,
+    "savedBytes": 40913,
+    "type": "image/png",
+    "uploadedAt": "2026-08-29T19:16:14.540Z"
   }
 ]

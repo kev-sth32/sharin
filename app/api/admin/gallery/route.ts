@@ -2,14 +2,17 @@ import { NextResponse } from "next/server";
 import fs from "fs";
 import path from "path";
 import { deleteGalleryImage } from "@/lib/admin-store";
+import { verifyAdminToken, COOKIE_NAME } from "@/lib/auth";
 
-function isAuthenticated(req: Request) {
-  const cookie = req.headers.get("cookie") || "";
-  return cookie.includes("tripnaari_admin=authenticated");
+async function isAuthenticated(req: Request) {
+  const cookieHeader = req.headers.get("cookie") || "";
+  const match = cookieHeader.match(new RegExp(`(?:^|; )\\s*${COOKIE_NAME}=([^;]*)`));
+  const token = match ? decodeURIComponent(match[1]) : null;
+  return token ? await verifyAdminToken(token) : false;
 }
 
 export async function GET(req: Request) {
-  if (!isAuthenticated(req)) {
+  if (!(await isAuthenticated(req))) {
     return NextResponse.json({ success: false, error: "Unauthorized" }, { status: 401 });
   }
   try {
@@ -37,7 +40,7 @@ export async function GET(req: Request) {
 }
 
 export async function DELETE(req: Request) {
-  if (!isAuthenticated(req)) {
+  if (!(await isAuthenticated(req))) {
     return NextResponse.json({ success: false, error: "Unauthorized" }, { status: 401 });
   }
   const { url } = await req.json();

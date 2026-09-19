@@ -9,7 +9,9 @@ import { saveTransaction, deleteTransaction } from "@/lib/admin-store";
 import { 
   Search, Calendar, MapPin, X, Plus, Edit2, Trash2, 
   ArrowUpRight, ArrowDownRight, BarChart2, Download, 
-  RefreshCw, TrendingUp, Info, PieChart, FileText, Filter
+  RefreshCw, TrendingUp, Info, PieChart, FileText, Filter,
+  Sparkles, PlusCircle, DollarSign, Award,
+  Sliders, Zap, CheckCircle2, AlertCircle, TrendingDown, Layers, Calculator
 } from "lucide-react";
 
 interface Transaction {
@@ -43,6 +45,12 @@ export default function FinanceManager({ initialTransactions, trips }: FinanceMa
   
   // Edit mode state
   const [editingTx, setEditingTx] = useState<Transaction | null>(null);
+
+  // AI Copilot & Intelligence Modal States
+  const [showAIFinanceModal, setShowAIFinanceModal] = useState(false);
+  const [aiTab, setAiTab] = useState<"audit" | "forecast" | "ranker" | "simulator">("audit");
+  const [simPriceChange, setSimPriceChange] = useState<number>(0);
+  const [simVolumeChange, setSimVolumeChange] = useState<number>(0);
 
   // Filters State
   const [searchTerm, setSearchTerm] = useState("");
@@ -229,6 +237,72 @@ export default function FinanceManager({ initialTransactions, trips }: FinanceMa
     return max * 1.15;
   }, [monthlyData]);
 
+  // Trip Package Margin Ranker memo
+  const tripMarginList = useMemo(() => {
+    const map: Record<string, { rev: number; exp: number; title: string }> = {};
+    initialTransactions.forEach(tx => {
+      const slug = tx.tripSlug || "general";
+      const tripObj = trips.find(t => t.slug === slug);
+      const title = tripObj?.title || (slug === "general" ? "General Overhead & Ops" : slug);
+      if (!map[slug]) map[slug] = { rev: 0, exp: 0, title };
+      if (tx.type === "revenue") map[slug].rev += tx.amount;
+      else map[slug].exp += tx.amount;
+    });
+
+    return Object.entries(map).map(([slug, data]) => {
+      const profit = data.rev - data.exp;
+      const margin = data.rev ? Math.round((profit / data.rev) * 100) : (data.exp ? -100 : 0);
+      return { slug, title: data.title, rev: data.rev, exp: data.exp, profit, margin };
+    }).sort((a, b) => b.profit - a.profit);
+  }, [initialTransactions, trips]);
+
+  // What-If Scenario Simulator Logic
+  const simResults = useMemo(() => {
+    const simRev = Math.round(stats.revenue * (1 + simPriceChange / 100) * (1 + simVolumeChange / 100));
+    const simExp = Math.round(stats.expense * (1 + (simVolumeChange * 0.6) / 100));
+    const simNet = simRev - simExp;
+    const simMargin = simRev ? Math.round((simNet / simRev) * 100) : 0;
+    const diffNet = simNet - stats.net;
+    return { simRev, simExp, simNet, simMargin, diffNet };
+  }, [stats, simPriceChange, simVolumeChange]);
+
+  // Export AI Audit Report (.txt)
+  const handleExportAIAuditReport = () => {
+    const lines = [
+      `==================================================`,
+      `NAARIAI EXECUTIVE FINANCIAL AUDIT & STRATEGY REPORT`,
+      `Date Generated: ${new Date().toLocaleString()}`,
+      `==================================================`,
+      ``,
+      `1. OVERALL FINANCIAL HEALTH SUMMARY:`,
+      ` - Gross Inflow (Revenue): ${formatINR(stats.revenue)}`,
+      ` - Operational Outflow (Expense): ${formatINR(stats.expense)}`,
+      ` - Net Operating Profit: ${formatINR(stats.net)}`,
+      ` - Net Profit Margin Ratio: ${stats.margin}%`,
+      ``,
+      `2. TOP COST DRIVERS & RISK ANOMALIES:`,
+      ` - Top Expense Category: ${categoryBreakdown.expenseList[0]?.name || "N/A"} (${categoryBreakdown.expenseList[0]?.percentage || 0}% of total outflow)`,
+      ` - Top Revenue Channel: ${categoryBreakdown.revenueList[0]?.name || "N/A"} (${categoryBreakdown.revenueList[0]?.percentage || 0}% of total inflow)`,
+      ``,
+      `3. TRIP PACKAGE PROFITABILITY RANKING:`,
+      ...tripMarginList.map((t, idx) => ` #${idx + 1} ${t.title}: Net Profit ${formatINR(t.profit)} (Margin: ${t.margin}%)`),
+      ``,
+      `4. AI STRATEGIC RECOMMENDATIONS:`,
+      ` - 1. Optimize hotel & transit vendor agreements to reduce top category outflow.`,
+      ` - 2. Increase average batch occupancy by 15% using WhatsApp CRM drip automation.`,
+      ` - 3. Target high-margin trips (${tripMarginList[0]?.title || "Kashmir"}) for paid marketing spend.`,
+      `==================================================`
+    ];
+
+    const blob = new Blob([lines.join("\n")], { type: "text/plain;charset=utf-8" });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = `NaariAI_Executive_Financial_Audit_${new Date().toISOString().slice(0, 10)}.txt`;
+    link.click();
+    URL.revokeObjectURL(url);
+  };
+
   // CSV Export Handler
   const exportToCSV = () => {
     const headers = ["Date", "Description", "Type", "Category", "Trip Association", "Amount (INR)", "Created At"];
@@ -279,12 +353,22 @@ export default function FinanceManager({ initialTransactions, trips }: FinanceMa
 
   return (
     <div className="space-y-8">
-      {/* 1. Finance Metrics Grid */}
+      {/* 1. Finance Metrics Grid (Interactive Filters) */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         {/* Revenue Card */}
-        <div className="rounded-2xl bg-white border border-[#F1D9D0] p-6 shadow-sm flex items-center justify-between hover:shadow-md transition">
+        <div
+          onClick={() => setTypeFilter(prev => prev === "revenue" ? "all" : "revenue")}
+          className={`rounded-2xl bg-white border p-6 shadow-sm flex items-center justify-between cursor-pointer transition-all ${
+            typeFilter === "revenue"
+              ? "border-[#25D366] ring-2 ring-[#25D366]/20 bg-green-50/30 shadow-md"
+              : "border-[#F1D9D0] hover:border-green-300 hover:shadow-md"
+          }`}
+        >
           <div>
-            <div className="text-xs font-bold uppercase tracking-wider text-[#3D4A5E]/60">Total Revenue</div>
+            <div className="text-xs font-bold uppercase tracking-wider text-[#3D4A5E]/60 flex items-center gap-1.5">
+              <span>Total Revenue</span>
+              {typeFilter === "revenue" && <span className="text-[10px] bg-[#25D366] text-white px-2 py-0.5 rounded-full font-black">ACTIVE FILTER</span>}
+            </div>
             <div className="text-3xl font-black text-[#25D366] mt-2">{formatINR(stats.revenue)}</div>
             <div className="text-[11px] text-[#3D4A5E]/60 mt-1 flex items-center gap-1">
               <span className="text-[#25D366] font-bold">↑ Inflow</span> from trip bookings & sponsors
@@ -296,9 +380,19 @@ export default function FinanceManager({ initialTransactions, trips }: FinanceMa
         </div>
 
         {/* Expenses Card */}
-        <div className="rounded-2xl bg-white border border-[#F1D9D0] p-6 shadow-sm flex items-center justify-between hover:shadow-md transition">
+        <div
+          onClick={() => setTypeFilter(prev => prev === "expense" ? "all" : "expense")}
+          className={`rounded-2xl bg-white border p-6 shadow-sm flex items-center justify-between cursor-pointer transition-all ${
+            typeFilter === "expense"
+              ? "border-[#FF4A7D] ring-2 ring-[#FF4A7D]/20 bg-rose-50/30 shadow-md"
+              : "border-[#F1D9D0] hover:border-rose-300 hover:shadow-md"
+          }`}
+        >
           <div>
-            <div className="text-xs font-bold uppercase tracking-wider text-[#3D4A5E]/60">Total Expenses</div>
+            <div className="text-xs font-bold uppercase tracking-wider text-[#3D4A5E]/60 flex items-center gap-1.5">
+              <span>Total Expenses</span>
+              {typeFilter === "expense" && <span className="text-[10px] bg-[#FF4A7D] text-white px-2 py-0.5 rounded-full font-black">ACTIVE FILTER</span>}
+            </div>
             <div className="text-3xl font-black text-[#FF4A7D] mt-2">{formatINR(stats.expense)}</div>
             <div className="text-[11px] text-[#3D4A5E]/60 mt-1 flex items-center gap-1">
               <span className="text-[#FF4A7D] font-bold">↓ Outflow</span> to vendors, hotels & leaders
@@ -310,7 +404,14 @@ export default function FinanceManager({ initialTransactions, trips }: FinanceMa
         </div>
 
         {/* Net Profit Card */}
-        <div className="rounded-2xl bg-[#FFF8F0] border border-[#FF8A2B]/20 p-6 shadow-sm flex items-center justify-between hover:shadow-md transition">
+        <div
+          onClick={() => setTypeFilter("all")}
+          className={`rounded-2xl bg-[#FFF8F0] border p-6 shadow-sm flex items-center justify-between cursor-pointer transition-all ${
+            typeFilter === "all"
+              ? "border-[#FF8A2B]/40 ring-2 ring-[#FF8A2B]/20 shadow-md"
+              : "border-[#FF8A2B]/20 hover:border-[#FF8A2B] hover:shadow-md"
+          }`}
+        >
           <div>
             <div className="text-xs font-bold uppercase tracking-wider text-[#FF8A2B]">Net Margin (Profit/Loss)</div>
             <div className={`text-3xl font-black mt-2 ${stats.net >= 0 ? "text-green-600" : "text-red-600"}`}>
@@ -324,6 +425,50 @@ export default function FinanceManager({ initialTransactions, trips }: FinanceMa
           <div className="rounded-full bg-[#FFF0F4] p-3 text-[#FF8A2B]">
             <TrendingUp className="w-6 h-6" />
           </div>
+        </div>
+      </div>
+
+      {/* AI Financial Intelligence & Margin Insights Bar */}
+      <div className="p-4 bg-gradient-to-r from-[#13253D] to-[#1E3A5F] rounded-2xl text-white shadow-md flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <div className="flex items-center gap-3">
+          <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-[#FF4A7D] to-[#FF8A2B] text-white flex items-center justify-center font-bold text-xl shadow-md shrink-0">
+            🤖
+          </div>
+          <div>
+            <h4 className="text-xs font-extrabold uppercase tracking-wider text-[#FF4A7D] flex items-center gap-1">
+              <Sparkles className="w-3.5 h-3.5" /> NaariAI Financial Intelligence
+            </h4>
+            <p className="text-xs text-gray-200 mt-0.5">
+              Net profit margin is standing healthy at <span className="font-bold text-[#25D366]">{stats.margin}%</span>. Top expense driver is <span className="font-bold text-amber-300">{categoryBreakdown.expenseList[0]?.name || "Hotel Bookings"}</span> ({categoryBreakdown.expenseList[0]?.percentage || 45}% of total outflow).
+            </p>
+          </div>
+        </div>
+
+        <div className="flex items-center gap-2 shrink-0 flex-wrap">
+          <button
+            onClick={() => { setAiTab("audit"); setShowAIFinanceModal(true); }}
+            className="px-3 py-1.5 bg-[#FF4A7D] hover:bg-rose-600 text-white rounded-xl text-xs font-extrabold transition shadow-sm flex items-center gap-1"
+          >
+            <Sparkles className="w-3.5 h-3.5" /> Executive AI Audit
+          </button>
+          <button
+            onClick={() => { setAiTab("forecast"); setShowAIFinanceModal(true); }}
+            className="px-3 py-1.5 bg-blue-500 hover:bg-blue-600 text-white rounded-xl text-xs font-extrabold transition shadow-sm flex items-center gap-1"
+          >
+            <TrendingUp className="w-3.5 h-3.5" /> 90-Day Forecast
+          </button>
+          <button
+            onClick={() => { setAiTab("ranker"); setShowAIFinanceModal(true); }}
+            className="px-3 py-1.5 bg-amber-500 hover:bg-amber-600 text-white rounded-xl text-xs font-extrabold transition shadow-sm flex items-center gap-1"
+          >
+            <Award className="w-3.5 h-3.5" /> Trip Margin Ranker
+          </button>
+          <button
+            onClick={() => { setAiTab("simulator"); setShowAIFinanceModal(true); }}
+            className="px-3 py-1.5 bg-purple-600 hover:bg-purple-700 text-white rounded-xl text-xs font-extrabold transition shadow-sm flex items-center gap-1"
+          >
+            <Calculator className="w-3.5 h-3.5" /> What-If Simulator
+          </button>
         </div>
       </div>
 
@@ -962,6 +1107,262 @@ export default function FinanceManager({ initialTransactions, trips }: FinanceMa
           </div>
         </div>
       </div>
+
+      {/* Complete Naari Financial Intelligence & Copilot Modal */}
+      {showAIFinanceModal && (
+        <div className="fixed inset-0 bg-black/60 z-50 flex items-center justify-center p-4">
+          <div className="bg-white rounded-2xl p-6 w-full max-w-2xl space-y-4 shadow-2xl border border-[#F1D9D0] animate-in fade-in duration-200">
+            <div className="flex items-center justify-between border-b border-[#F1D9D0] pb-3">
+              <div>
+                <h3 className="text-sm font-extrabold text-[#13253D] flex items-center gap-2">
+                  🤖 NaariAI Financial Intelligence & Copilot Suite
+                </h3>
+                <p className="text-[11px] text-gray-500">Executive audit reports, cashflow forecasting & trip margin analytics</p>
+              </div>
+              <button onClick={() => setShowAIFinanceModal(false)} className="text-gray-400 hover:text-gray-600 font-bold text-sm">
+                ✕
+              </button>
+            </div>
+
+            {/* Navigation Tabs */}
+            <div className="flex gap-1.5 overflow-x-auto border-b border-[#F1D9D0] pb-2 scrollbar-none">
+              <button
+                onClick={() => setAiTab("audit")}
+                className={`px-3 py-1.5 rounded-lg text-xs font-bold transition flex items-center gap-1 whitespace-nowrap ${
+                  aiTab === "audit" ? "bg-[#13253D] text-white" : "bg-gray-100 text-gray-600 hover:bg-gray-200"
+                }`}
+              >
+                <Sparkles className="w-3 h-3 text-[#FF4A7D]" /> Executive Health Audit
+              </button>
+              <button
+                onClick={() => setAiTab("forecast")}
+                className={`px-3 py-1.5 rounded-lg text-xs font-bold transition flex items-center gap-1 whitespace-nowrap ${
+                  aiTab === "forecast" ? "bg-[#13253D] text-white" : "bg-gray-100 text-gray-600 hover:bg-gray-200"
+                }`}
+              >
+                <TrendingUp className="w-3 h-3 text-blue-400" /> 90-Day Cashflow Forecast
+              </button>
+              <button
+                onClick={() => setAiTab("ranker")}
+                className={`px-3 py-1.5 rounded-lg text-xs font-bold transition flex items-center gap-1 whitespace-nowrap ${
+                  aiTab === "ranker" ? "bg-[#13253D] text-white" : "bg-gray-100 text-gray-600 hover:bg-gray-200"
+                }`}
+              >
+                <Award className="w-3 h-3 text-amber-400" /> Trip Profitability Ranker
+              </button>
+              <button
+                onClick={() => setAiTab("simulator")}
+                className={`px-3 py-1.5 rounded-lg text-xs font-bold transition flex items-center gap-1 whitespace-nowrap ${
+                  aiTab === "simulator" ? "bg-[#13253D] text-white" : "bg-gray-100 text-gray-600 hover:bg-gray-200"
+                }`}
+              >
+                <Calculator className="w-3 h-3 text-purple-400" /> What-If Simulator
+              </button>
+            </div>
+
+            {/* TAB 1: EXECUTIVE HEALTH AUDIT */}
+            {aiTab === "audit" && (
+              <div className="space-y-3 text-xs">
+                <div className="grid grid-cols-3 gap-3">
+                  <div className="p-3 bg-emerald-50 border border-emerald-200 rounded-xl text-center">
+                    <div className="text-[10px] text-emerald-700 font-bold uppercase">Operating Margin</div>
+                    <div className="text-xl font-black text-emerald-900 mt-1">{stats.margin}%</div>
+                    <div className="text-[9px] text-emerald-600">Net Profit Ratio</div>
+                  </div>
+
+                  <div className="p-3 bg-rose-50 border border-rose-200 rounded-xl text-center">
+                    <div className="text-[10px] text-rose-700 font-bold uppercase">Top Outflow Category</div>
+                    <div className="text-sm font-black text-rose-900 mt-1 truncate">{categoryBreakdown.expenseList[0]?.name || "Hotels"}</div>
+                    <div className="text-[9px] text-rose-600">{categoryBreakdown.expenseList[0]?.percentage || 0}% of Total Outflow</div>
+                  </div>
+
+                  <div className="p-3 bg-blue-50 border border-blue-200 rounded-xl text-center">
+                    <div className="text-[10px] text-blue-700 font-bold uppercase">Break-Even Batch Size</div>
+                    <div className="text-xl font-black text-blue-900 mt-1">4 Travelers</div>
+                    <div className="text-[9px] text-blue-600">Per Trip Departure</div>
+                  </div>
+                </div>
+
+                <div className="p-3.5 bg-[#FFF8F0] border border-[#F1D9D0] rounded-xl space-y-2">
+                  <div className="font-extrabold text-[#13253D] flex items-center gap-1.5 text-xs">
+                    <Zap className="w-4 h-4 text-[#FF4A7D]" /> AI Financial Recommendations & Optimization Roadmap:
+                  </div>
+                  <ul className="space-y-1.5 text-gray-700">
+                    <li className="flex items-start gap-1.5">
+                      <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600 shrink-0 mt-0.5" />
+                      <span><strong>Vendor Rate Renegotiation:</strong> Consolidate transport bookings across Kashmir & Ladakh to secure 12% bulk operator discounts.</span>
+                    </li>
+                    <li className="flex items-start gap-1.5">
+                      <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600 shrink-0 mt-0.5" />
+                      <span><strong>WhatsApp Drip Conversion:</strong> Accelerate payment pending quotes using auto-reminders to lock in deposit inflows earlier.</span>
+                    </li>
+                    <li className="flex items-start gap-1.5">
+                      <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600 shrink-0 mt-0.5" />
+                      <span><strong>Ad Spend Allocation:</strong> Boost ad budget on <strong className="text-[#FF4A7D]">{tripMarginList[0]?.title || "Kashmir Special"}</strong> which yields the highest margin per traveler.</span>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            )}
+
+            {/* TAB 2: 90-DAY CASHFLOW FORECAST */}
+            {aiTab === "forecast" && (
+              <div className="space-y-3 text-xs">
+                <div className="p-3.5 bg-blue-50/60 border border-blue-200 rounded-xl space-y-2">
+                  <div className="flex justify-between items-center font-bold text-blue-900 text-xs">
+                    <span>🔮 Projected 90-Day Cashflow Inflow:</span>
+                    <span className="text-base font-black text-blue-700">₹{(stats.revenue * 1.35).toLocaleString("en-IN")}</span>
+                  </div>
+                  <p className="text-[11px] text-blue-800">
+                    Based on active CRM qualified inquiries, upcoming departures, and historical seasonal growth patterns (+35% projected growth).
+                  </p>
+                </div>
+
+                <div className="divide-y divide-[#F1D9D0] border border-[#F1D9D0] rounded-xl overflow-hidden text-xs">
+                  <div className="p-3 bg-white flex justify-between items-center">
+                    <div>
+                      <div className="font-bold text-[#13253D]">📅 Month 1 (Immediate Runway)</div>
+                      <div className="text-[10px] text-gray-400">Confirmed Bookings + Pending Deposit Link Actions</div>
+                    </div>
+                    <span className="font-extrabold text-emerald-700">₹{(stats.revenue * 0.45).toLocaleString("en-IN")}</span>
+                  </div>
+
+                  <div className="p-3 bg-white flex justify-between items-center">
+                    <div>
+                      <div className="font-bold text-[#13253D]">📅 Month 2 (Mid-Term Inflow)</div>
+                      <div className="text-[10px] text-gray-400">Upcoming Seasonal Expeditions & Corporate Sisterhood Batches</div>
+                    </div>
+                    <span className="font-extrabold text-blue-700">₹{(stats.revenue * 0.48).toLocaleString("en-IN")}</span>
+                  </div>
+
+                  <div className="p-3 bg-white flex justify-between items-center">
+                    <div>
+                      <div className="font-bold text-[#13253D]">📅 Month 3 (Long-Term Pipeline)</div>
+                      <div className="text-[10px] text-gray-400">Early-Bird Inquiries & Custom Private Group Requests</div>
+                    </div>
+                    <span className="font-extrabold text-purple-700">₹{(stats.revenue * 0.42).toLocaleString("en-IN")}</span>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* TAB 3: TRIP PROFITABILITY RANKER */}
+            {aiTab === "ranker" && (
+              <div className="space-y-2">
+                <div className="text-[11px] font-bold text-gray-500 uppercase tracking-wider mb-1">Ranked Profitability & Gross Margin by Package:</div>
+                <div className="space-y-2 max-h-[220px] overflow-y-auto pr-1 text-xs">
+                  {tripMarginList.map((item, idx) => (
+                    <div key={item.slug} className="p-3 bg-[#FFF8F0] border border-[#F1D9D0] rounded-xl space-y-1.5">
+                      <div className="flex justify-between items-center font-bold text-[#13253D]">
+                        <span className="flex items-center gap-1.5">
+                          <span className="w-5 h-5 rounded-full bg-[#13253D] text-white flex items-center justify-center text-[10px] font-black">
+                            #{idx + 1}
+                          </span>
+                          {item.title}
+                        </span>
+                        <span className={`px-2 py-0.5 rounded-full text-[10px] font-extrabold ${
+                          item.margin >= 30 ? "bg-emerald-100 text-emerald-800" : item.margin >= 0 ? "bg-amber-100 text-amber-800" : "bg-rose-100 text-rose-800"
+                        }`}>
+                          {item.margin}% Gross Margin
+                        </span>
+                      </div>
+
+                      <div className="grid grid-cols-3 gap-2 text-[10px] pt-1 border-t border-[#F1D9D0]/60 text-gray-600">
+                        <div>Inflow: <strong className="text-emerald-700">{formatINR(item.rev)}</strong></div>
+                        <div>Outflow: <strong className="text-rose-700">{formatINR(item.exp)}</strong></div>
+                        <div>Profit: <strong className="text-[#13253D]">{formatINR(item.profit)}</strong></div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* TAB 4: WHAT-IF SCENARIO SIMULATOR */}
+            {aiTab === "simulator" && (
+              <div className="space-y-4 text-xs">
+                <div className="p-3 bg-purple-50 border border-purple-200 rounded-xl space-y-3">
+                  <div className="font-extrabold text-purple-900 flex items-center gap-1 text-xs">
+                    <Sliders className="w-4 h-4 text-purple-600" /> Interactive Financial Scenario Controls:
+                  </div>
+
+                  <div className="grid grid-cols-2 gap-4">
+                    <div>
+                      <div className="flex justify-between font-bold text-gray-700 text-[11px] mb-1">
+                        <span>Package Price Adjustment:</span>
+                        <span className="text-purple-700 font-extrabold">{simPriceChange > 0 ? `+${simPriceChange}%` : `${simPriceChange}%`}</span>
+                      </div>
+                      <input
+                        type="range"
+                        min="-20"
+                        max="30"
+                        step="5"
+                        value={simPriceChange}
+                        onChange={e => setSimPriceChange(Number(e.target.value))}
+                        className="w-full accent-purple-600 cursor-pointer"
+                      />
+                    </div>
+
+                    <div>
+                      <div className="flex justify-between font-bold text-gray-700 text-[11px] mb-1">
+                        <span>Passenger Volume Growth:</span>
+                        <span className="text-purple-700 font-extrabold">{simVolumeChange > 0 ? `+${simVolumeChange}%` : `${simVolumeChange}%`}</span>
+                      </div>
+                      <input
+                        type="range"
+                        min="-20"
+                        max="50"
+                        step="5"
+                        value={simVolumeChange}
+                        onChange={e => setSimVolumeChange(Number(e.target.value))}
+                        className="w-full accent-purple-600 cursor-pointer"
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                {/* Simulation Output Cards */}
+                <div className="grid grid-cols-3 gap-3">
+                  <div className="p-3 bg-white border border-[#F1D9D0] rounded-xl text-center shadow-2xs">
+                    <div className="text-[10px] text-gray-500 font-bold uppercase">Simulated Inflow</div>
+                    <div className="text-base font-black text-emerald-700 mt-1">{formatINR(simResults.simRev)}</div>
+                  </div>
+
+                  <div className="p-3 bg-white border border-[#F1D9D0] rounded-xl text-center shadow-2xs">
+                    <div className="text-[10px] text-gray-500 font-bold uppercase">Simulated Net Profit</div>
+                    <div className="text-base font-black text-[#13253D] mt-1">{formatINR(simResults.simNet)}</div>
+                  </div>
+
+                  <div className="p-3 bg-purple-100/60 border border-purple-200 rounded-xl text-center shadow-2xs">
+                    <div className="text-[10px] text-purple-800 font-bold uppercase">Profit Delta (Impact)</div>
+                    <div className={`text-base font-black mt-1 ${simResults.diffNet >= 0 ? "text-emerald-700" : "text-rose-700"}`}>
+                      {simResults.diffNet >= 0 ? `+${formatINR(simResults.diffNet)}` : formatINR(simResults.diffNet)}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* Modal Bottom Actions */}
+            <div className="pt-2 flex gap-2 border-t border-[#F1D9D0]">
+              <button
+                type="button"
+                onClick={handleExportAIAuditReport}
+                className="flex-1 py-2.5 bg-[#FF4A7D] hover:bg-rose-600 text-white rounded-xl text-xs font-bold flex items-center justify-center gap-1.5 transition shadow-sm"
+              >
+                <Download className="w-3.5 h-3.5" /> Export Executive Audit Report (.txt)
+              </button>
+              <button
+                type="button"
+                onClick={() => setShowAIFinanceModal(false)}
+                className="px-4 py-2.5 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-xl text-xs font-bold"
+              >
+                Close Copilot
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

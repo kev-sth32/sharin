@@ -70,6 +70,9 @@ interface ChatLog {
   context?: {
     pathname?: string;
     source?: string;
+    isHotLead?: boolean;
+    intentScore?: number;
+    salesTag?: string;
   };
 }
 
@@ -89,29 +92,33 @@ const defaultModels = [
   { value: "nv-mistralai/mistral-nemo-12b-instruct", label: "Mistral Nemo 12B Instruct (Great for QA)" },
 ];
 
-const defaultWelcomeMessage = "Namaste! 🙏 Welcome to TripNaari. I am NaariAI, your travel companion. I can help you find safe women-only packages, check active departures, and answer any queries you have. What destinations are you dreaming of?";
+const defaultWelcomeMessage = "Namaste! 🙏 Welcome to TripNaari. I am NaariAI, your travel companion & sales advisor. I can help you find safe women-only packages, check active departures, send PDF itineraries on WhatsApp, and claim first-trip vouchers. What destinations are you dreaming of?";
 
-const defaultSystemInstruction = `You are "NaariAI", the official women's safety & group travel assistant for TripNaari.
-TripNaari is India's leading travel brand focusing on safe solo and group travel experiences for women, sisters, mothers, and daughters.
+const defaultSystemInstruction = `You are "NaariAI", the elite AI Sales Advisor & Travel Companion for TripNaari.
+TripNaari is India's leading women-only travel brand, creating safe, empowering solo and group travel experiences for women, mothers, and daughters.
 
-YOUR INSTRUCTIONS:
-1. ONLY answer questions using the provided TripNaari information (Trips, Departures, FAQs, Policies, Custom Knowledge) listed below.
-2. Be extremely warm, friendly, encouraging, and supportive. Emphasize women's safety, sisterhood, local women leaders, and verified safety audits.
-3. If a customer is asking to book a trip or wants a customized itinerary, encourage them to fill out our quick Enquiry/Booking Form. You can output "[SHOW_ENQUIRY_FORM]" at the end of your response to trigger the form interface inside the chat drawer.
-4. If a user asks about topics completely unrelated to TripNaari (e.g. coding, cooking recipes, other travel operators, general news), politely state that you are only programmed to help with TripNaari trips and safety queries.
-5. Do NOT hallucinate prices, dates, or destinations that are not in the context below.
-6. BUDGET & MATH ACCURACY: When a user specifies a budget (e.g. "X for N people"), carefully verify that the total cost (Price Per Person * N) is mathematically less than or equal to their budget X. Do not recommend any package that exceeds their budget. Show your calculation clearly (e.g., "₹A per person * B people = ₹C total").`;
+YOUR PRIMARY MISSION:
+Convert travel inquiries into confident trip bookings and WhatsApp lead connections while providing reassuring, expert guidance on safety, itineraries, and pricing.
+
+SALES CONVERSION & INTERACTIVE UI TAGS (CRITICAL):
+1. VISUAL TRIP CARD TRIGGER: Whenever you recommend or discuss a specific trip package from our active database, ALWAYS include the tag \`[RECOMMEND_TRIP:exact-trip-slug]\` on its own line.
+2. WHATSAPP ITINERARY ACTION: When a user expresses interest, asks for a detailed itinerary, or asks how to get in touch, invite them to receive it instantly on WhatsApp and output: \`[WHATSAPP_LEAD_BUTTON:exact-trip-slug]\`
+3. INLINE ENQUIRY FORM TRIGGER: If the customer asks to book, reserve a slot, request a custom quote, or check group availability, output: \`[SHOW_ENQUIRY_FORM]\`
+4. SPECIAL OFFER / VOUCHER TRIGGER: If a user asks for discounts, deals, or shows price hesitation, offer our exclusive first-time female traveler voucher and output: \`[COUPON_OFFER:SOLO1000:₹1,000 OFF]\`
+5. CLOSING CALL-TO-ACTION (MANDATORY): Always end your message with a compelling, direct closing question (e.g., "Would you like me to reserve a tentative slot for you, or send the full day-by-day PDF itinerary to your WhatsApp?").
+6. URGENCY & SCARCITY: Mention remaining batch seats whenever departure dates are discussed (e.g., "⚡ Only 3 seats left for the upcoming batch!").`;
 
 const defaultCustomKnowledge = `Here are additional training details and rules for NaariAI:
-- We are currently offering a special discount for solo travelers booking active trips: extra ₹1,000 off if they mention safety questions.
-- All trip leaders are certified women professionals who stay in the same accommodation.
-- Verification audits are done for every single hotel room lock prior to group check-in.`;
+- We are currently offering an exclusive first-time female traveler voucher: ₹1,000 OFF (coupon code: SOLO1000).
+- Slots can be reserved with a token advance of just ₹5,000. Remaining balance due 15 days before departure.
+- Over 70% of our travelers join solo. We pair solo female travelers in twin-sharing rooms to eliminate single supplement charges.
+- Certified female trip leaders stay at the same hotels 24x7, and room lock safety audits are performed prior to check-in.`;
 
 const testPresets = [
-  { label: "Solo Safety Audits", text: "How does TripNaari ensure safety for solo female travelers?" },
-  { label: "Budget Math Test", text: "What packages do you have under ₹20,000 for 2 people?" },
-  { label: "Refund Timeline", text: "What is your refund policy if I cancel 20 days prior to trip departure?" },
-  { label: "Kashmir Highlights", text: "Show me details and departures for Kashmir group trips." }
+  { label: "🎴 Visual Trip Card", text: "Can you recommend the Kashmir Blossom Houseboat trip package?" },
+  { label: "🎁 Claim ₹1,000 Voucher", text: "Do you have any discount code or first-time solo traveler voucher available?" },
+  { label: "📲 WhatsApp PDF Itinerary", text: "Can you send the complete day-by-day PDF itinerary to my WhatsApp?" },
+  { label: "🛡️ Room Lock Audit Policy", text: "How does TripNaari guarantee safety & room sharing for solo female travelers?" }
 ];
 
 export default function AISettingsManager({ initialSettings, dbCounts = { trips: 0, departures: 0, faqs: 0, policies: 0 } }: AISettingsManagerProps) {
@@ -997,6 +1004,11 @@ export default function AISettingsManager({ initialSettings, dbCounts = { trips:
                             <span className="text-[10px] bg-[#13253D] text-white font-extrabold px-2 py-0.5 rounded">
                               {log.role === "customer" ? "💬 CUSTOMER" : "🛠️ ADMIN"}
                             </span>
+                            {log.context?.isHotLead && (
+                              <span className="text-[10px] bg-gradient-to-r from-amber-500 to-rose-500 text-white font-extrabold px-2.5 py-0.5 rounded-full shadow-xs flex items-center gap-1 animate-pulse">
+                                🔥 Hot Sales Lead
+                              </span>
+                            )}
                             {log.context?.pathname && (
                               <span className="text-[10px] bg-[#FFF0F4] border border-[#FF4A7D]/10 text-[#FF4A7D] font-extrabold px-2.5 py-0.5 rounded-full truncate max-w-xs">
                                 {log.context.pathname}

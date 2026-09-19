@@ -33,9 +33,11 @@ export const metadata: Metadata = {
     description: "Empower | Encourage | Freedom | Safety. Women-only group tours, custom trips, weekend getaways.",
     images: [{ url: "/og-image.jpg", width: 1200, height: 630 }],
   },
-  verification: {
-    google: "tripnaari-verification",
-  },
+  ...(process.env.GOOGLE_SITE_VERIFICATION ? {
+    verification: {
+      google: process.env.GOOGLE_SITE_VERIFICATION,
+    },
+  } : {}),
   robots: { index: true, follow: true },
 };
 

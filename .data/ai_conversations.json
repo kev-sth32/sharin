@@ -1,5 +1,33 @@
 [
   {
+    "id": "conv_snodwc34z_1788027528907",
+    "role": "customer",
+    "createdAt": "2026-08-29T18:19:17.357Z",
+    "updatedAt": "2026-08-29T18:34:53.383Z",
+    "messages": [
+      {
+        "role": "assistant",
+        "content": "Namaste! 🙏 Welcome to TripNaari. I am NaariAI, your travel companion & sales advisor. I can help you find safe women-only packages, check active departures, send PDF itineraries on WhatsApp, and answer any safety queries you have. What destinations are you dreaming of?"
+      },
+      {
+        "role": "user",
+        "content": "Show me your top-rated women-only trip packages with prices and departures."
+      },
+      {
+        "role": "assistant",
+        "content": "I'd be delighted to share our top-rated women-only trip packages with you. Here are some of our most popular options:\n\n1. **Nepal Ft. Muktinath** (8D/7N) | Price starts at ₹32,000 | Slug: nepal-ft-muktinath\n   A carefully curated 7N/8D women-only Nepal group trip covering Kathmandu – Pokhara – Jomsom – Muktinath – Kathmandu, blending spirituality, Himalayan landscapes, cultural heritage, and sisterhood in one unforgettable journey.\n\n   [RECOMMEND_TRIP:nepal-ft-muktinath]\n\n2. **Mystical Bhutan with TripNaari** (7D/6N) | Price starts at ₹36,000 | Slug: mystical-bhutan-with-tripnaari\n   Step into the magical Kingdom of Bhutan with TripNaari’s women-only group journey. From the peaceful monasteries of Tiger’s Nest and the cultural charm of Thimphu to the beautiful valleys of Paro and the scenic Himalayan landscapes, this trip is designed for women who seek culture, connection, serenity, and meaningful travel experiences.\n\n   [RECOMMEND_TRIP:mystical-bhutan-with-tripnaari]\n\n3. **Wayanad** (3D/2N) | Price starts at ₹12,500 | Slug: wayanad\n   Escape to the refreshing hills of Wayanad with TripNaari’s women-only group getaway. From breathtaking viewpoints and thrilling adventures to waterfalls, lakes, and tea plantation landscapes, this trip is designed for women who love nature, adventure, relaxation, and meaningful travel experiences.\n\n   [RECOMMEND_TRIP:wayanad]\n\n4. **Varanasi Prayagraj & Ayodhya** (5D/4N) | Price starts at ₹32,000 | Slug: varanasi-prayagraj-ayodhya\n   Embark on a soulful journey through the sacred heart of India with TripNaari’s women-only spiritual group tour. From the timeless ghats of Varanasi and the Buddhist heritage of Sarnath to the holy Triveni Sangam in Prayagraj and the divine atmosphere of Ayodhya, this journey is designed for women seeking spirituality, culture, history, peace, and meaningful connections.\n\n   [RECOMMEND_TRIP:varanasi-prayagraj-ayodhya]\n\n5. **Arunanchal Kaziranga** (6D/5N) | Price starts at ₹45,000 | Slug: arunanchal-kaziranga\n   Popularly known as the Land of the Dawn-Lit Mountains, Arunachal Pradesh is India’s first state to greet the rising sun and is blessed with dramatic Himalayan scenery, pristine lakes, waterfalls, and vibrant Buddhist culture.\n\n   [RECOMMEND_TRIP:arunanchal-kaziranga]\n\n6. **Hampi** (2D/3N) | Price starts at ₹12,500 | Slug: hampi\n   Step into the timeless world of Hampi with TripNaari’s women-only group getaway. Explore ancient ruins, sacred hilltops, tranquil lakes, and the rich heritage of the Vijayanagara Empire while travelling with a wonderful community of women.\n\n   [RECOMMEND_TRIP:hampi]\n\n7. **Meghalaya & Kaziranga** (7D/6N) | Price starts at ₹45,000 | Slug: meghalaya-kaziranga\n   A 6N/7D women-only Meghalaya & Kaziranga trip covering Shillong, Phe Phe Falls, Krang Suri Falls, Mawlynnong, Dawki, Cherrapunji, Double Decker Living Root Bridge, Laitlum Canyon, and Kaziranga National Park, with comfortable stays, private transportation, guided experiences, and a dedicated TripNaari Trip Leader.\n\n   [RECOMMEND_TRIP:meghalaya-kaziranga]\n\nPlease let me know if you'd like to know more about any of these trips or if you'd like to book one!\n\n**Scheduled Departures:**\n\n- Trip: nepal-ft-muktinath (Start: 2026-11-14, End: 2026-11-21, Status: filling_fast, Price: ₹32,000)\n- Trip: nepal-ft-muktinath (Start: 2026-12-26, End: 2027-12-20, Status: open, Price: ₹35,000)\n- Trip: wayanad (Start: 2026-10-02, End: 2026-10-04, Status: filling_fast, Price: ₹12"
+      }
+    ],
+    "messageCount": 3,
+    "context": {
+      "pathname": "/",
+      "source": "website_chatbot",
+      "isHotLead": true,
+      "intentScore": 90,
+      "salesTag": "🔥 Hot Sales Lead"
+    }
+  },
+  {
     "id": "conv_1787944792010",
     "role": "customer",
     "createdAt": "2026-08-28T19:20:05.451Z",

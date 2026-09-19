@@ -1,4 +1,11 @@
-const SECRET_KEY = process.env.NEXTAUTH_SECRET || "TripNaariDefaultSecret2026";
+const _SECRET_KEY = process.env.NEXTAUTH_SECRET;
+if (!_SECRET_KEY) {
+  throw new Error(
+    "[TripNaari] NEXTAUTH_SECRET environment variable is not set. " +
+    "Set a strong random value in your .env file before starting the server."
+  );
+}
+const SECRET_KEY = _SECRET_KEY;
 export const COOKIE_NAME = "tripnaari_admin_token";
 
 async function getKey(): Promise<CryptoKey> {

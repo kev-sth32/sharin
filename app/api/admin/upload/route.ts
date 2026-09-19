@@ -41,8 +41,7 @@ async function isAuthenticated(req: Request) {
   const cookieHeader = req.headers.get("cookie") || "";
   const match = cookieHeader.match(new RegExp(`(?:^|; )\\s*${COOKIE_NAME}=([^;]*)`));
   const token = match ? decodeURIComponent(match[1]) : null;
-  if (token && (await verifyAdminToken(token))) return true;
-  return cookieHeader.includes("tripnaari_admin=authenticated");
+  return token ? await verifyAdminToken(token) : false;
 }
 
 export async function POST(req: Request) {
@@ -123,8 +122,8 @@ export async function POST(req: Request) {
 
           fs.writeFileSync(tmpInputPath, inputBuffer);
 
-          execSync(`gs -sDEVICE=pdfwrite -dCompatibilityLevel=1.4 -dPDFSETTINGS=/ebook -dNOPAUSE -dQUIET -dBATCH -sOutputFile="${tmpOutputPath}" "${tmpInputPath}"`, {
-            timeout: 30000,
+          execSync(`gs -sDEVICE=pdfwrite -dCompatibilityLevel=1.4 -dPDFSETTINGS=/screen -dColorImageResolution=150 -dGrayImageResolution=150 -dNOPAUSE -dQUIET -dBATCH -sOutputFile="${tmpOutputPath}" "${tmpInputPath}"`, {
+            timeout: 60000,
           });
 
           if (fs.existsSync(tmpOutputPath)) {

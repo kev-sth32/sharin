@@ -15,7 +15,16 @@ export function readFile(name: string, fallback: any[] = []) {
 
 export function writeFileShared(name: string, data: any) {
   ensureDir();
-  fs.writeFileSync(path.join(dataDir, name), JSON.stringify(data, null, 2));
+  const targetPath = path.join(dataDir, name);
+  const tempPath = path.join(dataDir, `${name}.${Date.now()}.${Math.random().toString(36).slice(2)}.tmp`);
+  try {
+    fs.writeFileSync(tempPath, JSON.stringify(data, null, 2), "utf-8");
+    fs.renameSync(tempPath, targetPath);
+  } catch (err) {
+    if (fs.existsSync(tempPath)) { try { fs.unlinkSync(tempPath); } catch {} }
+    console.error(`[TripNaari] Failed atomic write for ${name}:`, err);
+    throw err;
+  }
 }
 
 export async function getAdminDataShared() {

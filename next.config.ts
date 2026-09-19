@@ -11,10 +11,14 @@ const nextConfig: NextConfig = {
   },
   experimental: {
     serverActions: {
-      allowedOrigins: ["*"],
-      bodySizeLimit: "100mb",
+      allowedOrigins: [
+        process.env.NEXT_PUBLIC_SITE_URL?.replace(/^https?:\/\//, "") || "www.tripnaari.com",
+        "localhost:3000",
+        "localhost:3001",
+      ],
+      bodySizeLimit: "10mb",
     },
-    proxyClientMaxBodySize: "100mb",
+    proxyClientMaxBodySize: "10mb",
   },
 };
 

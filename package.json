@@ -10,15 +10,13 @@
     "lint": "eslint",
     "db:generate": "drizzle-kit generate",
     "db:push": "drizzle-kit push",
-    "db:studio": "drizzle-  kit studio"
+    "db:studio": "drizzle-kit studio"
   },
   "dependencies": {
-    "@types/pg": "^8.23.1",
     "clsx": "^2.1.1",
     "date-fns": "^4.4.0",
     "drizzle-orm": "^0.45.2",
     "lucide-react": "^1.27.0",
-    "mysql2": "^3.23.2",
     "next": "16.2.12",
     "pg": "^8.23.0",
     "react": "19.2.4",
@@ -30,10 +28,12 @@
   },
   "devDependencies": {
     "@types/node": "^20.19.43",
+    "@types/pg": "^8.23.1",
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "@types/web-push": "^3.6.4",
     "autoprefixer": "^10.5.4",
+    "docx": "^9.7.1",
     "drizzle-kit": "^0.31.10",
     "eslint": "^9",
     "eslint-config-next": "16.2.12",

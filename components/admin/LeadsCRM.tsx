@@ -1,9 +1,9 @@
 "use client";
 
 import { useState, useMemo, Fragment, useEffect } from "react";
-import { updateLeadFull } from "@/lib/admin-store";
+import { updateLeadFull, createManualLead, deleteLead } from "@/lib/admin-store";
 import ConfirmForm from "@/components/admin/ConfirmForm";
-import { Search, Filter, Calendar, MapPin, User, Phone, Mail, FileText, X, CheckCircle, RefreshCw, ChevronDown, ChevronUp, Sparkles } from "lucide-react";
+import { Search, Filter, Calendar, MapPin, User, Phone, Mail, FileText, X, CheckCircle, RefreshCw, ChevronDown, ChevronUp, Sparkles, Download, Trash2, Plus, FileSpreadsheet } from "lucide-react";
 
 const statuses = ["new", "contacted", "itinerary_shared", "payment_pending", "booked", "lost", "support_needed"] as const;
 
@@ -67,6 +67,76 @@ export default function LeadsCRM({ initialLeads }: LeadsCRMProps) {
     const sources = new Set(leads.map(l => l.source).filter(Boolean));
     return Array.from(sources).sort();
   }, [leads]);
+
+  // Create Lead Modal State
+  const [showCreateLeadModal, setShowCreateLeadModal] = useState(false);
+  const [newLeadName, setNewLeadName] = useState("");
+  const [newLeadEmail, setNewLeadEmail] = useState("");
+  const [newLeadPhone, setNewLeadPhone] = useState("");
+  const [newLeadDestination, setNewLeadDestination] = useState("Kashmir Blossom Sisterhood");
+  const [newLeadTravelers, setNewLeadTravelers] = useState(1);
+  const [newLeadNotes, setNewLeadNotes] = useState("");
+  const [actionLoading, setActionLoading] = useState(false);
+
+  // Handle Create Lead submit
+  const handleCreateLeadSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!newLeadName.trim()) return;
+    setActionLoading(true);
+    const res = await createManualLead({
+      name: newLeadName,
+      email: newLeadEmail,
+      phone: newLeadPhone,
+      destination: newLeadDestination,
+      travelers: newLeadTravelers,
+      notes: newLeadNotes,
+      message: `Manual CRM Lead logged by admin: ${newLeadNotes}`
+    });
+    if (res?.success && res.lead) {
+      setLeads(prev => [res.lead, ...prev]);
+      setShowCreateLeadModal(false);
+      setNewLeadName("");
+      setNewLeadEmail("");
+      setNewLeadPhone("");
+      setNewLeadNotes("");
+    }
+    setActionLoading(false);
+  };
+
+  // Handle Delete Lead
+  const handleDeleteLeadSubmit = async (id: number) => {
+    if (!confirm("Are you sure you want to delete this lead record?")) return;
+    const res = await deleteLead(id);
+    if (res?.success) {
+      setLeads(prev => prev.filter(l => l.id !== id));
+    }
+  };
+
+  // Export CSV Handler
+  const exportToCSV = () => {
+    const headers = ["ID", "Name", "Email", "Phone", "Destination", "Travelers", "Status", "Source", "Notes", "Created At"];
+    const rows = filteredAndSortedLeads.map(l => [
+      l.id,
+      `"${(l.name || "").replace(/"/g, '""')}"`,
+      l.email || "",
+      l.phone || "",
+      `"${(l.destination || "").replace(/"/g, '""')}"`,
+      l.travelers || 1,
+      l.status || "new",
+      `"${(l.source || "").replace(/"/g, '""')}"`,
+      `"${(l.notes || "").replace(/"/g, '""')}"`,
+      l.createdAt || ""
+    ]);
+
+    const csvContent = [headers.join(","), ...rows.map(r => r.join(","))].join("\n");
+    const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = `TripNaari_Leads_Report_${new Date().toISOString().slice(0, 10)}.csv`;
+    link.click();
+    URL.revokeObjectURL(url);
+  };
 
   // Handle lead update (retains local state sync)
   const handleLeadUpdate = async (id: number, status: string, notes: string, followUpAt: string) => {
@@ -163,25 +233,92 @@ export default function LeadsCRM({ initialLeads }: LeadsCRMProps) {
 
   return (
     <div className="space-y-6">
-      {/* Dynamic Summary Cards */}
+      {/* Top Header Control Actions */}
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-white p-4 rounded-2xl border border-[#F1D9D0] shadow-sm">
+        <div>
+          <h2 className="text-sm font-extrabold text-[#13253D] flex items-center gap-2">
+            <Sparkles className="w-4 h-4 text-[#FF4A7D]" /> Leads Pipeline Operations
+          </h2>
+          <p className="text-[11px] text-gray-500">Track, organize, and convert traveler inquiries across channels</p>
+        </div>
+
+        <div className="flex items-center gap-2 flex-wrap">
+          <button
+            onClick={() => setShowCreateLeadModal(true)}
+            className="px-3.5 py-2 bg-[#FF4A7D] hover:bg-rose-600 text-white rounded-xl text-xs font-bold transition shadow-sm flex items-center gap-1.5"
+          >
+            <Plus className="w-4 h-4" /> Add New Lead
+          </button>
+          <button
+            onClick={exportToCSV}
+            className="px-3.5 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs font-bold transition shadow-sm flex items-center gap-1.5"
+          >
+            <FileSpreadsheet className="w-4 h-4" /> Export CSV Dataset
+          </button>
+        </div>
+      </div>
+
+      {/* NaariAI Lead Intelligence Banner */}
+      <div className="p-3.5 bg-gradient-to-r from-[#13253D] to-[#1E3A5F] rounded-2xl text-white shadow-sm flex items-center justify-between gap-3">
+        <div className="flex items-center gap-3">
+          <div className="w-8 h-8 rounded-lg bg-gradient-to-tr from-[#FF4A7D] to-amber-400 text-white flex items-center justify-center font-bold text-base shadow-xs shrink-0">
+            🤖
+          </div>
+          <div className="text-xs">
+            <span className="font-bold text-[#FF4A7D]">NaariAI Conversion Intelligence: </span>
+            <span>Qualification conversion is standing at <strong className="text-emerald-400">{((stats.booked / (stats.total || 1)) * 100).toFixed(1)}%</strong>. Active pending quotes: <strong className="text-amber-300">{stats.pending}</strong> leads awaiting deposit links.</span>
+          </div>
+        </div>
+      </div>
+
+      {/* Dynamic Interactive Summary Cards */}
       <div className="grid grid-cols-2 md:grid-cols-5 gap-3">
-        <div className="bg-white border border-[#F1D9D0] rounded-2xl p-4 shadow-sm">
+        <div
+          onClick={() => setStatusFilter("all")}
+          className={`bg-white border rounded-2xl p-4 shadow-sm cursor-pointer transition ${
+            statusFilter === "all" ? "border-slate-400 ring-2 ring-slate-500/20 shadow-md" : "border-[#F1D9D0] hover:border-slate-300"
+          }`}
+        >
           <div className="text-[10px] uppercase font-bold text-[#13253D]/50">Filtered Leads</div>
           <div className="text-2xl font-bold mt-1 text-[#13253D]">{stats.total}</div>
         </div>
-        <div className="bg-green-50 border border-green-200 rounded-2xl p-4 shadow-sm">
+
+        <div
+          onClick={() => setStatusFilter(statusFilter === "booked" ? "all" : "booked")}
+          className={`bg-green-50/80 border rounded-2xl p-4 shadow-sm cursor-pointer transition ${
+            statusFilter === "booked" ? "border-green-500 ring-2 ring-green-500/20 shadow-md" : "border-green-200 hover:border-green-300"
+          }`}
+        >
           <div className="text-[10px] uppercase font-bold text-green-800/60">Booked (Paid)</div>
           <div className="text-2xl font-bold mt-1 text-green-700">{stats.booked}</div>
         </div>
-        <div className="bg-amber-50 border border-amber-200 rounded-2xl p-4 shadow-sm">
+
+        <div
+          onClick={() => setStatusFilter(statusFilter === "payment_pending" ? "all" : "payment_pending")}
+          className={`bg-amber-50/80 border rounded-2xl p-4 shadow-sm cursor-pointer transition ${
+            statusFilter === "payment_pending" ? "border-amber-500 ring-2 ring-amber-500/20 shadow-md" : "border-amber-200 hover:border-amber-300"
+          }`}
+        >
           <div className="text-[10px] uppercase font-bold text-amber-800/60">Payments Pending</div>
           <div className="text-2xl font-bold mt-1 text-amber-700">{stats.pending}</div>
         </div>
-        <div className="bg-blue-50 border border-blue-200 rounded-2xl p-4 shadow-sm">
+
+        <div
+          onClick={() => setStatusFilter(statusFilter === "new" ? "all" : "new")}
+          className={`bg-blue-50/80 border rounded-2xl p-4 shadow-sm cursor-pointer transition ${
+            statusFilter === "new" ? "border-blue-500 ring-2 ring-blue-500/20 shadow-md" : "border-blue-200 hover:border-blue-300"
+          }`}
+        >
           <div className="text-[10px] uppercase font-bold text-blue-800/60">New Inquiries</div>
           <div className="text-2xl font-bold mt-1 text-blue-700">{stats.newLeads}</div>
         </div>
-        <div className="bg-purple-50 border border-purple-200 rounded-2xl p-4 shadow-sm col-span-2 md:col-span-1">
+
+        <div
+          onClick={() => setStatusFilter(statusFilter === "contacted" ? "all" : "contacted")}
+          className={`bg-purple-50/80 border rounded-2xl p-4 shadow-sm cursor-pointer transition col-span-2 md:col-span-1 ${
+            statusFilter === "contacted" ? "border-purple-500 ring-2 ring-purple-500/20 shadow-md" : "border-purple-200 hover:border-purple-300"
+          }`}
+        >
           <div className="text-[10px] uppercase font-bold text-purple-800/60">Follow-ups Active</div>
           <div className="text-2xl font-bold mt-1 text-purple-700">{stats.contacted}</div>
         </div>
@@ -311,9 +448,14 @@ export default function LeadsCRM({ initialLeads }: LeadsCRMProps) {
             <div key={l.id} className={`bg-white border border-[#F1D9D0] rounded-2xl p-4 shadow-sm space-y-4 transition-colors ${isExpanded ? 'bg-[#FFF8F0]/10 border-[#FF4A7D]/35' : ''}`}>
               {/* Header: Name & Status */}
               <div className="flex justify-between items-start gap-2">
-                <div className="font-bold text-sm text-[#13253D] flex items-center gap-1.5">
+                <div className="font-bold text-sm text-[#13253D] flex items-center gap-1.5 flex-wrap">
                   <User className="w-4 h-4 text-[#FF4A7D]" />
                   <span>{l.name}</span>
+                  {(l.source?.toLowerCase().includes("naariai") || l.source?.toLowerCase().includes("chatbot") || l.source?.toLowerCase().includes("ai")) && (
+                    <span className="text-[9px] bg-gradient-to-r from-pink-500 via-rose-500 to-amber-500 text-white font-extrabold px-2 py-0.5 rounded-full shadow-2xs">
+                      🌸 NaariAI Lead
+                    </span>
+                  )}
                 </div>
                 <span className={`inline-block border rounded-full px-2.5 py-0.5 text-[9px] font-extrabold uppercase tracking-wider ${getStatusBadgeClass(l.status)}`}>
                   {l.status.replace("_", " ")}
@@ -518,9 +660,14 @@ export default function LeadsCRM({ initialLeads }: LeadsCRMProps) {
                       </button>
                     </td>
                     <td className="p-3">
-                      <div className="font-semibold text-[#13253D] flex items-center gap-1.5 text-xs">
+                      <div className="font-semibold text-[#13253D] flex items-center gap-1.5 text-xs flex-wrap">
                         <User className="w-3.5 h-3.5 text-[#FF4A7D] shrink-0" />
                         <span>{l.name}</span>
+                        {(l.source?.toLowerCase().includes("naariai") || l.source?.toLowerCase().includes("chatbot") || l.source?.toLowerCase().includes("ai")) && (
+                          <span className="text-[9px] bg-gradient-to-r from-pink-500 via-rose-500 to-amber-500 text-white font-extrabold px-2 py-0.5 rounded-full shadow-2xs">
+                            🌸 NaariAI Lead
+                          </span>
+                        )}
                       </div>
                       <div className="flex flex-col text-[10px] text-[#3D4A5E] mt-0.5 space-y-0.5">
                         <div className="flex items-center gap-1">
@@ -693,6 +840,14 @@ export default function LeadsCRM({ initialLeads }: LeadsCRMProps) {
                                   <Sparkles className="w-3.5 h-3.5" />
                                   <span>Consult AI Assistant</span>
                                 </button>
+                                <button
+                                  type="button"
+                                  onClick={() => handleDeleteLeadSubmit(l.id)}
+                                  className="w-full flex items-center justify-center gap-1.5 rounded-xl border border-rose-200 bg-rose-50 hover:bg-rose-100 text-rose-600 py-2 text-xs font-bold transition shadow-2xs mt-2"
+                                >
+                                  <Trash2 className="w-3.5 h-3.5" />
+                                  <span>Delete Lead Record</span>
+                                </button>
                               </div>
                               {l.followUpAt && (
                                 <div className="text-[10px] bg-red-50 text-red-700 border border-red-100 rounded-xl p-2.5 font-semibold flex items-start gap-1.5">
@@ -723,6 +878,116 @@ export default function LeadsCRM({ initialLeads }: LeadsCRMProps) {
           </tbody>
         </table>
       </div>
+
+      {/* Create Manual Lead Modal */}
+      {showCreateLeadModal && (
+        <div className="fixed inset-0 bg-black/60 z-50 flex items-center justify-center p-4">
+          <div className="bg-white rounded-2xl p-6 w-full max-w-md space-y-4 shadow-2xl border border-[#F1D9D0] animate-in fade-in duration-200">
+            <div className="flex items-center justify-between border-b border-[#F1D9D0] pb-3">
+              <h3 className="text-sm font-bold text-[#13253D] flex items-center gap-2">
+                ➕ Record New Customer Lead
+              </h3>
+              <button onClick={() => setShowCreateLeadModal(false)} className="text-gray-400 hover:text-gray-600 font-bold">
+                ✕
+              </button>
+            </div>
+
+            <form onSubmit={handleCreateLeadSubmit} className="space-y-3">
+              <div>
+                <label className="text-[11px] font-bold text-gray-500 block mb-1">Customer Full Name:</label>
+                <input
+                  type="text"
+                  required
+                  value={newLeadName}
+                  onChange={e => setNewLeadName(e.target.value)}
+                  placeholder="e.g. Priya Sharma"
+                  className="w-full text-xs p-2.5 border border-[#F1D9D0] rounded-xl font-semibold"
+                />
+              </div>
+
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label className="text-[11px] font-bold text-gray-500 block mb-1">Phone Number:</label>
+                  <input
+                    type="text"
+                    value={newLeadPhone}
+                    onChange={e => setNewLeadPhone(e.target.value)}
+                    placeholder="+91 98765 43210"
+                    className="w-full text-xs p-2.5 border border-[#F1D9D0] rounded-xl font-semibold"
+                  />
+                </div>
+
+                <div>
+                  <label className="text-[11px] font-bold text-gray-500 block mb-1">Email Address:</label>
+                  <input
+                    type="email"
+                    value={newLeadEmail}
+                    onChange={e => setNewLeadEmail(e.target.value)}
+                    placeholder="priya@example.com"
+                    className="w-full text-xs p-2.5 border border-[#F1D9D0] rounded-xl font-semibold"
+                  />
+                </div>
+              </div>
+
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label className="text-[11px] font-bold text-gray-500 block mb-1">Target Destination:</label>
+                  <select
+                    value={newLeadDestination}
+                    onChange={e => setNewLeadDestination(e.target.value)}
+                    className="w-full text-xs p-2.5 border border-[#F1D9D0] rounded-xl font-semibold"
+                  >
+                    <option value="Kashmir Blossom Sisterhood">Kashmir Blossom Sisterhood</option>
+                    <option value="Ladakh Women Special">Ladakh Women Special</option>
+                    <option value="Meghalaya Backpacking">Meghalaya Backpacking</option>
+                    <option value="Spiti Valley Circuit">Spiti Valley Circuit</option>
+                    <option value="Kerala Backwater Retreat">Kerala Backwater Retreat</option>
+                  </select>
+                </div>
+
+                <div>
+                  <label className="text-[11px] font-bold text-gray-500 block mb-1">Travelers Count:</label>
+                  <input
+                    type="number"
+                    min="1"
+                    value={newLeadTravelers}
+                    onChange={e => setNewLeadTravelers(Number(e.target.value))}
+                    className="w-full text-xs p-2.5 border border-[#F1D9D0] rounded-xl font-semibold"
+                  />
+                </div>
+              </div>
+
+              <div>
+                <label className="text-[11px] font-bold text-gray-500 block mb-1">Inquiry / Call Notes:</label>
+                <textarea
+                  rows={3}
+                  value={newLeadNotes}
+                  onChange={e => setNewLeadNotes(e.target.value)}
+                  className="w-full text-xs p-2.5 border border-[#F1D9D0] rounded-xl font-medium focus:ring-2 focus:ring-[#FF4A7D]"
+                  placeholder="Details from telephone call or walk-in..."
+                />
+              </div>
+
+              <div className="flex gap-2 pt-2">
+                <button
+                  type="button"
+                  onClick={() => setShowCreateLeadModal(false)}
+                  className="flex-1 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-xl text-xs font-semibold"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  disabled={actionLoading}
+                  className="flex-1 py-2 bg-[#FF4A7D] hover:bg-rose-600 text-white rounded-xl text-xs font-bold shadow-md transition"
+                >
+                  Save Lead to Pipeline
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

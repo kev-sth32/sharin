@@ -1,4 +1,4 @@
-import { sendInstagramDm, sendWhatsAppMessage } from "@/lib/ai-crm";
+import { sendInstagramDm, sendWhatsAppMessage, sendWhatsAppInteractiveButtons } from "@/lib/ai-crm";
 import { dbInstance, schema } from "@/lib/db";
 import { eq, and, lt } from "drizzle-orm";
 
@@ -59,7 +59,7 @@ _This quotation link is valid for 48 hours to guarantee current price & seats._`
 }
 
 /**
- * Generates Pre-Trip Briefing & Packing List WhatsApp Broadcast (Beats WhatZCRM)
+ * Generates Pre-Trip Briefing & Packing List WhatsApp Message
  */
 export function generatePreTripBriefing(customerName: string, destination: string, departureDate: string): string {
   return `🎒 *UPCOMING TRIP BRIEFING & PACKING ESSENTIALS*
@@ -76,23 +76,39 @@ Hi ${customerName}! 🌸 Your trip to *${destination}* is just around the corner
 }
 
 /**
- * Automated Sales Drip Engine
- * Evaluates pending qualified leads and fires stage-appropriate follow-ups
+ * Automated Sales Drip Engine — 3-Step Follow-Up Sequence
+ *
+ * Step 1 (24h): Warm check-in — "Still thinking about your trip?"
+ * Step 2 (48h): Urgency + interactive WA buttons — "Only 3 seats left!"
+ * Step 3 (7d):  Last-chance coupon SOLO1000 — "₹1,000 off, expires 48h"
+ *               → After Step 3, lead auto-moves to "closed" to end the drip.
  */
 export async function runSalesDripEngine(): Promise<{ processedCount: number; messagesSent: string[] }> {
   const db = dbInstance();
   const messagesSent: string[] = [];
 
   if (db._isMock) {
-    console.log("[Sales Drip Engine] Executing in demo mode...");
-    return { processedCount: 2, messagesSent: ["Simulated 24h follow-up to Priya", "Simulated 72h urgency to Sunita"] };
+    console.log("[Sales Drip Engine] Executing in demo/mock mode...");
+    return {
+      processedCount: 3,
+      messagesSent: [
+        "Mock: Drip Step 1 sent to Priya (instagram)",
+        "Mock: Drip Step 2 sent to Ananya (whatsapp) — urgency buttons",
+        "Mock: Drip Step 3 coupon sent to Sunita (whatsapp) — SOLO1000"
+      ]
+    };
   }
 
   try {
     const now = new Date();
     const h24Ago = new Date(now.getTime() - 24 * 60 * 60 * 1000);
+    const h48Ago = new Date(now.getTime() - 48 * 60 * 60 * 1000);
+    const d7Ago  = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
 
-    const eligibleThreads = await db
+    // ─────────────────────────────────────────────
+    // STEP 1: 24h check-in — warm follow-up
+    // ─────────────────────────────────────────────
+    const step1Threads = await db
       .select()
       .from(schema.crmConversations)
       .where(
@@ -103,20 +119,20 @@ export async function runSalesDripEngine(): Promise<{ processedCount: number; me
         )
       );
 
-    for (const thread of eligibleThreads) {
-      const followUpText = `Hey ${thread.customerName || "there"}! 🎒 Just checking in—did you have a chance to review our Women-Only itinerary? Let me know if you'd like me to send a custom discount quote! 🌸`;
+    for (const thread of step1Threads) {
+      const followUp = `Hey ${thread.customerName || "there"}! 🎒 Just checking in — did you get a chance to look at our Women-Only itinerary? Let me know if you'd like a custom discount quote! 🌸`;
 
       if (thread.channel === "instagram") {
-        await sendInstagramDm(thread.externalUserId, followUpText);
+        await sendInstagramDm(thread.externalUserId, followUp);
       } else if (thread.channel === "whatsapp") {
-        await sendWhatsAppMessage(thread.externalUserId, followUpText);
+        await sendWhatsAppMessage(thread.externalUserId, followUp);
       }
 
       await db.insert(schema.crmMessages).values({
         conversationId: thread.id,
         channel: thread.channel,
         senderType: "ai",
-        content: `[AUTOMATED DRIP STEP 1]: ${followUpText}`,
+        content: `[DRIP STEP 1 — 24h]: ${followUp}`,
         intentDetected: "drip_followup_24h"
       });
 
@@ -125,12 +141,101 @@ export async function runSalesDripEngine(): Promise<{ processedCount: number; me
         .set({ dripStep: 1, lastMessageAt: now })
         .where(eq(schema.crmConversations.id, thread.id));
 
-      messagesSent.push(`Drip Step 1 sent to ${thread.customerName} (${thread.channel})`);
+      messagesSent.push(`Step 1 → ${thread.customerName} (${thread.channel})`);
     }
 
-    return { processedCount: eligibleThreads.length, messagesSent };
+    // ─────────────────────────────────────────────
+    // STEP 2: 48h urgency — scarcity + WA buttons
+    // ─────────────────────────────────────────────
+    const step2Threads = await db
+      .select()
+      .from(schema.crmConversations)
+      .where(
+        and(
+          eq(schema.crmConversations.status, "qualified"),
+          lt(schema.crmConversations.lastMessageAt, h48Ago),
+          eq(schema.crmConversations.dripStep, 1)
+        )
+      );
+
+    for (const thread of step2Threads) {
+      const urgencyMsg = `🔥 *LIMITED SEATS ALERT!*\nHi ${thread.customerName || "there"}! Only *3 seats* remain for our next Women's batch! Don't miss out on an unforgettable journey. 🏔️\n\nShall I reserve your spot now?`;
+
+      if (thread.channel === "whatsapp") {
+        // Send interactive buttons on WhatsApp for higher engagement
+        await sendWhatsAppInteractiveButtons(thread.externalUserId, urgencyMsg, [
+          { id: "btn_reserve_yes", title: "Yes, Reserve My Seat!" },
+          { id: "btn_more_info", title: "Send Itinerary PDF" },
+          { id: "btn_call_me", title: "Call Me Back" }
+        ]);
+      } else if (thread.channel === "instagram") {
+        await sendInstagramDm(thread.externalUserId, urgencyMsg);
+      }
+
+      await db.insert(schema.crmMessages).values({
+        conversationId: thread.id,
+        channel: thread.channel,
+        senderType: "ai",
+        content: `[DRIP STEP 2 — 48h urgency]: ${urgencyMsg}`,
+        intentDetected: "drip_urgency_48h"
+      });
+
+      await db
+        .update(schema.crmConversations)
+        .set({ dripStep: 2, lastMessageAt: now })
+        .where(eq(schema.crmConversations.id, thread.id));
+
+      messagesSent.push(`Step 2 → ${thread.customerName} (${thread.channel}) — urgency buttons`);
+    }
+
+    // ─────────────────────────────────────────────
+    // STEP 3: 7-day last chance — coupon + close
+    // ─────────────────────────────────────────────
+    const step3Threads = await db
+      .select()
+      .from(schema.crmConversations)
+      .where(
+        and(
+          eq(schema.crmConversations.status, "qualified"),
+          lt(schema.crmConversations.lastMessageAt, d7Ago),
+          eq(schema.crmConversations.dripStep, 2)
+        )
+      );
+
+    for (const thread of step3Threads) {
+      const couponMsg = `🎁 *A SPECIAL GIFT JUST FOR YOU!*\nHi ${thread.customerName || "there"}! We really want you on this trip! 🌸\n\nHere's an exclusive *₹1,000 OFF* voucher — use code *SOLO1000* at checkout.\n\n⏰ This offer expires in *48 hours*. Ready to book?\n👉 https://tripnaari.com/trips`;
+
+      if (thread.channel === "whatsapp") {
+        await sendWhatsAppMessage(thread.externalUserId, couponMsg);
+      } else if (thread.channel === "instagram") {
+        await sendInstagramDm(thread.externalUserId, couponMsg);
+      }
+
+      await db.insert(schema.crmMessages).values({
+        conversationId: thread.id,
+        channel: thread.channel,
+        senderType: "ai",
+        content: `[DRIP STEP 3 — 7d coupon SOLO1000]: ${couponMsg}`,
+        intentDetected: "drip_coupon_7d"
+      });
+
+      // After Step 3, move to "closed" — stops the drip from running again
+      await db
+        .update(schema.crmConversations)
+        .set({ dripStep: 3, status: "closed", lastMessageAt: now })
+        .where(eq(schema.crmConversations.id, thread.id));
+
+      messagesSent.push(`Step 3 → ${thread.customerName} (${thread.channel}) — SOLO1000 coupon sent, lead closed`);
+    }
+
+    const totalProcessed = step1Threads.length + step2Threads.length + step3Threads.length;
+    console.log(`[Sales Drip Engine] Processed ${totalProcessed} threads. Step1: ${step1Threads.length}, Step2: ${step2Threads.length}, Step3: ${step3Threads.length}`);
+
+    return { processedCount: totalProcessed, messagesSent };
   } catch (err) {
     console.error("[Sales Drip Engine Exception]:", err);
     return { processedCount: 0, messagesSent };
   }
 }
+
+

@@ -293,6 +293,8 @@ export const crmConversations = pgTable("crm_conversations", {
   dripStep: integer("drip_step").default(0), // 0: new, 1: 24h follow up, 2: 72h urgency, 3: 7d discount
   quoteData: json("quote_data"), // generated quote details (price, deposit, link)
   internalNotes: json("internal_notes").$type<Array<{ id: number; author: string; text: string; createdAt: string }>>().default([]),
+  documentVault: json("document_vault").$type<Array<{ id: number; docType: string; fileName: string; fileUrl: string; uploadedAt: string }>>().default([]),
+  appliedCoupon: varchar("applied_coupon", { length: 50 }),
   lastMessageText: text("last_message_text"),
   lastMessageAt: timestamp("last_message_at").defaultNow(),
   unreadCount: integer("unread_count").default(0),

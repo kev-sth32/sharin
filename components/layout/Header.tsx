@@ -39,10 +39,10 @@ export default function Header() {
       <header className="sticky top-0 z-50 w-full border-b border-[#F1D9D0] bg-white/95 backdrop-blur-md">
         <div className="max-w-[1280px] mx-auto px-4 md:px-8 h-[64px] lg:h-[70px] xl:h-[76px] flex items-center justify-between">
           <Link href="/" className="flex items-center gap-2 group">
-            <img 
-              src="/logo.png" 
-              alt="TripNaari Logo" 
-              className="h-10 md:h-12 w-auto object-contain hover:opacity-90 transition-opacity" 
+            <img
+              src="/logo.png"
+              alt="TripNaari Logo"
+              className="h-10 md:h-12 w-auto object-contain hover:opacity-90 transition-opacity"
             />
           </Link>
 
@@ -74,7 +74,7 @@ export default function Header() {
                 <Link key={l.href} href={l.href} onClick={() => setOpen(false)} className="text-[16px] font-semibold text-[#13253D]">{l.label}</Link>
               ))}
               <div className="h-px bg-[#F1D9D0] my-2" />
-              <button 
+              <button
                 onClick={() => {
                   setOpen(false);
                   openEnquiryModal();

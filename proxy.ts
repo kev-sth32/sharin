@@ -12,8 +12,8 @@ export async function proxy(req: NextRequest) {
   const isLoginApi = pathname === "/api/admin/login" || pathname === "/api/admin/logout";
 
   if ((isAdminPath && !isLoginPath) || (isAdminApi && !isLoginApi)) {
-    const token = req.cookies.get(COOKIE_NAME)?.value || req.cookies.get("tripnaari_admin")?.value;
-    const isValid = (await verifyAdminToken(token)) || token === "authenticated";
+    const token = req.cookies.get(COOKIE_NAME)?.value;
+    const isValid = await verifyAdminToken(token);
     
     if (!isValid) {
       if (isAdminApi) {
@@ -27,8 +27,8 @@ export async function proxy(req: NextRequest) {
 
   // If already authenticated and trying to access login, redirect to dashboard
   if (isLoginPath) {
-    const token = req.cookies.get(COOKIE_NAME)?.value || req.cookies.get("tripnaari_admin")?.value;
-    const isValid = (await verifyAdminToken(token)) || token === "authenticated";
+    const token = req.cookies.get(COOKIE_NAME)?.value;
+    const isValid = await verifyAdminToken(token);
     if (isValid) {
       return NextResponse.redirect(new URL("/admin24639", req.url));
     }

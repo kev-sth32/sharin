@@ -245,7 +245,17 @@ export async function updateLeadFull(id: number, status: string, notes: string, 
 }
 export async function deleteLead(id: number) {
   const leads = readFile("leads.json", []);
-  writeFile("leads.json", leads.filter((l:any)=>l.id!==id));
+  const filtered = leads.filter((l: any) => l.id !== id);
+  if (filtered.length !== leads.length) {
+    writeFile("leads.json", filtered);
+    return { success: true };
+  }
+  const customLeads = readFile("leads_custom.json", []);
+  const filteredCustom = customLeads.filter((l: any) => l.id !== id);
+  if (filteredCustom.length !== customLeads.length) {
+    writeFile("leads_custom.json", filteredCustom);
+    return { success: true };
+  }
   return { success: true };
 }
 
@@ -698,7 +708,7 @@ export async function getPolicies() {
         title: "Privacy Policy - Your Data, Your Sisterhood",
         version: "1.0",
         updated: "01 Jan 2026",
-        body: `We collect name, email, phone, travel preferences to craft trip. We store in MySQL encrypted at rest. We use your phone only for trip-related WhatsApp (no marketing without opt-in). We never sell data to third party.\n\nYou can request deletion via privacy@tripnaari.com. Newsletter unsubscribe anytime.\n\nCookies: we use analytics (anonymized) and conversion tracking. No creepy cross-site tracking.\n\nDMCA: TripNaari community photos used with consent. If you want yours removed, email.\n\nContact DPO: dpo@tripnaari.com, Bangalore.`
+        body: `We collect name, email, phone, travel preferences to craft trip. We store in PostgreSQL encrypted at rest. We use your phone only for trip-related WhatsApp (no marketing without opt-in). We never sell data to third party.\n\nYou can request deletion via privacy@tripnaari.com. Newsletter unsubscribe anytime.\n\nCookies: we use analytics (anonymized) and conversion tracking. No creepy cross-site tracking.\n\nDMCA: TripNaari community photos used with consent. If you want yours removed, email.\n\nContact DPO: dpo@tripnaari.com, Bangalore.`
       },
       {
         slug: "terms-conditions",
@@ -801,7 +811,8 @@ YOUR INSTRUCTIONS:
         question: "What happens in case of a medical emergency during a high-altitude trip?",
         answer: "Our leaders carry portable oxygen cylinders, comprehensive first-aid kits, and pulse oximeters. We have tie-ups with local doctors, and our 24/7 operations line coordinates rapid evacuations if required."
       }
-    ] as Array<{ id: number; question: string; answer: string }>
+    ] as Array<{ id: number; question: string; answer: string }>,
+    salesManagers: ["Sneha Kapur", "Rahul Sharma", "Priya Singh"]
   };
   
   let settings: any = null;
@@ -866,13 +877,32 @@ export async function logConversation(
     const now = new Date().toISOString();
     const existingIndex = logs.findIndex((l: any) => l.id === conversationId);
 
+    // Detect high-intent purchase signals for AI Sales Machine CRM tracking
+    const fullText = (updatedMessages.map((m: any) => m.content).join(" ") + " " + assistantResponse).toLowerCase();
+    const isHotLead = fullText.includes("[recommend_trip]") || 
+                      fullText.includes("[show_enquiry_form]") || 
+                      fullText.includes("[whatsapp_lead") || 
+                      fullText.includes("[coupon_offer]") || 
+                      fullText.includes("book") || 
+                      fullText.includes("discount") || 
+                      fullText.includes("price") || 
+                      fullText.includes("cost") || 
+                      fullText.includes("seat");
+
+    const enrichedContext = {
+      ...context,
+      isHotLead,
+      intentScore: isHotLead ? 90 : 30,
+      salesTag: isHotLead ? "🔥 Hot Sales Lead" : "General Inquiry"
+    };
+
     if (existingIndex >= 0) {
       logs[existingIndex] = {
         ...logs[existingIndex],
         updatedAt: now,
         messages: updatedMessages,
         messageCount: updatedMessages.length,
-        context: { ...logs[existingIndex].context, ...context }
+        context: { ...logs[existingIndex].context, ...enrichedContext }
       };
     } else {
       logs.push({
@@ -882,7 +912,7 @@ export async function logConversation(
         updatedAt: now,
         messages: updatedMessages,
         messageCount: updatedMessages.length,
-        context: context || {}
+        context: enrichedContext
       });
     }
 
@@ -898,6 +928,28 @@ export async function logConversation(
   } catch (e) {
     console.error("Failed to log conversation:", e);
   }
+}
+
+export async function createManualLead(leadData: any) {
+  const customLeads = readFile("leads_custom.json", []);
+  const newLead = {
+    id: Date.now(),
+    name: leadData.name || "Anonymous Traveler",
+    email: leadData.email || "",
+    phone: leadData.phone || "",
+    destination: leadData.destination || "Kashmir Blossom Sisterhood",
+    travelMonth: leadData.travelMonth || "Flexible",
+    travelers: Number(leadData.travelers || 1),
+    budget: leadData.budget || "Standard",
+    message: leadData.message || "Manual lead inquiry.",
+    status: leadData.status || "new",
+    notes: leadData.notes || "",
+    source: leadData.source || "Manual Admin Entry",
+    createdAt: new Date().toISOString()
+  };
+  customLeads.unshift(newLead);
+  writeFile("leads_custom.json", customLeads);
+  return { success: true, lead: newLead };
 }
 
 

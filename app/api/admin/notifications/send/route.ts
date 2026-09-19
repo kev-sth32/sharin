@@ -5,6 +5,14 @@ import { eq } from "drizzle-orm";
 import fs from "fs";
 import path from "path";
 import webpush from "web-push";
+import { verifyAdminToken, COOKIE_NAME } from "@/lib/auth";
+
+async function isAuthenticated(req: Request) {
+  const cookieHeader = req.headers.get("cookie") || "";
+  const match = cookieHeader.match(new RegExp(`(?:^|; )\\s*${COOKIE_NAME}=([^;]*)`));
+  const token = match ? decodeURIComponent(match[1]) : null;
+  return token ? await verifyAdminToken(token) : false;
+}
 
 const dataDir = path.join(process.cwd(), ".data");
 const jsonFile = "push_subscriptions.json";
@@ -21,7 +29,9 @@ function getJsonSubscriptions(): any[] {
 
 function saveJsonSubscriptions(subs: any[]) {
   const fp = path.join(dataDir, jsonFile);
-  fs.writeFileSync(fp, JSON.stringify(subs, null, 2));
+  const tmp = `${fp}.${Date.now()}.tmp`;
+  fs.writeFileSync(tmp, JSON.stringify(subs, null, 2));
+  fs.renameSync(tmp, fp);
 }
 
 // Configure VAPID details
@@ -35,6 +45,11 @@ if (VAPID_PUBLIC && VAPID_PRIVATE) {
 
 export async function POST(req: Request) {
   try {
+    // SECURITY: Only admins can send push notifications
+    if (!(await isAuthenticated(req))) {
+      return NextResponse.json({ success: false, error: "Unauthorized — Admin login required" }, { status: 401 });
+    }
+
     if (!VAPID_PUBLIC || !VAPID_PRIVATE) {
       return NextResponse.json(
         { success: false, error: "VAPID keys not configured in environment variables." },

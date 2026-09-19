@@ -38,10 +38,10 @@ export default function TripCard({ trip }: TripCardProps) {
   return (
     <Link href={`/trips/${trip.slug}`} className="group block rounded-3xl bg-white border border-[#F1D9D0] overflow-hidden shadow-[0_10px_35px_-8px_rgba(19,37,61,0.06)] hover:shadow-[0_20px_50px_-10px_rgba(255,74,125,0.12)] transition-all duration-300 hover:-translate-y-1">
       <div className="relative aspect-[16/10] overflow-hidden">
-        <img 
-          src={trip.heroImage || "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=800&q=80"} 
-          alt={trip.title} 
-          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" 
+        <img
+          src={trip.heroImage || "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=800&q=80"}
+          alt={trip.title}
+          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
         />
         {showBadge && (
           <div className="absolute top-4 left-4 flex gap-2">

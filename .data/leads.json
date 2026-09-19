@@ -785,20 +785,5 @@
     "consent": true,
     "source": "trip_enquiry",
     "status": "new"
-  },
-  {
-    "id": 1787910841863,
-    "createdAt": "2026-08-28T09:54:01.863Z",
-    "name": "Sharin Newa",
-    "email": "kev.sth32@gmail.com",
-    "phone": "9861806115",
-    "destination": "arunanchal-kaziranga",
-    "travelMonth": "Oct 2026",
-    "travelers": 1,
-    "travelStyle": "solo",
-    "message": "[Requested departure: 2026-10-17] Requested PDF brochure for Arunanchal Kaziranga.",
-    "consent": true,
-    "source": "trip_enquiry",
-    "status": "new"
   }
 ]
