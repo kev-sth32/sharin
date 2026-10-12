@@ -13,6 +13,10 @@ export default function ContactPage() {
   async function onContact(fd: FormData) {
     setStatus("loading");
     setContactErrors({});
+    if (typeof window !== "undefined") {
+      if (!fd.get("page_url")) fd.set("page_url", window.location.href);
+      if (!fd.get("page_title")) fd.set("page_title", document.title);
+    }
     const res = await submitContact(fd);
     if (res.success) {
       setStatus("success");

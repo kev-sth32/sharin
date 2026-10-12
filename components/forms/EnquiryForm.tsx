@@ -126,6 +126,11 @@ function EnquiryFormInner({
     setStatus("loading");
     setErrorMsg("");
 
+    if (typeof window !== "undefined") {
+      if (!formData.get("page_url")) formData.set("page_url", window.location.href);
+      if (!formData.get("page_title")) formData.set("page_title", document.title);
+    }
+
     if (mode === "download") {
       if (!formData.get("destination")) {
         formData.set("destination", destination || "General");

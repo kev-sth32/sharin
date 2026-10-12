@@ -41,6 +41,10 @@ export default function LeadGate({ tripTitle, itineraryPdf }: LeadGateProps) {
     e.preventDefault();
     setErrorMsg("");
     const formData = new FormData(e.currentTarget);
+    if (typeof window !== "undefined") {
+      if (!formData.get("page_url")) formData.set("page_url", window.location.href);
+      if (!formData.get("page_title")) formData.set("page_title", document.title);
+    }
 
     startTransition(async () => {
       try {

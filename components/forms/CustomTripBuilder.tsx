@@ -19,6 +19,10 @@ export default function CustomTripBuilder() {
 
   async function onSubmit(formData: FormData) {
     setStatus("loading");
+    if (typeof window !== "undefined") {
+      if (!formData.get("page_url")) formData.set("page_url", window.location.href);
+      if (!formData.get("page_title")) formData.set("page_title", document.title);
+    }
     selectedInterests.forEach(v=>formData.append("interests", v));
     selectedActivities.forEach(v=>formData.append("activities", v));
     const res = await submitCustomTrip(formData);

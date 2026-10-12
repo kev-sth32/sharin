@@ -413,6 +413,10 @@ export default function CustomerChatbot() {
       fd.append("budget", formData.budget);
       fd.append("consent", "true");
       fd.append("message", "Created via NaariAI Website Chatbot");
+      if (typeof window !== "undefined") {
+        fd.append("page_url", window.location.href);
+        fd.append("page_title", document.title || "AI Travel Assistant");
+      }
 
       const result = await submitEnquiry(fd);
       if (result.success) {
