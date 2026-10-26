@@ -113,13 +113,13 @@ export async function POST(req: Request) {
 
       // Attempt Ghostscript automatic PDF compression if PDF > 2MB
       if (inputBuffer.length > 2 * 1024 * 1024) {
+        const dataDir = path.join(process.cwd(), ".data");
+        if (!fs.existsSync(dataDir)) fs.mkdirSync(dataDir, { recursive: true });
+
+        const tmpInputPath = path.join(dataDir, `temp-in-${Date.now()}-${Math.random().toString(36).slice(2, 6)}.pdf`);
+        const tmpOutputPath = path.join(dataDir, `temp-out-${Date.now()}-${Math.random().toString(36).slice(2, 6)}.pdf`);
+
         try {
-          const dataDir = path.join(process.cwd(), ".data");
-          if (!fs.existsSync(dataDir)) fs.mkdirSync(dataDir, { recursive: true });
-
-          const tmpInputPath = path.join(dataDir, `temp-in-${Date.now()}-${Math.random().toString(36).slice(2, 6)}.pdf`);
-          const tmpOutputPath = path.join(dataDir, `temp-out-${Date.now()}-${Math.random().toString(36).slice(2, 6)}.pdf`);
-
           fs.writeFileSync(tmpInputPath, inputBuffer);
 
           execSync(`gs -sDEVICE=pdfwrite -dCompatibilityLevel=1.4 -dPDFSETTINGS=/screen -dColorImageResolution=150 -dGrayImageResolution=150 -dNOPAUSE -dQUIET -dBATCH -sOutputFile="${tmpOutputPath}" "${tmpInputPath}"`, {
@@ -133,12 +133,13 @@ export async function POST(req: Request) {
               isCompressed = true;
               console.log(`[TripNaari Upload] Ghostscript compressed PDF ${fileName}: ${inputBuffer.length} -> ${finalBuffer.length} bytes`);
             }
-            try { fs.unlinkSync(tmpOutputPath); } catch {}
           }
-          try { fs.unlinkSync(tmpInputPath); } catch {}
         } catch (gsErr) {
           console.warn("[TripNaari Upload] Ghostscript compression fallback to raw PDF buffer:", gsErr);
           finalBuffer = inputBuffer;
+        } finally {
+          try { if (fs.existsSync(tmpOutputPath)) fs.unlinkSync(tmpOutputPath); } catch {}
+          try { if (fs.existsSync(tmpInputPath)) fs.unlinkSync(tmpInputPath); } catch {}
         }
       } else {
         console.log(`[TripNaari Upload] Processed small PDF upload: ${fileName} (${inputSize} bytes)`);
