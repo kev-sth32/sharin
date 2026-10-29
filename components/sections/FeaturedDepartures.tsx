@@ -5,7 +5,7 @@ import Link from "next/link";
 
 export default function FeaturedDepartures() {
   const allTrips = getMergedTrips();
-  const featured = allTrips.filter((t:any) => t.isFeatured);
+  const featured = allTrips.filter((t: any) => t.isFeatured);
   return (
     <section className="bg-[#FFF8F0] py-12 md:py-16 lg:py-20 xl:py-24">
       <div className="max-w-[1280px] mx-auto px-4 md:px-8">
@@ -22,10 +22,10 @@ export default function FeaturedDepartures() {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {featured.map((trip:any) => (
+          {featured.map((trip: any) => (
             <TripCard key={trip.slug} trip={trip} />
           ))}
-          {featured.length===0 && (
+          {featured.length === 0 && (
             <div className="col-span-3 rounded-3xl bg-white border border-[#F1D9D0] p-12 text-center text-sm text-[#3D4A5E]">
               No upcoming trips found.
             </div>

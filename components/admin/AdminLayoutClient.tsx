@@ -13,6 +13,7 @@ const nav = [
   { href: "/admin24639/leads", label: "Leads & CRM", icon: "💬" },
   { href: "/admin24639/trips", label: "Trip Packages", icon: "🎒" },
   { href: "/admin24639/departures", label: "Departures", icon: "📅" },
+  { href: "/admin24639/check-in", label: "Gate QR Check-In", icon: "🎫" },
   { href: "/admin24639/testimonials", label: "Testimonials", icon: "⭐" },
   { href: "/admin24639/leaders", label: "Trip Leaders", icon: "👩‍✈️" },
   { href: "/admin24639/blogs", label: "Blogs / Resources", icon: "📝" },
@@ -21,7 +22,8 @@ const nav = [
   { href: "/admin24639/gallery", label: "Gallery", icon: "🖼️" },
   { href: "/admin24639/contacts", label: "Contacts & Refunds", icon: "📥" },
   { href: "/admin24639/finance", label: "Finance Tracker", icon: "💵" },
-  { href: "/admin24639/ai-settings", label: "AI Settings", icon: "⚙️" },
+  { href: "/admin24639/settings", label: "Settings", icon: "⚙️" },
+  { href: "/admin24639/ai-settings", label: "AI Settings", icon: "🧠" },
 ];
 
 export default function AdminLayoutClient({ children }: { children: React.ReactNode }) {

@@ -1,8 +1,8 @@
 "use client";
 import { useState, useMemo } from "react";
-import { 
-  ChevronDown, Search, X, HelpCircle, ShieldCheck, 
-  Calendar, XCircle, Sparkles, Info 
+import {
+  ChevronDown, Search, X, HelpCircle, ShieldCheck,
+  Calendar, XCircle, Sparkles, Info
 } from "lucide-react";
 import { faqsSeed } from "@/lib/data";
 
@@ -30,8 +30,8 @@ export default function FAQSection({ faqs = faqsSeed }: { faqs?: FAQ[] }) {
   const filteredFaqs = useMemo(() => {
     return faqs.filter((faq) => {
       const matchesCategory = selectedCategory === "all" || faq.category === selectedCategory;
-      const matchesSearch = 
-        faq.question.toLowerCase().includes(searchQuery.toLowerCase()) || 
+      const matchesSearch =
+        faq.question.toLowerCase().includes(searchQuery.toLowerCase()) ||
         faq.answer.toLowerCase().includes(searchQuery.toLowerCase());
       return matchesCategory && matchesSearch;
     });
@@ -41,7 +41,7 @@ export default function FAQSection({ faqs = faqsSeed }: { faqs?: FAQ[] }) {
     <section className="bg-[#FFF8F0] py-16 md:py-24 border-t border-[#F1D9D0]/50">
       <div className="max-w-[1200px] mx-auto px-4 md:px-8">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-start">
-          
+
           {/* Left Column: Sticky Title, Search, and Category Filters */}
           <div className="lg:col-span-5 lg:sticky lg:top-24 space-y-6">
             <div>
@@ -59,7 +59,7 @@ export default function FAQSection({ faqs = faqsSeed }: { faqs?: FAQ[] }) {
             {/* Keyword Search Input */}
             <div className="relative">
               <Search className="absolute left-4 top-3.5 w-4 h-4 text-gray-400" />
-              <input 
+              <input
                 type="text"
                 placeholder="Search FAQs by keywords..."
                 value={searchQuery}
@@ -70,7 +70,7 @@ export default function FAQSection({ faqs = faqsSeed }: { faqs?: FAQ[] }) {
                 className="w-full text-xs pl-11 pr-10 py-3.5 bg-white border border-[#F1D9D0] rounded-2xl focus:outline-none focus:border-[#FF4A7D] focus:ring-1 focus:ring-[#FF4A7D]/20 transition-all shadow-sm placeholder:text-gray-400 text-[#13253D] font-medium"
               />
               {searchQuery && (
-                <button 
+                <button
                   onClick={() => setSearchQuery("")}
                   className="absolute right-3.5 top-3 p-1 rounded-full text-gray-400 hover:text-black transition"
                   title="Clear search"
@@ -92,11 +92,10 @@ export default function FAQSection({ faqs = faqsSeed }: { faqs?: FAQ[] }) {
                       setSelectedCategory(cat.id);
                       setOpen(null);
                     }}
-                    className={`flex items-center gap-2.5 px-5 py-3 rounded-2xl text-xs font-bold transition-all shrink-0 ${
-                      isSelected
+                    className={`flex items-center gap-2.5 px-5 py-3 rounded-2xl text-xs font-bold transition-all shrink-0 ${isSelected
                         ? "bg-[#FF4A7D] text-white shadow-sm hover:bg-[#ff3b71]"
                         : "bg-white text-[#13253D] border border-[#F1D9D0] hover:bg-[#FFF0F4]/40 hover:border-[#FF4A7D]/30"
-                    }`}
+                      }`}
                   >
                     <Icon className="w-4 h-4 shrink-0" />
                     <span>{cat.label}</span>
@@ -130,34 +129,31 @@ export default function FAQSection({ faqs = faqsSeed }: { faqs?: FAQ[] }) {
               filteredFaqs.map((faq, i) => {
                 const isFAQOpen = open === i;
                 return (
-                  <div 
-                    key={i} 
-                    className={`rounded-3xl border transition-all duration-300 bg-white ${
-                      isFAQOpen 
-                        ? "border-[#FF4A7D]/35 shadow-[0_8px_24px_-8px_rgba(255,74,125,0.08)] bg-white" 
+                  <div
+                    key={i}
+                    className={`rounded-3xl border transition-all duration-300 bg-white ${isFAQOpen
+                        ? "border-[#FF4A7D]/35 shadow-[0_8px_24px_-8px_rgba(255,74,125,0.08)] bg-white"
                         : "border-[#F1D9D0] hover:border-[#FF4A7D]/30 hover:shadow-[0_8px_20px_-8px_rgba(19,37,61,0.04)]"
-                    }`}
+                      }`}
                   >
-                    <button 
-                      onClick={() => setOpen(isFAQOpen ? null : i)} 
+                    <button
+                      onClick={() => setOpen(isFAQOpen ? null : i)}
                       className="w-full text-left flex items-center justify-between gap-4 p-5 md:p-6 group cursor-pointer"
                     >
                       <span className="font-display font-bold text-[15px] md:text-[17px] leading-snug text-[#13253D] transition-colors duration-200 group-hover:text-[#FF4A7D]">
                         {faq.question}
                       </span>
-                      <div className={`w-7 h-7 rounded-xl flex items-center justify-center shrink-0 transition-all duration-300 ${
-                        isFAQOpen 
-                          ? "bg-[#FFF0F4] text-[#FF4A7D] rotate-180" 
+                      <div className={`w-7 h-7 rounded-xl flex items-center justify-center shrink-0 transition-all duration-300 ${isFAQOpen
+                          ? "bg-[#FFF0F4] text-[#FF4A7D] rotate-180"
                           : "bg-[#FFF8F0] text-[#FF4A7D] group-hover:bg-[#FFF0F4]"
-                      }`}>
+                        }`}>
                         <ChevronDown className="w-4 h-4" />
                       </div>
                     </button>
-                    
-                    <div 
-                      className={`transition-all duration-300 ease-in-out overflow-hidden ${
-                        isFAQOpen ? "max-h-[500px] opacity-100" : "max-h-0 opacity-0"
-                      }`}
+
+                    <div
+                      className={`transition-all duration-300 ease-in-out overflow-hidden ${isFAQOpen ? "max-h-[500px] opacity-100" : "max-h-0 opacity-0"
+                        }`}
                     >
                       <div className="px-5 md:px-6 pb-5 md:pb-6 text-[13px] md:text-[14px] leading-relaxed text-[#3D4A5E] border-t border-[#F1D9D0]/10 pt-4 whitespace-pre-line font-medium">
                         {faq.answer}

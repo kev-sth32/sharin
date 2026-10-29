@@ -39,7 +39,10 @@ import {
   PlusCircle,
   FileSpreadsheet,
   Mail,
-  Plus
+  Plus,
+  QrCode,
+  Clock,
+  ExternalLink
 } from "lucide-react";
 
 interface DocumentVaultItem {
@@ -87,6 +90,12 @@ interface Conversation {
     travelers?: number;
     intentScore?: number;
   };
+  ticketId?: string;
+  totalAmount?: number;
+  depositPaid?: number;
+  balanceDue?: number;
+  balanceDueDate?: string;
+  balanceStatus?: "cleared" | "pending";
 }
 
 export default function OmnichannelCRM() {
@@ -105,6 +114,14 @@ export default function OmnichannelCRM() {
   const [showAnalyticsModal, setShowAnalyticsModal] = useState(false);
   const [showDocUploadModal, setShowDocUploadModal] = useState(false);
   const [showManageTeamModal, setShowManageTeamModal] = useState(false);
+  const [showPaymentProofsModal, setShowPaymentProofsModal] = useState(false);
+  const [showBalanceModal, setShowBalanceModal] = useState(false);
+
+  // Payment Proofs & Balance Chaser States
+  const [paymentProofs, setPaymentProofs] = useState<any[]>([]);
+  const [proofFilter, setProofFilter] = useState<"all" | "pending" | "verified" | "rejected">("pending");
+  const [selectedProofPreview, setSelectedProofPreview] = useState<any | null>(null);
+  const [balanceBookings, setBalanceBookings] = useState<any[]>([]);
 
   // Advanced Filter & Sort States
   const [kpiFilter, setKpiFilter] = useState<"all" | "ai" | "pending" | "website">("all");
@@ -179,6 +196,8 @@ export default function OmnichannelCRM() {
   useEffect(() => {
     fetchConversations();
     fetchTokenStatus();
+    fetchPaymentProofs();
+    fetchBalanceBookings();
 
     // Subscribe to Server-Sent Events (SSE) stream for live push notifications
     let eventSource: EventSource | null = null;
@@ -192,6 +211,8 @@ export default function OmnichannelCRM() {
       eventSource.addEventListener("crm_event", (e: MessageEvent) => {
         playChimeSound();
         fetchConversations();
+        fetchPaymentProofs();
+        fetchBalanceBookings();
       });
 
       eventSource.onerror = () => {
@@ -217,6 +238,125 @@ export default function OmnichannelCRM() {
       }
     } catch (e) {
       console.error("Token status fetch error:", e);
+    }
+  };
+
+  const fetchPaymentProofs = async () => {
+    try {
+      const res = await fetch("/api/admin/payment-proofs");
+      const data = await res.json();
+      if (data.success && data.proofs) {
+        setPaymentProofs(data.proofs);
+      }
+    } catch (e) {
+      console.error("Failed to load payment proofs:", e);
+    }
+  };
+
+  const fetchBalanceBookings = async () => {
+    try {
+      const res = await fetch("/api/admin/crm/balance-chaser");
+      const data = await res.json();
+      if (data.success && data.bookings) {
+        setBalanceBookings(data.bookings);
+      }
+    } catch (e) {
+      console.error("Failed to load balance bookings:", e);
+    }
+  };
+
+  const handleVerifyProof = async (proofId: number) => {
+    if (!confirm("Approve this payment proof and issue the Digital Boarding Pass?")) return;
+    setActionLoading(true);
+    try {
+      const res = await fetch("/api/admin/payment-proofs", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ action: "verify", proofId, adminName: "Sneha Kapur (Finance)" }),
+      });
+      const data = await res.json();
+      if (data.success) {
+        alert("Payment verified! Digital Boarding Pass issued and WhatsApp confirmation sent.");
+        fetchPaymentProofs();
+        fetchConversations();
+      } else {
+        alert(data.error || "Failed to verify proof");
+      }
+    } catch (err: any) {
+      alert("Error: " + err.message);
+    } finally {
+      setActionLoading(false);
+    }
+  };
+
+  const handleRejectProof = async (proofId: number) => {
+    const reason = prompt("Enter reason for rejection (e.g. UTR number not found in bank statement):");
+    if (!reason || !reason.trim()) return;
+    setActionLoading(true);
+    try {
+      const res = await fetch("/api/admin/payment-proofs", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ action: "reject", proofId, reason: reason.trim() }),
+      });
+      const data = await res.json();
+      if (data.success) {
+        alert("Proof rejected and notification sent to customer.");
+        fetchPaymentProofs();
+      } else {
+        alert(data.error || "Failed to reject proof");
+      }
+    } catch (err: any) {
+      alert("Error: " + err.message);
+    } finally {
+      setActionLoading(false);
+    }
+  };
+
+  const handleSendBalanceNudge = async (ticketId: string) => {
+    setActionLoading(true);
+    try {
+      const res = await fetch("/api/admin/crm/balance-chaser", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ action: "send_single", ticketId }),
+      });
+      const data = await res.json();
+      if (data.success) {
+        alert("Balance payment reminder sent to traveler via WhatsApp!");
+        fetchBalanceBookings();
+        fetchConversations();
+      } else {
+        alert(data.error || "Failed to send reminder");
+      }
+    } catch (err: any) {
+      alert("Error: " + err.message);
+    } finally {
+      setActionLoading(false);
+    }
+  };
+
+  const handleRunAllBalanceChaser = async () => {
+    if (!confirm("Run automated balance chaser for all upcoming departures with balance due?")) return;
+    setActionLoading(true);
+    try {
+      const res = await fetch("/api/admin/crm/balance-chaser", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ action: "run_all" }),
+      });
+      const data = await res.json();
+      if (data.success) {
+        alert(data.message || "Balance reminders dispatched!");
+        fetchBalanceBookings();
+        fetchConversations();
+      } else {
+        alert(data.error || "Failed to run balance chaser");
+      }
+    } catch (err: any) {
+      alert("Error: " + err.message);
+    } finally {
+      setActionLoading(false);
     }
   };
 
@@ -892,8 +1032,44 @@ export default function OmnichannelCRM() {
             className="flex items-center gap-2 px-3.5 py-2 bg-emerald-50 border border-emerald-300 text-emerald-800 rounded-xl text-xs font-bold shadow-xs hover:bg-emerald-100 transition"
           >
             <FileSpreadsheet className="w-3.5 h-3.5" />
-            <span>Export CSV Report</span>
+            <span>Export CSV</span>
           </button>
+
+          <button
+            onClick={() => setShowPaymentProofsModal(true)}
+            className="relative flex items-center gap-2 px-3.5 py-2 bg-purple-50 border border-purple-200 text-purple-800 rounded-xl text-xs font-bold shadow-xs hover:bg-purple-100 transition"
+          >
+            <CreditCard className="w-3.5 h-3.5 text-purple-600" />
+            <span>UPI Proofs</span>
+            {paymentProofs.filter(p => p.status === "pending").length > 0 && (
+              <span className="bg-[#FF4A7D] text-white text-[10px] font-extrabold px-1.5 py-0.2 rounded-full">
+                {paymentProofs.filter(p => p.status === "pending").length}
+              </span>
+            )}
+          </button>
+
+          <button
+            onClick={() => setShowBalanceModal(true)}
+            className="relative flex items-center gap-2 px-3.5 py-2 bg-amber-50 border border-amber-200 text-amber-800 rounded-xl text-xs font-bold shadow-xs hover:bg-amber-100 transition"
+          >
+            <Clock className="w-3.5 h-3.5 text-amber-600" />
+            <span>Chase Balances</span>
+            {balanceBookings.filter(b => b.balanceDue > 0).length > 0 && (
+              <span className="bg-amber-500 text-white text-[10px] font-extrabold px-1.5 py-0.2 rounded-full">
+                {balanceBookings.filter(b => b.balanceDue > 0).length}
+              </span>
+            )}
+          </button>
+
+          <a
+            href="/admin24639/check-in"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex items-center gap-2 px-3.5 py-2 bg-indigo-50 border border-indigo-200 text-indigo-800 rounded-xl text-xs font-bold shadow-xs hover:bg-indigo-100 transition"
+          >
+            <QrCode className="w-3.5 h-3.5 text-indigo-600" />
+            <span>Gate Scanner 🎫</span>
+          </a>
 
           <button
             onClick={() => setShowBroadcastModal(true)}
@@ -1588,6 +1764,69 @@ All hotels, houseboats, and homestays undergo physical room lock & CCTV security
                   </span>
                 </div>
               </div>
+
+              {/* Payment Proof & Boarding Pass Actions */}
+              <div className="p-2.5 rounded-xl bg-purple-50 border border-purple-200 space-y-2">
+                <div className="flex items-center justify-between">
+                  <span className="text-[10px] font-bold text-purple-900 uppercase tracking-wider flex items-center gap-1">
+                    <CreditCard className="w-3.5 h-3.5 text-purple-600" /> Payment & Pass Status
+                  </span>
+                  <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${
+                    selectedConv.status === "booked"
+                      ? "bg-emerald-100 text-emerald-800"
+                      : selectedConv.status === "payment_pending"
+                      ? "bg-amber-100 text-amber-800"
+                      : "bg-gray-100 text-gray-700"
+                  }`}>
+                    {selectedConv.status === "booked" ? "Confirmed 🎉" : selectedConv.status === "payment_pending" ? "Deposit Pending" : "Quote Stage"}
+                  </span>
+                </div>
+
+                {selectedConv.status === "booked" ? (
+                  <div className="space-y-1.5 pt-1">
+                    <a
+                      href={`/boarding-pass/${selectedConv.ticketId || "DEMO-PASS"}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="w-full py-1.5 bg-[#13253D] hover:bg-[#1E3A60] text-white rounded-lg text-[11px] font-bold flex items-center justify-center gap-1.5 transition"
+                    >
+                      <QrCode className="w-3.5 h-3.5 text-[#FF4A7D]" />
+                      <span>View Boarding Pass 🎫</span>
+                      <ExternalLink className="w-3 h-3 text-gray-400" />
+                    </a>
+
+                    <button
+                      type="button"
+                      onClick={() => handleSendBalanceNudge(selectedConv.ticketId || "DEMO-PASS")}
+                      disabled={actionLoading}
+                      className="w-full py-1.5 bg-amber-500 hover:bg-amber-600 text-white rounded-lg text-[11px] font-bold flex items-center justify-center gap-1.5 transition disabled:opacity-50"
+                    >
+                      <Clock className="w-3.5 h-3.5" />
+                      <span>Send Balance Nudge (WA)</span>
+                    </button>
+                  </div>
+                ) : (
+                  <div className="space-y-1.5 pt-1">
+                    <button
+                      type="button"
+                      onClick={() => setShowPaymentProofsModal(true)}
+                      className="w-full py-1.5 bg-purple-600 hover:bg-purple-700 text-white rounded-lg text-[11px] font-bold flex items-center justify-center gap-1.5 transition"
+                    >
+                      <CreditCard className="w-3.5 h-3.5" />
+                      <span>Review UPI Proofs</span>
+                    </button>
+                    <a
+                      href={`/pay/TN-RESERVE?trip=${selectedConv.lead?.destination?.toLowerCase().replace(/[^a-z0-9]+/g, '-') || 'general'}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="w-full py-1 bg-white border border-purple-200 text-purple-700 hover:bg-purple-50 rounded-lg text-[10px] font-semibold flex items-center justify-center gap-1 transition"
+                    >
+                      <span>Open Customer Pay Portal</span>
+                      <ExternalLink className="w-2.5 h-2.5" />
+                    </a>
+                  </div>
+                )}
+              </div>
             </div>
 
             {selectedConv.lead?.phone && (
@@ -2142,6 +2381,294 @@ All hotels, houseboats, and homestays undergo physical room lock & CCTV security
                 className="w-full py-2.5 bg-[#13253D] hover:bg-[#FF4A7D] text-white rounded-xl text-xs font-bold transition flex items-center justify-center gap-1.5 shadow-sm"
               >
                 <UserPlus className="w-3.5 h-3.5" /> Add New Sales Manager
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* 6. UPI Payment Proofs Review Modal */}
+      {showPaymentProofsModal && (
+        <div className="fixed inset-0 bg-black/60 z-50 flex items-center justify-center p-4">
+          <div className="bg-white rounded-3xl p-6 w-full max-w-3xl max-h-[85vh] flex flex-col shadow-2xl border border-gray-100 animate-in fade-in duration-200">
+            <div className="flex items-center justify-between border-b border-gray-100 pb-4 shrink-0">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-2xl bg-purple-100 text-purple-700 flex items-center justify-center font-bold">
+                  <CreditCard className="w-5 h-5" />
+                </div>
+                <div>
+                  <h3 className="text-base font-display font-bold text-[#13253D]">
+                    UPI & Payment Proofs Verification Desk
+                  </h3>
+                  <p className="text-xs text-gray-500">
+                    Verify customer screenshot receipts against bank UTR numbers and issue Digital Boarding Passes.
+                  </p>
+                </div>
+              </div>
+
+              <button
+                onClick={() => setShowPaymentProofsModal(false)}
+                className="text-gray-400 hover:text-gray-600 font-bold text-sm p-1.5 rounded-full hover:bg-gray-100"
+              >
+                ✕
+              </button>
+            </div>
+
+            {/* Filter Pills */}
+            <div className="flex gap-2 py-3 border-b border-gray-100 shrink-0 text-xs">
+              {(["pending", "all", "verified", "rejected"] as const).map(tab => (
+                <button
+                  key={tab}
+                  onClick={() => setProofFilter(tab)}
+                  className={`px-3 py-1.5 rounded-xl font-bold capitalize transition ${
+                    proofFilter === tab
+                      ? "bg-[#13253D] text-white shadow-sm"
+                      : "bg-gray-100 text-gray-600 hover:bg-gray-200"
+                  }`}
+                >
+                  {tab === "pending" ? `Pending (${paymentProofs.filter(p => p.status === "pending").length})` : tab}
+                </button>
+              ))}
+            </div>
+
+            {/* Proofs List */}
+            <div className="flex-1 overflow-y-auto py-4 space-y-4 pr-1">
+              {paymentProofs
+                .filter(p => proofFilter === "all" || p.status === proofFilter)
+                .length === 0 ? (
+                <div className="p-8 text-center text-xs text-gray-400">
+                  No payment proofs found in this category.
+                </div>
+              ) : (
+                paymentProofs
+                  .filter(p => proofFilter === "all" || p.status === proofFilter)
+                  .map(proof => (
+                    <div
+                      key={proof.id}
+                      className="p-4 rounded-2xl border border-gray-200 bg-[#FAF7F2]/60 hover:bg-[#FAF7F2] transition flex flex-col md:flex-row gap-4 items-start md:items-center justify-between"
+                    >
+                      <div className="flex gap-3 items-start min-w-0">
+                        {/* Receipt Thumbnail */}
+                        {proof.proofImageUrl ? (
+                          <a
+                            href={proof.proofImageUrl}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="shrink-0 group relative"
+                            title="Click to view full receipt"
+                          >
+                            <img
+                              src={proof.proofImageUrl}
+                              alt="Receipt proof"
+                              className="w-16 h-16 object-cover rounded-xl border border-gray-200 shadow-xs group-hover:opacity-90"
+                            />
+                            <span className="absolute inset-0 bg-black/30 rounded-xl opacity-0 group-hover:opacity-100 flex items-center justify-center text-white text-[10px] font-bold transition">
+                              Zoom
+                            </span>
+                          </a>
+                        ) : (
+                          <div className="w-16 h-16 rounded-xl bg-gray-100 border border-gray-200 flex items-center justify-center text-xs text-gray-400">
+                            No Doc
+                          </div>
+                        )}
+
+                        <div className="space-y-1 text-xs min-w-0">
+                          <div className="flex items-center gap-2">
+                            <span className="font-bold text-gray-900 text-sm truncate">{proof.customerName}</span>
+                            <span className="text-gray-400 font-mono text-[11px]">{proof.customerPhone}</span>
+                            <span
+                              className={`text-[9px] font-bold px-2 py-0.5 rounded-full uppercase ${
+                                proof.status === "verified"
+                                  ? "bg-emerald-100 text-emerald-800"
+                                  : proof.status === "rejected"
+                                  ? "bg-rose-100 text-rose-800"
+                                  : "bg-amber-100 text-amber-800"
+                              }`}
+                            >
+                              {proof.status}
+                            </span>
+                          </div>
+
+                          <p className="text-gray-600 text-[11px]">
+                            <strong>{proof.tripTitle}</strong> • {proof.departureDate || "2026 Batch"} ({proof.travelersCount} Traveler)
+                          </p>
+
+                          <div className="flex flex-wrap items-center gap-3 text-[11px] text-gray-500 pt-0.5">
+                            <span className="font-bold text-[#13253D] bg-white px-2 py-0.5 rounded border border-gray-200">
+                              Amount: ₹{proof.amountPaid.toLocaleString("en-IN")}
+                            </span>
+                            <span>UTR: <strong className="font-mono text-gray-800">{proof.utrNumber}</strong></span>
+                            <span>Method: <strong className="uppercase">{proof.paymentMethod}</strong></span>
+                          </div>
+
+                          {proof.payerNotes && (
+                            <p className="text-[10px] text-gray-500 italic bg-white/70 p-1.5 rounded-lg border border-gray-200 mt-1">
+                              &ldquo;{proof.payerNotes}&rdquo;
+                            </p>
+                          )}
+                        </div>
+                      </div>
+
+                      {/* Actions */}
+                      <div className="flex sm:flex-col gap-2 shrink-0 w-full md:w-auto">
+                        {proof.status === "pending" ? (
+                          <>
+                            <button
+                              onClick={() => handleVerifyProof(proof.id)}
+                              disabled={actionLoading}
+                              className="flex-1 md:flex-initial bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold px-4 py-2 rounded-xl transition shadow-sm flex items-center justify-center gap-1.5"
+                            >
+                              <CheckCircle className="w-3.5 h-3.5" />
+                              <span>Approve & Issue Pass</span>
+                            </button>
+                            <button
+                              onClick={() => handleRejectProof(proof.id)}
+                              disabled={actionLoading}
+                              className="flex-1 md:flex-initial bg-rose-50 hover:bg-rose-100 text-rose-700 border border-rose-200 text-xs font-bold px-3 py-1.5 rounded-xl transition"
+                            >
+                              Reject Proof
+                            </button>
+                          </>
+                        ) : proof.ticketId ? (
+                          <a
+                            href={`/boarding-pass/${proof.ticketId}`}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="bg-[#13253D] hover:bg-[#1E3A60] text-white text-xs font-bold px-3 py-2 rounded-xl transition text-center flex items-center justify-center gap-1.5"
+                          >
+                            <QrCode className="w-3.5 h-3.5 text-[#FF4A7D]" />
+                            <span>View Boarding Pass</span>
+                          </a>
+                        ) : (
+                          <span className="text-[11px] text-gray-400 italic">No actions needed</span>
+                        )}
+                      </div>
+                    </div>
+                  ))
+              )}
+            </div>
+
+            <div className="border-t border-gray-100 pt-3 flex justify-between items-center text-xs text-gray-500 shrink-0">
+              <span>Approving a proof updates Finance CRM & dispatches WhatsApp boarding pass automatically.</span>
+              <button
+                onClick={() => setShowPaymentProofsModal(false)}
+                className="bg-gray-100 hover:bg-gray-200 text-gray-700 px-4 py-2 rounded-xl font-bold"
+              >
+                Close
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* 7. Balance Chaser Engine Modal */}
+      {showBalanceModal && (
+        <div className="fixed inset-0 bg-black/60 z-50 flex items-center justify-center p-4">
+          <div className="bg-white rounded-3xl p-6 w-full max-w-3xl max-h-[85vh] flex flex-col shadow-2xl border border-gray-100 animate-in fade-in duration-200">
+            <div className="flex items-center justify-between border-b border-gray-100 pb-4 shrink-0">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-2xl bg-amber-100 text-amber-700 flex items-center justify-center font-bold">
+                  <Clock className="w-5 h-5" />
+                </div>
+                <div>
+                  <h3 className="text-base font-display font-bold text-[#13253D]">
+                    Automated Balance Chaser & Deposit Tracker
+                  </h3>
+                  <p className="text-xs text-gray-500">
+                    Track travelers with remaining balances due 14 days before departure and send automated WhatsApp payment nudges.
+                  </p>
+                </div>
+              </div>
+
+              <button
+                onClick={() => setShowBalanceModal(false)}
+                className="text-gray-400 hover:text-gray-600 font-bold text-sm p-1.5 rounded-full hover:bg-gray-100"
+              >
+                ✕
+              </button>
+            </div>
+
+            <div className="flex items-center justify-between py-3 border-b border-gray-100 shrink-0">
+              <span className="text-xs font-bold text-gray-700">
+                {balanceBookings.filter(b => b.balanceDue > 0).length} Travelers with Balance Due
+              </span>
+
+              <button
+                onClick={handleRunAllBalanceChaser}
+                disabled={actionLoading || balanceBookings.filter(b => b.balanceDue > 0).length === 0}
+                className="bg-[#13253D] hover:bg-[#1E3A60] text-white text-xs font-bold px-4 py-2 rounded-xl transition shadow-sm flex items-center gap-1.5 disabled:opacity-50"
+              >
+                <Zap className="w-3.5 h-3.5 text-amber-400" />
+                <span>Run Automated Batch Chaser (All)</span>
+              </button>
+            </div>
+
+            {/* Balance Due List */}
+            <div className="flex-1 overflow-y-auto py-4 space-y-3 pr-1">
+              {balanceBookings.filter(b => b.balanceDue > 0).length === 0 ? (
+                <div className="p-8 text-center text-xs text-gray-400">
+                  🎉 All confirmed bookings have cleared their balance payments!
+                </div>
+              ) : (
+                balanceBookings
+                  .filter(b => b.balanceDue > 0)
+                  .map(record => (
+                    <div
+                      key={record.ticketId}
+                      className="p-4 rounded-2xl border border-amber-200 bg-amber-50/40 hover:bg-amber-50/80 transition flex flex-col md:flex-row gap-3 items-start md:items-center justify-between"
+                    >
+                      <div className="space-y-1 text-xs min-w-0">
+                        <div className="flex items-center gap-2">
+                          <span className="font-bold text-gray-900 text-sm truncate">{record.passengerName}</span>
+                          <span className="text-gray-500 font-mono text-[11px]">{record.passengerPhone}</span>
+                          <span className="text-[10px] bg-amber-100 text-amber-800 font-bold px-2 py-0.5 rounded-full">
+                            {record.ticketId}
+                          </span>
+                        </div>
+
+                        <p className="text-gray-700 font-medium">
+                          {record.tripTitle} • Departure: <strong>{record.departureDate}</strong>
+                        </p>
+
+                        <div className="flex items-center gap-3 text-[11px] pt-1">
+                          <span className="text-gray-500">Package: ₹{record.totalAmount.toLocaleString("en-IN")}</span>
+                          <span>•</span>
+                          <span className="text-emerald-700 font-semibold">Deposit: ₹{record.depositPaid.toLocaleString("en-IN")}</span>
+                          <span>•</span>
+                          <span className="text-rose-600 font-bold bg-white px-2 py-0.5 rounded border border-rose-200">
+                            Balance Due: ₹{record.balanceDue.toLocaleString("en-IN")}
+                          </span>
+                        </div>
+
+                        {record.remindersSent > 0 && (
+                          <p className="text-[10px] text-gray-400 pt-0.5">
+                            Sent {record.remindersSent} reminder(s) • Last sent {record.lastReminderAt ? new Date(record.lastReminderAt).toLocaleDateString("en-IN") : "Recently"}
+                          </p>
+                        )}
+                      </div>
+
+                      <div className="shrink-0 w-full md:w-auto">
+                        <button
+                          onClick={() => handleSendBalanceNudge(record.ticketId)}
+                          disabled={actionLoading}
+                          className="w-full md:w-auto bg-[#25D366] hover:bg-[#1EBE5D] text-white text-xs font-bold px-4 py-2 rounded-xl transition shadow-sm flex items-center justify-center gap-1.5"
+                        >
+                          <Phone className="w-3.5 h-3.5" />
+                          <span>Send WhatsApp Nudge</span>
+                        </button>
+                      </div>
+                    </div>
+                  ))
+              )}
+            </div>
+
+            <div className="border-t border-gray-100 pt-3 flex justify-between items-center text-xs text-gray-500 shrink-0">
+              <span>Reminders include secure one-click UPI links and remaining balance breakdown.</span>
+              <button
+                onClick={() => setShowBalanceModal(false)}
+                className="bg-gray-100 hover:bg-gray-200 text-gray-700 px-4 py-2 rounded-xl font-bold"
+              >
+                Close
               </button>
             </div>
           </div>

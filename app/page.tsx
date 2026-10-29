@@ -21,7 +21,7 @@ export default function HomePage() {
   return (
     <>
       <Hero settings={settings} />
-      
+
       {/* Moving Marquee Strip */}
       <div className="overflow-hidden border-y border-[#F1D9D0] bg-[#FFF0F4] mt-10 md:mt-12">
         <div className="flex animate-marquee whitespace-nowrap py-3.5 gap-8 text-[11px] md:text-[12px] font-bold tracking-[0.2em] uppercase text-[#FF4A7D]/95">

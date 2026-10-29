@@ -22,6 +22,36 @@ export interface GeneratedQuote {
   formattedMessage: string;
 }
 
+import fs from "fs";
+import path from "path";
+
+const dataDir = path.join(process.cwd(), ".data");
+function saveQuoteToFile(quote: any) {
+  try {
+    if (!fs.existsSync(dataDir)) fs.mkdirSync(dataDir, { recursive: true });
+    const fp = path.join(dataDir, "quotes.json");
+    let quotes: any[] = [];
+    if (fs.existsSync(fp)) {
+      quotes = JSON.parse(fs.readFileSync(fp, "utf-8"));
+    }
+    quotes.unshift(quote);
+    fs.writeFileSync(fp, JSON.stringify(quotes.slice(0, 500), null, 2), "utf-8");
+  } catch (err) {
+    console.warn("[Save Quote Fallback Error]:", err);
+  }
+}
+
+export function getQuoteById(quoteId: string): any | null {
+  try {
+    const fp = path.join(dataDir, "quotes.json");
+    if (!fs.existsSync(fp)) return null;
+    const quotes = JSON.parse(fs.readFileSync(fp, "utf-8"));
+    return quotes.find((q: any) => q.quoteId === quoteId) || null;
+  } catch {
+    return null;
+  }
+}
+
 /**
  * Generates an instant formal trip quotation and payment link
  */
@@ -30,7 +60,7 @@ export function generateTripQuotation(input: TripQuoteInput, hostUrl: string = "
   const totalPrice = input.pricePerHead * input.travelersCount;
   const depositAmount = input.depositAmount || Math.round(totalPrice * 0.25);
 
-  const paymentUrl = `${hostUrl}/trips/${input.tripSlug}?booking=true&quoteId=${quoteId}&travelers=${input.travelersCount}&deposit=${depositAmount}`;
+  const paymentUrl = `${hostUrl}/pay/${quoteId}?trip=${input.tripSlug}&travelers=${input.travelersCount}&deposit=${depositAmount}&total=${totalPrice}`;
 
   const formattedMessage = `🧾 *OFFICIAL TRIP QUOTATION & RESERVATION LINK*
 ━━━━━━━━━━━━━━━━━━━━
@@ -42,10 +72,27 @@ export function generateTripQuotation(input: TripQuoteInput, hostUrl: string = "
 
 ✨ *What's Included*: 3★ Stays, Meals, Permitted Transfers, Experienced Female Trip Leader & Group Activities.
 
-👉 *Click to Lock Your Seat*:
+👉 *Click to Lock Your Seat via UPI / QR*:
 ${paymentUrl}
 
 _This quotation link is valid for 48 hours to guarantee current price & seats._`;
+
+  const quoteRecord = {
+    quoteId,
+    conversationId: input.conversationId,
+    tripSlug: input.tripSlug,
+    tripTitle: input.tripTitle,
+    pricePerHead: input.pricePerHead,
+    travelersCount: input.travelersCount,
+    totalPrice,
+    depositAmount,
+    balanceDue: Math.max(0, totalPrice - depositAmount),
+    departureDate: input.departureDate || "Upcoming 2026 Batch",
+    paymentUrl,
+    createdAt: new Date().toISOString(),
+  };
+
+  saveQuoteToFile(quoteRecord);
 
   return {
     quoteId,

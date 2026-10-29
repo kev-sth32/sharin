@@ -49,12 +49,12 @@ export default async function BlogDetail({ params }: { params: Promise<{ slug: s
         <div className="text-[11px] uppercase tracking-widest font-bold text-[#FF4A7D]">
           {post.category}
         </div>
-        
+
         {/* Title */}
         <h1 className="mt-4 font-display font-[800] text-[36px] md:text-[48px] leading-[1.1] text-[#13253D]">
           {post.title}
         </h1>
-        
+
         {/* Excerpt */}
         <p className="mt-4 text-[16px] md:text-[18px] leading-relaxed text-[#3D4A5E]">
           {post.excerpt}

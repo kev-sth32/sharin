@@ -16,9 +16,9 @@ export default function TripLeaders() {
           Every departure has a verified woman leader. Background-checked, first-aid trained, local language, and empowered to make decisions.
         </p>
       </div>
-      
+
       <div className="mt-10 grid md:grid-cols-3 gap-6">
-        {leaders.map((l:any)=>(
+        {leaders.map((l: any) => (
           <div key={l.slug} className="rounded-[32px] bg-white border border-[#F1D9D0] p-6 shadow-[0_10px_35px_-8px_rgba(19,37,61,0.04)] hover:shadow-[0_20px_50px_-10px_rgba(255,74,125,0.08)] hover:-translate-y-1 transition-all duration-300 flex flex-col justify-between">
             <div>
               <div className="flex gap-4">
@@ -33,7 +33,7 @@ export default function TripLeaders() {
                   <div className="font-semibold text-[#13253D] leading-tight text-base">{l.name}</div>
                   <div className="text-[12px] text-[#3D4A5E] mt-1 font-semibold">{l.experienceYears} Years • {l.tripsLed}+ Trips Led</div>
                   <div className="mt-2 flex gap-1.5 flex-wrap">
-                    {l.specialties?.map((s:string)=>(
+                    {l.specialties?.map((s: string) => (
                       <Badge key={s} variant="outline" className="text-[9px] uppercase font-bold tracking-wider text-[#FF4A7D] border-[#FF4A7D]/20 bg-[#FFF0F4]/40">
                         {s}
                       </Badge>

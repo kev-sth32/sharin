@@ -69,7 +69,7 @@ export default function GalleryClient({ images }: GalleryClientProps) {
   return (
     <section className="bg-[#FFF8F0] py-12 md:py-16 lg:py-20 xl:py-24 border-t border-[#F1D9D0]/30">
       <div className="max-w-[1280px] mx-auto px-4 md:px-8">
-        
+
         {/* Header */}
         <div className="text-center max-w-3xl mx-auto mb-12">
           <div className="text-[12px] font-extrabold tracking-[0.2em] uppercase text-[#FF4A7D] mb-4">
@@ -97,7 +97,7 @@ export default function GalleryClient({ images }: GalleryClientProps) {
                 className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
                 loading="lazy"
               />
-              
+
               {/* Overlay on Hover */}
               <div className="absolute inset-0 bg-gradient-to-t from-[#13253D]/90 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-end p-6">
                 <span className="self-start text-[9px] uppercase font-bold tracking-widest bg-[#FF4A7D] text-white px-2.5 py-1 rounded-full mb-2">
@@ -142,7 +142,7 @@ export default function GalleryClient({ images }: GalleryClientProps) {
 
           {/* Main Content (Image & Navigation) */}
           <div className="flex-1 flex items-center justify-between px-4 max-w-[1280px] mx-auto w-full relative">
-            
+
             {/* Prev Arrow */}
             <button
               onClick={handlePrev}

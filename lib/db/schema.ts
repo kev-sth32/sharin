@@ -298,6 +298,14 @@ export const crmConversations = pgTable("crm_conversations", {
   lastMessageText: text("last_message_text"),
   lastMessageAt: timestamp("last_message_at").defaultNow(),
   unreadCount: integer("unread_count").default(0),
+  totalAmount: integer("total_amount"),
+  depositPaid: integer("deposit_paid"),
+  balanceDue: integer("balance_due"),
+  balanceDueDate: varchar("balance_due_date", { length: 100 }),
+  balanceStatus: varchar("balance_status", { length: 50 }).default("none"), // 'none' | 'pending' | 'cleared'
+  balanceRemindersSent: integer("balance_reminders_sent").default(0),
+  lastBalanceReminderAt: timestamp("last_balance_reminder_at"),
+  ticketId: varchar("ticket_id", { length: 100 }),
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").defaultNow(),
 });
@@ -334,6 +342,62 @@ export const aiAgentConfigs = pgTable("ai_agent_configs", {
   updatedAt: timestamp("updated_at").defaultNow(),
 });
 
+// Payment Proofs (UPI Screenshots, Bank Transfers, UTR Numbers)
+export const paymentProofs = pgTable("payment_proofs", {
+  id: serial("id").primaryKey(),
+  quoteId: varchar("quote_id", { length: 100 }),
+  conversationId: integer("conversation_id"),
+  leadId: integer("lead_id"),
+  customerName: varchar("customer_name", { length: 150 }).notNull(),
+  customerPhone: varchar("customer_phone", { length: 50 }).notNull(),
+  customerEmail: varchar("customer_email", { length: 255 }),
+  tripTitle: varchar("trip_title", { length: 255 }).notNull(),
+  tripSlug: varchar("trip_slug", { length: 150 }),
+  departureDate: varchar("departure_date", { length: 100 }),
+  travelersCount: integer("travelers_count").default(1),
+  amountPaid: integer("amount_paid").notNull(),
+  paymentType: varchar("payment_type", { length: 50 }).default("deposit"), // 'deposit' | 'balance' | 'full'
+  paymentMethod: varchar("payment_method", { length: 50 }).default("upi_qr"), // 'upi_qr' | 'gpay' | 'phonepe' | 'bank_transfer'
+  utrNumber: varchar("utr_number", { length: 100 }).notNull(),
+  proofImageUrl: text("proof_image_url"),
+  payerNotes: text("payer_notes"),
+  status: varchar("status", { length: 50 }).default("pending"), // 'pending' | 'verified' | 'rejected'
+  adminNotes: text("admin_notes"),
+  verifiedAt: timestamp("verified_at"),
+  verifiedBy: varchar("verified_by", { length: 100 }),
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
+// Trip Digital Boarding Passes / Tickets
+export const tripPasses = pgTable("trip_passes", {
+  id: serial("id").primaryKey(),
+  ticketId: varchar("ticket_id", { length: 100 }).unique().notNull(), // e.g. 'TN-PASS-847291'
+  quoteId: varchar("quote_id", { length: 100 }),
+  conversationId: integer("conversation_id"),
+  leadId: integer("lead_id"),
+  tripTitle: varchar("trip_title", { length: 255 }).notNull(),
+  tripSlug: varchar("trip_slug", { length: 150 }).notNull(),
+  passengerName: varchar("passenger_name", { length: 150 }).notNull(),
+  passengerPhone: varchar("passenger_phone", { length: 50 }).notNull(),
+  passengerEmail: varchar("passenger_email", { length: 255 }),
+  emergencyContact: varchar("emergency_contact", { length: 150 }),
+  departureDate: varchar("departure_date", { length: 100 }).notNull(),
+  travelersCount: integer("travelers_count").default(1),
+  tripLeaderName: varchar("trip_leader_name", { length: 150 }).default("Sneha Kapur (Certified Lead)"),
+  totalAmount: integer("total_amount").notNull(),
+  depositPaid: integer("deposit_paid").default(0),
+  balanceDue: integer("balance_due").default(0),
+  balanceDueDate: varchar("balance_due_date", { length: 100 }),
+  balanceStatus: varchar("balance_status", { length: 50 }).default("cleared"), // 'cleared' | 'pending'
+  checkInStatus: varchar("check_in_status", { length: 50 }).default("confirmed"), // 'confirmed' | 'checked_in'
+  checkedInAt: timestamp("checked_in_at"),
+  checkedInBy: varchar("checked_in_by", { length: 100 }),
+  qrCodeDataUrl: text("qr_code_data_url"),
+  pickupLocation: varchar("pickup_location", { length: 255 }),
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
+
 // Types export
 export type TripPackage = typeof tripPackages.$inferSelect;
 export type DepartureDate = typeof departureDates.$inferSelect;
@@ -342,4 +406,6 @@ export type PushSubscriptionType = typeof pushSubscriptions.$inferSelect;
 export type CRMConversation = typeof crmConversations.$inferSelect;
 export type CRMMessage = typeof crmMessages.$inferSelect;
 export type AIAgentConfig = typeof aiAgentConfigs.$inferSelect;
+export type PaymentProof = typeof paymentProofs.$inferSelect;
+export type TripPass = typeof tripPasses.$inferSelect;
 

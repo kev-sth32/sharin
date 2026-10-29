@@ -44,3 +44,8 @@ next-env.d.ts
 update_b64.txt
 *.tar.gz
 *.zip
+
+# credentials and cloud configs
+rclone.conf
+scripts/rclone.conf
+*.conf

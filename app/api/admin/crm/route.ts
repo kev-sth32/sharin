@@ -6,69 +6,7 @@ import { generateTripQuotation, generatePreTripBriefing, runSalesDripEngine } fr
 import { broadcastCrmEvent } from "@/lib/crm-events";
 
 // Mock memory store when database is in fallback mode
-let mockConversations: any[] = [
-  {
-    id: 101,
-    channel: "instagram",
-    externalUserId: "ig_priya_sharma",
-    externalUsername: "priya_travels",
-    customerName: "Priya Sharma",
-    assignedAgent: "Sneha Kapur",
-    mode: "ai",
-    status: "active",
-    dripStep: 0,
-    internalNotes: [
-      { id: 1, author: "Sneha Kapur", text: "Customer asked for women solo discount. Advised July batch.", createdAt: new Date(Date.now() - 1000 * 60 * 60).toISOString() }
-    ],
-    documentVault: [
-      { id: 1, docType: "Aadhaar Card / Govt ID", fileName: "Priya_ID_Proof.pdf", fileUrl: "https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf", uploadedAt: new Date(Date.now() - 1000 * 60 * 120).toISOString() }
-    ],
-    appliedCoupon: null,
-    lastMessageText: "Hi! Can you tell me more about the Ladakh Women Special trip for July?",
-    lastMessageAt: new Date(Date.now() - 1000 * 60 * 15).toISOString(),
-    unreadCount: 1,
-    messages: [
-      { id: 1, senderType: "user", content: "Hi! Can you tell me more about the Ladakh Women Special trip for July?", createdAt: new Date(Date.now() - 1000 * 60 * 15).toISOString() },
-      { id: 2, senderType: "ai", content: "Hey Priya! 🏔️ Our Ladakh Women-Only expedition for July is 7 Days / 6 Nights starting at ₹32,999! Includes stays, pass permits, transfers & trip leader. What dates work for you?", createdAt: new Date(Date.now() - 1000 * 60 * 14).toISOString() }
-    ],
-    lead: {
-      destination: "Ladakh",
-      travelMonth: "July 2026",
-      phone: "+919876543210",
-      intentScore: 85
-    }
-  },
-  {
-    id: 102,
-    channel: "whatsapp",
-    externalUserId: "919811223344",
-    externalUsername: "+91 98112 23344",
-    customerName: "Ananya Roy",
-    assignedAgent: "Rahul Sharma",
-    mode: "human",
-    status: "payment_pending",
-    dripStep: 1,
-    internalNotes: [
-      { id: 2, author: "Rahul Sharma", text: "Sent quote link for ₹99,996 for group of 4. Follow up by 5 PM.", createdAt: new Date(Date.now() - 1000 * 60 * 30).toISOString() }
-    ],
-    documentVault: [],
-    appliedCoupon: "GIRLTrip1000",
-    lastMessageText: "I want to speak with a human agent about custom booking for 4 girls.",
-    lastMessageAt: new Date(Date.now() - 1000 * 60 * 5).toISOString(),
-    unreadCount: 2,
-    messages: [
-      { id: 10, senderType: "user", content: "Hi, interested in Meghalaya in October for a group of 4.", createdAt: new Date(Date.now() - 1000 * 60 * 20).toISOString() },
-      { id: 11, senderType: "ai", content: "That sounds amazing! Meghalaya is breathtaking in October. 🌿 For a group of 4, we offer group discounts!", createdAt: new Date(Date.now() - 1000 * 60 * 18).toISOString() },
-      { id: 12, senderType: "user", content: "I want to speak with a human agent about custom booking for 4 girls.", createdAt: new Date(Date.now() - 1000 * 60 * 5).toISOString() }
-    ],
-    lead: {
-      destination: "Meghalaya",
-      travelMonth: "October 2026",
-      phone: "+919811223344",
-      intentScore: 95
-    }
-  }
-];
+let mockConversations: any[] = [];
 
 import { getAIChatLogs } from "@/lib/admin-store";
 

@@ -2,7 +2,7 @@ import { getMergedTestimonials } from "@/lib/public-store";
 import { Star } from "lucide-react";
 
 export default function Testimonials() {
-  const testimonials = getMergedTestimonials().filter((t:any)=>t.isFeatured);
+  const testimonials = getMergedTestimonials().filter((t: any) => t.isFeatured);
   return (
     <section className="bg-[#13253D] text-white border-y border-white/10 relative overflow-hidden">
       <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-white/5 via-transparent to-transparent pointer-events-none" />
@@ -20,11 +20,11 @@ export default function Testimonials() {
         </div>
 
         <div className="mt-12 grid md:grid-cols-2 gap-8">
-          {testimonials.slice(0,4).map((t:any, i:number)=>(
+          {testimonials.slice(0, 4).map((t: any, i: number) => (
             <div key={i} className="rounded-[32px] bg-white text-[#13253D] p-8 shadow-[0_15px_40px_-15px_rgba(0,0,0,0.3)] hover:-translate-y-1 hover:shadow-[0_20px_50px_-10px_rgba(255,74,125,0.15)] transition-all duration-300 flex flex-col justify-between">
               <div>
                 <div className="flex gap-0.5 mb-4">
-                  {Array.from({length: t.rating||5}).map((_,j)=>(
+                  {Array.from({ length: t.rating || 5 }).map((_, j) => (
                     <Star key={j} className="w-4 h-4 fill-[#FF8A2B] text-[#FF8A2B]" />
                   ))}
                 </div>
